@@ -1,0 +1,2 @@
+## Urheberrecht & Lizenz
+**Alle Rechte vorbehalten (All rights reserved).** Dieses Projekt ist **kein** Open-Source-Projekt. Der Code, das Design und die Bilder dürfen nicht kopiert, für eigene Projekte verwendet oder weiterverbreitet werden.

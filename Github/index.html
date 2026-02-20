@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.FLYNN</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Frosted Glass & Noise Layers -->
+    <div class="glass-surface"></div>
+
+
+    <!-- Editorial Content Grid (Landing) -->
+    <main class="landing-section editorial-grid">
+
+        <!-- Top Left -->
+        <div class="corner-tl meta-text">
+            Project<br>Becoming
+        </div>
+
+        <!-- Top Right -->
+        <div class="corner-tr meta-text">
+            Since<br>2026
+        </div>
+
+        <!-- Center Logo -->
+        <div class="center-stage">
+            <!-- Added 'invert' class assuming the source logo is black-on-transparent. 
+                 Remove 'invert' in CSS if logo is already white. -->
+            <img src="Bilder/logo.png" alt=".FLYNN Logo" class="main-logo invert">
+            <div class="scrolling-text meta-text" style="top: auto; bottom: -50px;">SCROLL TO EXPLORE</div>
+        </div>
+
+        <!-- Bottom Left -->
+        <div class="corner-bl meta-text">
+            Design<br>Collection
+        </div>
+
+        <!-- Bottom Right -->
+        <div class="corner-br meta-text">
+            The Time<br>Is Coming
+        </div>
+
+    </main>
+
+    <!-- DYNAMIC PROJECTS CONTAINER -->
+    <!-- Projects will be inserted here by script.js -->
+
+    <!-- Section Title -->
+    <div class="project-section-title">PROJEKTE</div>
+
+    <div class="spacer-bottom" style="height: 50vh;"></div> <!-- Spacer at bottom -->
+
+    <script src="data.js?v=4"></script>
+    <script src="db.js?v=4"></script>
+    <script src="script.js?v=4"></script>
+</body>
+
+</html>
