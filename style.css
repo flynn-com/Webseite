@@ -16,21 +16,33 @@
 
 body {
     font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    position: relative;
+    scroll-behavior: smooth;
+    /* Fix for iOS Safari background-attachment: fixed bug */
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Safari fallback */
+    height: 100dvh;
     background-image: url('Bilder/background.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
-    height: 100vh;
-    height: 100dvh;
-    /* Safari iOS Fix */
-    width: 100vw;
-    overflow-x: hidden;
-    overflow-y: auto;
-    /* Enable scrolling */
-    color: var(--text-color);
-    position: relative;
-    scroll-behavior: smooth;
+    z-index: -1;
+    transform: translateZ(0);
+    /* Hardware acceleration */
 }
 
 .landing-section {
