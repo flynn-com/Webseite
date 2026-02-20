@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | .FLYNN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #111;
+            --surface: #222;
+            --text: #eee;
+            --accent: #4caf50;
+            --danger: #f44336;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: none;
+            /* Hidden until auth */
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            border-bottom: 1px solid #333;
+            padding-bottom: 1rem;
+        }
+
+        .project-item {
+            background: var(--surface);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .actions button {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+            font-weight: 600;
+        }
+
+        .btn-edit {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-add {
+            background: var(--accent);
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            width: 600px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: #333;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .btn-save {
+            background: var(--accent);
+            color: white;
+            width: 100%;
+            margin-top: 2rem;
+            padding: 1rem;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .gallery-item {
+            position: relative;
+            background: #000;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-item .remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: red;
+            color: white;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Project Control</h1>
+        <button class="actions btn-add" onclick="openModal()">+ Add New Project</button>
+        <button class="actions" onclick="saveOrder()"
+            style="background: #2196F3; color: white; width: 100%; padding: 1rem; margin-bottom: 2rem; font-size: 1.1rem; border: none; border-radius: 4px; cursor: pointer;">💾
+            Save Order & Sync to Website</button>
+        <div id="project-list"></div>
+    </div>
+
+    <!-- Edit/Add Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Edit Project</h2>
+            <form id="project-form">
+                <input type="hidden" id="p-id">
+
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Number (01)</label>
+                        <input type="text" id="p-number" required>
+                    </div>
+                    <div class="form-group" style="flex: 3;">
+                        <label>Title</label>
+                        <input type="text" id="p-title" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Big Number (Bg)</label>
+                    <input type="text" id="p-bigNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Header Short Info (HTML allowed)</label>
+                    <textarea id="p-headerDetails" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Short Description (Card View, Max 250)</label>
+                    <textarea id="p-shortDescription" rows="3" maxlength="250"
+                        placeholder="Brief summary..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Description (Detail Page)</label>
+                    <textarea id="p-description" rows="5"
+                        placeholder="Write a deeper story about the project..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>YouTube Link (Optional)</label>
+                    <input type="text" id="p-youtube" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+
+                <div class="form-group"
+                    style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <label style="margin-bottom: 10px;">Project Capability Icons (Displays top-left of the right
+                        image)</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 1;">
+                            <input type="checkbox" id="p-icon-photo" style="width: auto;"> Photo Camera
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 1;">
+                            <input type="checkbox" id="p-icon-video" style="width: auto;"> Video Camera
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 1;">
+                            <input type="checkbox" id="p-icon-design" style="width: auto;"> Design
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <label>Company Logo (Optional, Transparent background recommended)</label>
+                    <input type="file" id="p-logo-file" accept="image/*">
+                    <div id="logo-preview-container" style="margin-top: 10px; display: none; align-items: center;">
+                        <img id="logo-preview"
+                            style="max-height: 80px; max-width: 150px; border-radius: 4px; background: rgba(0,0,0,0.5); padding: 5px;">
+                        <button type="button" onclick="removeLogo()"
+                            style="margin-left: 10px; background: transparent; border: 1px solid red; color: red; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Remove</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                    <label>Reference Images (Upload Multiple)</label>
+                    <input type="file" id="p-image-file" accept="image/*" multiple>
+                    <div id="gallery-preview" class="gallery-grid"></div>
+                </div>
+
+                <button type="submit" class="actions btn-save">Save Project</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="db.js"></script>
+    <script>
+        const AUTH_PASS = "admin123";
+        let projects = [];
+        const editProject = openModal;
+
+        // Security Check & Init
+        (async () => {
+            const pass = prompt("Enter Admin Password:");
+            if (pass === AUTH_PASS) {
+                document.body.style.display = "block";
+                // Init DB
+                projects = await ProjectDB.initDefaults(window.initialProjects);
+                renderList();
+            } else {
+                alert("Access Denied");
+                window.location.href = "index.html";
+            }
+        })();
+
+        // Logic
+        let currentGallery = []; // Holds base64 strings
+        let currentLogo = null; // Holds base64 string for logo
+
+        const logoInput = document.getElementById('p-logo-file');
+        const logoPreviewContainer = document.getElementById('logo-preview-container');
+        const logoPreviewImg = document.getElementById('logo-preview');
+
+        logoInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (evt) {
+                    currentLogo = evt.target.result;
+                    logoPreviewImg.src = currentLogo;
+                    logoPreviewContainer.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.removeLogo = function () {
+            currentLogo = null;
+            logoInput.value = "";
+            logoPreviewContainer.style.display = 'none';
+            logoPreviewImg.src = "";
+        };
+
+        const fileInput = document.getElementById('p-image-file');
+        const galleryPreview = document.getElementById('gallery-preview');
+
+        fileInput.addEventListener('change', function (e) {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        currentGallery.push(evt.target.result);
+                        renderGallery();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        function renderGallery() {
+            galleryPreview.innerHTML = '';
+            currentGallery.forEach((img, idx) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `
+                    <img src="${img}">
+                    <div class="remove" onclick="removeImage(${idx})">&times;</div>
+                `;
+                galleryPreview.appendChild(item);
+            });
+        }
+
+        window.removeImage = function (idx) {
+            currentGallery.splice(idx, 1);
+            renderGallery();
+        }
+
+        // Render List with Drag Support
+        function renderList() {
+            const list = document.getElementById('project-list');
+            list.innerHTML = '';
+            // Sort by number
+            projects.sort((a, b) => a.number - b.number);
+
+            projects.forEach((p, index) => {
+                const item = document.createElement('div');
+                item.className = 'project-item';
+                item.draggable = true;
+                item.dataset.id = p.id; // Store ID for reordering
+
+                item.innerHTML = `
+                    <div style="cursor: grab; display: flex; align-items: center;">
+                        <span style="font-size: 1.5rem; margin-right: 1rem; color: #555;">☰</span>
+                        <div>
+                            <strong>${p.number}</strong> ${p.title} 
+                            <span style="opacity: 0.5; font-size: 0.8rem">(${p.gallery ? p.gallery.length : 0} images)</span>
+                            ${p.youtube ? '<span style="color:red; margin-left:5px;">▶</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editProject(${index})">Edit</button>
+                        <button class="btn-delete" onclick="deleteProject(${index})">Delete</button>
+                    </div>
+                `;
+
+                // Drag Events
+                item.addEventListener('dragstart', () => {
+                    item.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    saveOrder(); // Auto-save on drop
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        // Drag Over Logic
+        const listContainer = document.getElementById('project-list');
+        listContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(listContainer, e.clientY);
+            const draggable = document.querySelector('.dragging');
+            if (afterElement == null) {
+                listContainer.appendChild(draggable);
+            } else {
+                listContainer.insertBefore(draggable, afterElement);
+            }
+        });
+
+        // Helper to find position
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.project-item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Save New Order
+        async function saveOrder() {
+            const listItems = document.querySelectorAll('.project-item');
+            const newOrderProjects = [];
+
+            console.log("Saving order...", listItems.length, "items found in DOM");
+
+            // Update numbers based on new DOM order
+            for (let i = 0; i < listItems.length; i++) {
+                const domId = listItems[i].dataset.id;
+                const id = parseInt(domId);
+
+                // Find project by ID (loose comparison for safety or strict if type sure)
+                const project = projects.find(p => p.id == id);
+
+                if (project) {
+                    // Update number ("01", "02", etc.)
+                    const newNum = (i + 1).toString().padStart(2, '0');
+                    console.log(`Updating Project ${project.title} (${project.id}) to #${newNum}`);
+
+                    project.number = newNum;
+                    // ALSO update bigNumber to match, so background text updates
+                    project.bigNumber = newNum;
+
+                    newOrderProjects.push(project);
+
+                    // Save to DB
+                    await ProjectDB.save(project);
+                } else {
+                    console.error("Project not found for ID:", id, "DOM ID:", domId);
+                }
+            }
+
+            // Update local array
+            projects = newOrderProjects;
+
+            // Re-render to show new numbers
+            renderList();
+
+            // NOTIFY FRONTEND
+            const bc = new BroadcastChannel('project_updates');
+            bc.postMessage('order_changed');
+            bc.close();
+
+            alert("New order saved and synced to the main page!");
+        }
+
+        async function deleteProject(index) {
+            if (confirm('Are you sure?')) {
+                const p = projects[index];
+                await ProjectDB.delete(p.id);
+                // Also reorder remaining after delete?
+                projects.splice(index, 1);
+                await saveOrder(); // Re-index remaining
+            }
+        }
+
+        function openModal(index = null) {
+            document.getElementById('modal').style.display = 'flex';
+            currentGallery = [];
+            currentLogo = null;
+            document.getElementById('p-image-file').value = ""; // Reset file input
+            document.getElementById('p-logo-file').value = ""; // Reset logo input
+            document.getElementById('logo-preview-container').style.display = 'none';
+
+            if (index !== null) {
+                // Edit
+                const p = projects[index];
+                document.getElementById('modal-title').innerText = "Edit Project";
+                document.getElementById('p-id').value = index;
+                document.getElementById('p-number').value = p.number;
+                document.getElementById('p-title').value = p.title;
+                document.getElementById('p-bigNumber').value = p.bigNumber;
+                document.getElementById('p-headerDetails').value = p.headerDetails;
+                document.getElementById('p-shortDescription').value = p.shortDescription || "";
+                document.getElementById('p-description').value = p.description || "";
+                document.getElementById('p-youtube').value = p.youtube || "";
+
+                document.getElementById('p-icon-photo').checked = !!p.hasPhoto;
+                document.getElementById('p-icon-video').checked = !!p.hasVideo;
+                document.getElementById('p-icon-design').checked = !!p.hasDesign;
+
+                if (p.companyLogo) {
+                    currentLogo = p.companyLogo;
+                    document.getElementById('logo-preview').src = currentLogo;
+                    document.getElementById('logo-preview-container').style.display = 'flex';
+                }
+
+                if (p.gallery && Array.isArray(p.gallery)) {
+                    currentGallery = [...p.gallery];
+                } else if (p.image) {
+                    currentGallery = [p.image];
+                }
+                renderGallery();
+            } else {
+                // New
+                document.getElementById('modal-title').innerText = "New Project";
+                document.getElementById('project-form').reset();
+                document.getElementById('p-id').value = "-1";
+                galleryPreview.innerHTML = "";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        document.getElementById('project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('p-id').value);
+
+            // Extract YT ID if link provided
+            let ytLink = document.getElementById('p-youtube').value;
+
+            const newProject = {
+                id: index === -1 ? Date.now() : projects[index].id,
+                number: document.getElementById('p-number').value,
+                title: document.getElementById('p-title').value,
+                bigNumber: document.getElementById('p-bigNumber').value,
+                headerDetails: document.getElementById('p-headerDetails').value,
+                shortDescription: document.getElementById('p-shortDescription').value,
+                description: document.getElementById('p-description').value,
+                youtube: ytLink,
+                hasPhoto: document.getElementById('p-icon-photo').checked,
+                hasVideo: document.getElementById('p-icon-video').checked,
+                hasDesign: document.getElementById('p-icon-design').checked,
+                companyLogo: currentLogo,
+                gallery: currentGallery,
+                previewText: "PREVIEW",
+                mainImageText: "IMG"
+            };
+
+            try {
+                console.log("Saving project...", newProject);
+                await ProjectDB.save(newProject);
+
+                // Update local list
+                if (index === -1) {
+                    projects.push(newProject);
+                } else {
+                    projects[index] = newProject;
+                }
+
+                renderList();
+                closeModal();
+                alert("Saved to Database!");
+            } catch (err) {
+                console.error("Save failed:", err);
+                alert(`Error saving project:\n${err.name}: ${err.message}\n\nCheck the console (F12) for more details.`);
+            }
+        });
+
+    </script>
+</body>
+
+</html>
