@@ -22,6 +22,8 @@ body {
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: 100vh;
+    height: 100dvh;
+    /* Safari iOS Fix */
     width: 100vw;
     overflow-x: hidden;
     overflow-y: auto;
@@ -31,9 +33,10 @@ body {
     scroll-behavior: smooth;
 }
 
-/* LANDING SECTION */
 .landing-section {
     height: 100vh;
+    height: 100dvh;
+    /* Safari iOS Fix */
     width: 100%;
     position: relative;
     /* Keeps the logic of the first screen */
@@ -86,6 +89,8 @@ body {
     /* OPTIMIZATION: Hardware Acceleration hints */
     will-change: height, width, border-radius;
     transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Safari Hardware acceleration */
     /* Force GPU layer */
 }
 
@@ -387,8 +392,8 @@ body {
     justify-content: flex-end;
     gap: 1rem;
     width: 100%;
-    flex: 1 1 0;
-    /* Important flex fix to prevent stretching past parent container */
+    flex: 1 1 auto;
+    /* Important flex fix to prevent stretching past parent container in Safari */
     /* overflow: hidden; Removed so absolute children aren't clipped if needed, though they are inside anyway */
 }
 
@@ -421,12 +426,15 @@ body {
     width: 100%;
     height: 100%;
     transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .carousel-item {
     min-width: 100%;
     height: 100%;
     display: flex;
+    flex-shrink: 0;
+    /* Fix items collapsing in Safari flex container */
     justify-content: center;
     align-items: center;
 }
@@ -604,6 +612,8 @@ body {
     z-index: 20;
     /* Above glass */
     height: 100vh;
+    height: 100dvh;
+    /* Safari iOS Fix */
     width: 100%;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
