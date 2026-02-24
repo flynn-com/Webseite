@@ -95,8 +95,8 @@ function attachObservers() {
             const minHeight = 80; // px
             // On mobile viewports we need giving the card more height so content isn't clipped
             const isMobile = window.innerWidth <= 768;
-            // Provide at least 850px of height on mobile to fit the stacked content
-            const maxHeight = isMobile ? Math.max(currentViewportHeight * 0.95, 850) : currentViewportHeight * 0.8;
+            // Provide at least 550px of height on mobile, but don't stretch excessively long
+            const maxHeight = isMobile ? Math.max(currentViewportHeight * 0.85, 550) : currentViewportHeight * 0.8;
             const currentHeight = minHeight + (maxHeight - minHeight) * progress;
             card.style.height = `${currentHeight}px`;
 

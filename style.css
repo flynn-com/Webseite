@@ -350,6 +350,8 @@ body::before {
     margin-bottom: 1rem;
     position: relative;
     z-index: 10;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .v2-title {
@@ -371,6 +373,7 @@ body::before {
     text-overflow: ellipsis;
     position: relative;
     z-index: 10;
+    flex-shrink: 0;
 }
 
 .v2-secondary-area {
@@ -738,6 +741,35 @@ body::before {
 }
 
 /* =========================================
+   TABLET RESPONSIVENESS (iPad, Small laptops)
+   ========================================= */
+@media (max-width: 1024px) {
+    .project-section-title {
+        font-size: 12vw;
+    }
+
+    .v2-number {
+        font-size: 5rem;
+    }
+
+    .v2-title {
+        font-size: 3rem;
+    }
+
+    .btn-view-project {
+        font-size: 1.5rem;
+        height: 3.5rem;
+        padding: 0 30px;
+    }
+
+    .title-row-v2 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+/* =========================================
    MOBILE RESPONSIVENESS
    ========================================= */
 @media (max-width: 768px) {
@@ -831,20 +863,28 @@ body::before {
         border-radius: 20px;
     }
 
+    .project-company-logo {
+        max-width: 80px;
+        max-height: 50px;
+        bottom: 1.5rem;
+        left: 1.5rem;
+    }
+
     .title-row-v2 {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.5rem;
+        gap: 0;
         flex-shrink: 0;
     }
 
     .btn-view-project {
-        height: 3rem;
-        font-size: 1.2rem;
+        height: 2.8rem;
+        font-size: 1.1rem;
         padding: 0 20px;
         margin-top: 0.5rem;
         flex-shrink: 0;
+        align-self: flex-start;
     }
 
     .v2-title {

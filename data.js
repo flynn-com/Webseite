@@ -23,10 +23,35 @@ const initialProjects = [
         "mainImageText": "IMG"
     },
     {
-        "id": 2,
+        "id": 1771976032028,
         "number": "02",
-        "title": "Paris",
+        "title": "Stuttgart",
         "bigNumber": "02",
+        "headerDetails": "Stuttgart",
+        "shortDescription": "",
+        "description": "",
+        "youtube": "",
+        "hasPhoto": false,
+        "hasVideo": true,
+        "hasDesign": true,
+        "companyLogo": null,
+        "gallery": [
+            "assets/projects/img_26780772.jpg",
+            "assets/projects/img_01aa1170.jpg",
+            "assets/projects/img_cdbc08e8.jpg",
+            "assets/projects/img_ed08353b.jpg",
+            "assets/projects/img_07908c55.jpg",
+            "assets/projects/img_bb185a88.jpg",
+            "assets/projects/img_ef6883cc.jpg"
+        ],
+        "previewText": "PREVIEW",
+        "mainImageText": "IMG"
+    },
+    {
+        "id": 2,
+        "number": "03",
+        "title": "Paris",
+        "bigNumber": "03",
         "headerDetails": "DIGITAL ART<br>COLLECTION",
         "shortDescription": "Exploring the boundaries between digital and physical reality.",
         "description": "Exploring the boundaries between digital and physical reality. This collection features generative art pieces inspired by cosmic events.",
