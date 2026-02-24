@@ -179,10 +179,9 @@ class AdminApp(QMainWindow):
         self.server_thread.start()
 
     def closeEvent(self, event):
-        # Stop Server when window closes
-        self.server_thread.stop()
-        self.server_thread.wait()
+        # Forcefully terminate the entire process to prevent the server thread from hanging
         event.accept()
+        os._exit(0)
 
 if __name__ == '__main__':
     # Add Git context to PATH if it's the standard Windows installation

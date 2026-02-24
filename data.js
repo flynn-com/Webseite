@@ -11,7 +11,7 @@ const initialProjects = [
         "youtube": "",
         "hasPhoto": true,
         "hasVideo": true,
-        "hasDesign": false,
+        "hasDesign": true,
         "companyLogo": null,
         "gallery": [
             "assets/projects/img_a817e735.jpg",
@@ -34,8 +34,14 @@ const initialProjects = [
         "hasPhoto": false,
         "hasVideo": false,
         "hasDesign": false,
-        "companyLogo": "assets/projects/img_0632886c.jpg",
-        "gallery": [],
+        "companyLogo": null,
+        "gallery": [
+            "assets/projects/img_382bf0f8.jpg",
+            "assets/projects/img_1d615643.jpg",
+            "assets/projects/img_16674009.jpg",
+            "assets/projects/img_f9162c8d.jpg",
+            "assets/projects/img_fce4ac47.jpg"
+        ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"
     }
