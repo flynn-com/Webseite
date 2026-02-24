@@ -266,7 +266,13 @@ const createProjectHTML = (p) => {
                         
                         <div class="title-row-v2">
                             <div class="v2-title">${p.title}</div>
-                            <a href="single_project.html?id=${p.id}" class="btn-view-project">VIEW</a>
+                            <a href="single_project.html?id=${p.id}" class="btn-view-project">
+                                VIEW 
+                                <svg class="view-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="10" y1="12" x2="22" y2="12"></line>
+                                    <polyline points="16 6 22 12 16 18"></polyline>
+                                </svg>
+                            </a>
                         </div>
                         
                         <div class="v2-desc">

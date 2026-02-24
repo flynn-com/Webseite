@@ -11,63 +11,139 @@
         /* Specific Detail Page Overrides */
         body {
             overflow-y: auto;
+            overflow-x: hidden;
             height: auto;
+            min-height: 100vh;
         }
 
         .detail-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 4rem 2rem;
             position: relative;
             z-index: 20;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        /* Glass Card for Content */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            border-radius: 32px;
+            padding: 4rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .back-btn {
-            display: inline-block;
-            margin-bottom: 2rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
             color: white;
-            font-weight: 600;
+            font-weight: 800;
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.5rem 1rem;
-            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            transition: all 0.2s ease;
+            width: fit-content;
+            margin-bottom: -2rem;
+            /* Pull closer to content */
+            z-index: 30;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-5px);
         }
 
         .detail-header {
-            margin-bottom: 4rem;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .detail-number {
+            font-size: 12rem;
+            font-weight: 900;
+            line-height: 0.8;
+            color: transparent;
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+            position: absolute;
+            top: -2rem;
+            right: 0;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .detail-title {
-            font-size: 3rem;
+            font-size: 5rem;
             font-weight: 900;
             margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            position: relative;
+            z-index: 10;
         }
 
         .detail-meta {
             font-size: 1.2rem;
             opacity: 0.8;
-            margin-bottom: 2rem;
-            line-height: 1.6;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 10;
         }
 
         .detail-desc {
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             line-height: 1.8;
-            max-width: 800px;
+            max-width: 900px;
+            opacity: 0.9;
             margin-bottom: 4rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
 
         .detail-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
         }
 
         .gallery-img {
             width: 100%;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
+            height: 400px;
+            /* Fixed height for uniform masonry look */
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.02);
         }
 
         .video-container {
@@ -76,9 +152,10 @@
             /* 16:9 */
             height: 0;
             overflow: hidden;
-            border-radius: 12px;
+            border-radius: 16px;
             margin-bottom: 4rem;
             background: #000;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
         .video-container iframe {
@@ -89,6 +166,26 @@
             height: 100%;
             border: none;
         }
+
+        @media (max-width: 768px) {
+            .glass-card {
+                padding: 2rem;
+                border-radius: 20px;
+            }
+
+            .detail-title {
+                font-size: 3rem;
+            }
+
+            .detail-number {
+                font-size: 6rem;
+                top: 0;
+            }
+
+            .gallery-img {
+                height: 250px;
+            }
+        }
     </style>
 </head>
 
@@ -98,21 +195,30 @@
     <div class="noise-overlay"></div>
 
     <div class="detail-container">
-        <a href="index.html" class="back-btn">← Back to Overview</a>
+        <a href="index.html" class="back-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            BACK TO PROJECTS
+        </a>
 
-        <div id="content-area">
-            <h1>Loading...</h1>
+        <div id="content-area" class="glass-card">
+            <div style="text-align: center; padding: 10rem 0;">
+                <h1 style="font-size: 4rem; font-weight: 900; animation: pulse 1.5s infinite alternate;">Loading
+                    Project...</h1>
+            </div>
         </div>
     </div>
 
-    <!-- Load Sync Data (Fallback) and Async DB -->
+    <!-- Load Sync Data directly from data.js -->
     <script src="data.js"></script>
-    <script src="db.js"></script>
     <script>
         (async () => {
             const params = new URLSearchParams(window.location.search);
             const projectId = params.get('id');
-            const projects = await ProjectDB.initDefaults(window.initialProjects);
+            const projects = window.initialProjects || [];
 
             // Find by ID (number or string)
             const p = projects.find(x => x.id == projectId || x.number === projectId);
@@ -124,10 +230,10 @@
                 let galleryHtml = '';
                 if (p.gallery && p.gallery.length > 0) {
                     p.gallery.forEach(img => {
-                        galleryHtml += `<img src="${img}" class="gallery-img">`;
+                        galleryHtml += `<img src="${img}" class="gallery-img" alt="Gallery Image">`;
                     });
                 } else if (p.image) {
-                    galleryHtml += `<img src="${p.image}" class="gallery-img">`;
+                    galleryHtml += `<img src="${p.image}" class="gallery-img" alt="Project Image">`;
                 }
 
                 // Video
@@ -141,7 +247,7 @@
                     }
                     if (videoId) {
                         videoHtml = `
-                        <h2>Project Video</h2>
+                        <h2 class="section-title">Project Video</h2>
                         <div class="video-container">
                             <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
                         </div>`;
@@ -150,25 +256,29 @@
 
                 content.innerHTML = `
                     <div class="detail-header">
-                        <div style="font-size: 8rem; opacity: 0.1; font-weight: 900; line-height: 0.8;">${p.bigNumber}</div>
+                        <div class="detail-number">${p.bigNumber || p.number}</div>
                         <div class="detail-title">${p.title}</div>
-                        <div class="detail-meta">${p.headerDetails}</div>
+                        <div class="detail-meta">${p.headerDetails || ''}</div>
                     </div>
 
                     <div class="detail-desc">
-                        ${p.description ? p.description.replace(/\n/g, '<br>') : "No description."}
+                        ${p.description ? p.description.replace(/\n/g, '<br>') : "No long description available for this project."}
                     </div>
 
                     ${videoHtml}
 
-                    <h2>Gallery</h2>
+                    <h2 class="section-title">Gallery</h2>
                     <div class="detail-gallery">
                         ${galleryHtml}
                     </div>
                 `;
                 document.title = `${p.title} | .FLYNN`;
             } else {
-                content.innerHTML = "<h1>Project not found</h1>";
+                content.innerHTML = `
+                    <div style="text-align: center; padding: 10rem 0;">
+                        <h1 style="font-size: 4rem; font-weight: 900;">Project not found</h1>
+                        <p style="opacity: 0.7; margin-top: 1rem;">The project you are looking for does not exist or was removed.</p>
+                    </div>`;
             }
         })();
     </script>
