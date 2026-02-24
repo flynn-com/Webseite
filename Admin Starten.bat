@@ -1,7 +1,7 @@
 @echo off
 title .FLYNN Admin Center
-echo Starte lokales Admin Center...
-echo Bitte dieses Fenster nicht schliessen, waehrend du im Admin-Bereich arbeitest.
+echo Starte lokale Desktop App...
+echo Bitte schliesse das Fenster, in dem die App laeuft, wenn du fertig bist.
 echo.
-python local_admin.py
+python admin_app.py
 pause

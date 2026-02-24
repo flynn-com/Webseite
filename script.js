@@ -41,8 +41,24 @@ function attachObservers() {
     const startTrigger = 0.60;
     const endTrigger = 0.20;
 
+    // Cache viewport height to prevent iOS Safari layout thrashing
+    // (In iOS Safari, window.innerHeight changes as you scroll and the address bar shrinks/grows)
+    let viewportHeight = window.innerHeight;
+
+    // Add a debounced resize listener to update viewportHeight
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            viewportHeight = window.innerHeight;
+            onScroll(); // Force a recalculation with new height
+        }, 200);
+    });
+
     function onScroll() {
-        const viewportHeight = window.innerHeight;
+        // Use cached height instead of reading window.innerHeight on every frame
+        // This is a critical performance fix for Apple devices
+        const currentViewportHeight = viewportHeight;
 
         cards.forEach(card => {
             const rect = card.getBoundingClientRect();
@@ -51,8 +67,8 @@ function attachObservers() {
 
             // Calculate progress based on position
             // "top" decreases as we scroll down
-            const startPoint = viewportHeight * startTrigger;
-            const endPoint = viewportHeight * endTrigger;
+            const startPoint = currentViewportHeight * startTrigger;
+            const endPoint = currentViewportHeight * endTrigger;
 
             // Normalize progress (0 to 1)
             // 0 = at startPoint (Closed)
@@ -77,7 +93,7 @@ function attachObservers() {
 
             // Height: 80px -> 80vh
             const minHeight = 80; // px
-            const maxHeight = viewportHeight * 0.8; // 80vh in px
+            const maxHeight = currentViewportHeight * 0.8; // 80vh in px
             const currentHeight = minHeight + (maxHeight - minHeight) * progress;
             card.style.height = `${currentHeight}px`;
 
@@ -87,8 +103,7 @@ function attachObservers() {
             // Border Radius: Constant 32px
             card.style.borderRadius = '32px';
 
-            // Background: Fade?? 
-            // constant for now: rgba(255, 255, 255, 0.1) -> 0.15
+            // Background: Fade
             const opacity = 0.1 + (0.05 * progress);
             card.style.background = `rgba(255, 255, 255, ${opacity})`;
 
@@ -112,7 +127,7 @@ function attachObservers() {
     // Attach listener
     window.addEventListener('scroll', () => {
         window.requestAnimationFrame(onScroll);
-    });
+    }, { passive: true }); // passive flag improves scroll performance on mobile
 
     // Initial call
     onScroll();

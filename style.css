@@ -77,6 +77,11 @@ body::before {
     /* clearer interactions */
     margin-bottom: 15px;
     /* Exact spacing requested */
+
+    /* Safari Hardware Acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: margin-bottom;
 }
 
 /* The Card Itself */
@@ -425,6 +430,12 @@ body::before {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     z-index: 1;
     /* Behind text */
+
+    /* Fix Safari border-radius clipping bug with transform children */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .v2-half-img img {
@@ -443,6 +454,10 @@ body::before {
 
 .carousel-item {
     min-width: 100%;
+    width: 100%;
+    /* Force exact width */
+    flex: 0 0 100%;
+    /* Stop Safari from shrinking items */
     height: 100%;
     display: flex;
     flex-shrink: 0;

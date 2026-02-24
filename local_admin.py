@@ -9,12 +9,19 @@ import webbrowser
 import threading
 import time
 
-PORT = 8000
+PORT = 8080
 DIRECTORY = "."
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=DIRECTORY, **kwargs)
+
+    def end_headers(self):
+        # Force the browser to never cache files from this local server
+        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
+        super().end_headers()
 
     def do_POST(self):
         if self.path == '/api/save_all':
@@ -95,7 +102,12 @@ def open_browser():
     webbrowser.open(f'http://localhost:{PORT}/admin.html')
 
 if __name__ == "__main__":
-    with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    Handler.protocol_version = "HTTP/1.0"
+    
+    class ReusableTCPServer(socketserver.TCPServer):
+        allow_reuse_address = True
+        
+    with ReusableTCPServer(("", PORT), Handler) as httpd:
         print(f"Local Admin Server started at http://localhost:{PORT}")
         print("Opening browser...")
         

@@ -10,7 +10,7 @@ const initialProjects = [
         "description": "A timeless piece designed for the modern explorer. Crafted from premium 100% cotton, this hoodie combines comfort with an avant-garde aesthetic.",
         "youtube": "",
         "hasPhoto": true,
-        "hasVideo": false,
+        "hasVideo": true,
         "hasDesign": false,
         "companyLogo": null,
         "gallery": [
@@ -25,14 +25,19 @@ const initialProjects = [
     {
         "id": 2,
         "number": "02",
-        "title": "Next Horizon",
+        "title": "Paris",
         "bigNumber": "02",
         "headerDetails": "DIGITAL ART<br>COLLECTION",
         "shortDescription": "Exploring the boundaries between digital and physical reality.",
         "description": "Exploring the boundaries between digital and physical reality. This collection features generative art pieces inspired by cosmic events.",
-        "previewText": "",
-        "mainImageText": "ARTWORK IMG",
-        "gallery": []
+        "youtube": "",
+        "hasPhoto": false,
+        "hasVideo": false,
+        "hasDesign": false,
+        "companyLogo": "assets/projects/img_0632886c.jpg",
+        "gallery": [],
+        "previewText": "PREVIEW",
+        "mainImageText": "IMG"
     }
 ];
 
