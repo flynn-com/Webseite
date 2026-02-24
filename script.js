@@ -1,10 +1,10 @@
 // Basic animation on scroll
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
 
     const projectContainer = document.querySelector('.spacer-bottom');
     if (projectContainer) {
-        // Load projects from DB asynchronously
-        const projects = await ProjectDB.initDefaults(window.initialProjects);
+        // Load projects from static data.js file
+        const projects = window.initialProjects || [];
 
         // Sort by number just in case
         // Sort Descending because we use 'afterend' (prepend behavior)
@@ -28,15 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialize carousels
     document.querySelectorAll('.v2-carousel').forEach(initCarousel);
-
-    // Listen for Admin Updates (Instant Refresh)
-    const bc = new BroadcastChannel('project_updates');
-    bc.onmessage = (event) => {
-        if (event.data === 'order_changed') {
-            // Force reload to fetch new order from DB
-            window.location.reload();
-        }
-    };
 });
 
 // SCROLL-DRIVEN ANIMATION ENGINE

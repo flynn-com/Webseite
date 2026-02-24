@@ -1,0 +1,6 @@
+Copyright (c) 2026 Flynnbertsch
+
+Alle Rechte vorbehalten.
+
+Dieses Projekt und der darin enthaltene Quellcode sowie alle Mediendateien (Bilder, Grafiken, etc.) sind urheberrechtlich geschützt. 
+Das Kopieren, Modifizieren, Verbreiten oder die kommerzielle/nicht-kommerzielle Nutzung des Codes oder der Bilder ist ohne ausdrückliche schriftliche Genehmigung des Urhebers strengstens untersagt.
