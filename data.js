@@ -5,7 +5,7 @@ const initialProjects = [
         "number": "01",
         "title": "Ar\u00e9e",
         "bigNumber": "01",
-        "headerDetails": "CLASSIC HOODIE<br>BY FLYNN STUDIO<br>100% COTTON",
+        "headerDetails": "2026",
         "shortDescription": "A timeless piece designed for the modern explorer. Max 250 chars.",
         "description": "A timeless piece designed for the modern explorer. Crafted from premium 100% cotton, this hoodie combines comfort with an avant-garde aesthetic.",
         "youtube": "https://www.youtube.com/watch?v=F_gJaL87aTs",

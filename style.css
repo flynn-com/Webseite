@@ -797,15 +797,15 @@ body::before {
     }
 
     .main-logo {
-        width: 80vw;
-        /* Fill 80% of screen (10% margins) */
+        width: 60vw;
+        /* Fill 60% of screen to not overpower */
         max-width: none;
         /* Remove desktop limit */
     }
 
     /* 2. TYPOGRAPHY SCALING */
     .project-section-title {
-        font-size: 13vw;
+        font-size: 10vw;
         /* Smaller to fit in 80% width */
         max-width: 80vw;
         margin-left: auto;
@@ -826,19 +826,36 @@ body::before {
     }
 
     .col-left {
-        height: 400px;
+        height: 220px;
         /* Fixed height for image on mobile/iPad portrait */
         border-radius: 20px;
     }
 
+    .title-row-v2 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .btn-view-project {
+        height: 3rem;
+        font-size: 1.2rem;
+        padding: 0 20px;
+        margin-top: 0.5rem;
+        flex-shrink: 0;
+    }
+
     .v2-title {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         /* Smaller title */
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
     }
 
     .v2-number {
-        font-size: 4rem;
+        font-size: 3rem;
         -webkit-text-stroke: 1px #ffffff;
     }
 
@@ -846,19 +863,22 @@ body::before {
         font-size: 0.9rem;
         max-height: 100px;
         /* Limit text height */
+        margin-top: 1rem;
     }
 
-    /* Adjust button and secondary image */
+    /* Adjust secondary image area */
     .v2-secondary-area {
-        flex-direction: row;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
     }
 
     .v2-half-img {
-        position: relative;
-        width: 100%;
-        height: 400px;
-        /* Taller fixed height so it looks good on mobile/iPad portrait */
-        margin-top: 1rem;
+        display: none;
+        /* Hide on mobile to save space */
+    }
+
+    .project-capabilities {
+        display: none;
+        /* Hide on mobile to save space */
     }
 }
