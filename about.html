@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Über mich | .FLYNN — Flynn Bertsch</title>
+    <meta name="description" content="Über Flynn Bertsch — Fotograf, Videograf und Webdesigner aus Leonberg.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://flynnbertsch.com/about.html">
+    <meta property="og:type" content="profile">
+    <meta property="og:url" content="https://flynnbertsch.com/about.html">
+    <meta property="og:title" content="Über mich | .FLYNN">
+    <meta property="og:image" content="https://flynnbertsch.com/Bilder/background.png">
+    <meta property="og:locale" content="de_DE">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="Bilder/favicon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="Bilder/favicon.png">
+    <link rel="shortcut icon" href="Bilder/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ====== GLOBAL NAVIGATION ====== -->
+    <nav class="site-nav">
+        <a href="index.html" class="nav-logo">.Flynn</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#projekte">Projekte</a></li>
+            <li><a href="about.html" class="active">Über mich</a></li>
+            <li><a href="contact.html">Kontakt</a></li>
+        </ul>
+    </nav>
+
+    <!-- Frosted Glass Layer -->
+    <div class="glass-surface"></div>
+
+    <!-- ====== ABOUT PAGE ====== -->
+    <div class="page-wrapper" style="padding: 6rem 1.5rem 4rem;">
+
+        <!-- Header -->
+        <div style="max-width:900px; width:100%; margin-bottom:1.5rem; padding: 0 0.5rem;">
+            <div class="page-subtitle">Portfolio</div>
+            <h1 class="page-title">Über mich.</h1>
+        </div>
+
+        <!-- Main Card: Photo + Info -->
+        <div class="glass-card">
+            <div class="about-hero">
+
+                <!-- Profile Photo -->
+                <div class="about-photo-wrap">
+                    <!-- ABOUT_PHOTO: shows img if uploaded, placeholder otherwise -->
+                    <script>
+                        (function () {
+                            var photoSrc = typeof ABOUT_PHOTO !== 'undefined' && ABOUT_PHOTO ? ABOUT_PHOTO : null;
+                            if (photoSrc) {
+                                document.write('<img src="' + photoSrc + '" class="about-photo" alt="Flynn Bertsch" loading="lazy" decoding="async">');
+                            } else {
+                                document.write('<div class="about-photo-placeholder"><span style="font-size:2.5rem;">📷</span><span>Foto wird über<br>Admin-Tool gesetzt</span></div>');
+                            }
+                        })();
+                    </script>
+                </div>
+
+                <!-- Info -->
+                <div class="about-info">
+                    <div class="about-name"><!-- TXT:ABOUT_NAME -->Flynn Bertsch<!-- /TXT:ABOUT_NAME --></div>
+                    <div class="about-role"><!-- TXT:ABOUT_ROLE -->Creative Director &amp;
+                        Designer<!-- /TXT:ABOUT_ROLE --></div>
+
+                    <div class="about-bio"><!-- TXT:ABOUT_BIO -->Ich bin Flynn Bertsch — Fotograf, Videograf und
+                        Webdesigner aus Leonberg. Meine Arbeit verbindet visuelle Ästhetik mit modernem Design, um
+                        Geschichten zu erzählen, die im Gedächtnis bleiben.
+
+                        Ob Editorial-Fotografie, Filmproduktion oder digitale Markenpräsenzen — ich bringe Ideen zum
+                        Leben und erschaffe Projekte mit Charakter.<!-- /TXT:ABOUT_BIO --></div>
+
+                    <div class="about-skills" id="skills-wrap">
+                        <!-- Skills rendered by JS from TXT:ABOUT_SKILLS -->
+                    </div>
+
+                    <a href="contact.html" class="btn-contact">
+                        <span>Kontakt aufnehmen</span>
+                        <span>→</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SITE FOOTER ====== -->
+        <footer class="site-footer" style="width:100%; max-width:900px; margin-top:2rem;">
+            <div class="footer-glass">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <div class="footer-logo-text"><!-- TXT:FOOTER_BRAND -->.Flynn<!-- /TXT:FOOTER_BRAND --></div>
+                        <div class="footer-tagline"><!-- TXT:FOOTER_TAGLINE -->Creative · Art Director ·
+                            Designer<br>Projekte mit Vision.<!-- /TXT:FOOTER_TAGLINE --></div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <span class="footer-copy"><!-- TXT:FOOTER_COPY -->© 2026 Flynn Bertsch — Alle Rechte
+                        vorbehalten<!-- /TXT:FOOTER_COPY --></span>
+                    <div class="footer-legal-inline">
+                        <a href="#" onclick="openModal('impressum'); return false;">Impressum</a>
+                        <a href="#" onclick="openModal('datenschutz'); return false;">Datenschutzerklärung</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ====== IMPRESSUM MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-impressum" role="dialog" aria-modal="true"
+        aria-labelledby="impressum-title-a">
+        <div class="modal-backdrop" onclick="closeModal('impressum')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('impressum')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="impressum-title-a">Impressum</div>
+            <div class="modal-content-scroll">
+                <div class="modal-section">
+                    <h3>Angaben gemäß § 5 TMG</h3>
+                    <p><!-- LGL:NAME -->Flynn Bertsch<!-- /LGL:NAME --><br>
+                        <!-- LGL:ADDRESS -->Musterstraße 1<!-- /LGL:ADDRESS --><br>
+                        <!-- LGL:CITY -->71229 Leonberg<!-- /LGL:CITY --></p>
+                </div>
+                <div class="modal-section">
+                    <h3>Kontakt</h3>
+                    <p>E-Mail: <!-- LGL:EMAIL -->info@flynnbertsch.com<!-- /LGL:EMAIL --><br>
+                        Tel.: <!-- LGL:PHONE -->+49 1627219889<!-- /LGL:PHONE --></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== DATENSCHUTZ MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-datenschutz" role="dialog" aria-modal="true"
+        aria-labelledby="ds-title-a">
+        <div class="modal-backdrop" onclick="closeModal('datenschutz')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('datenschutz')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="ds-title-a">Datenschutzerklärung</div>
+            <div class="modal-content-scroll">
+                <div class="modal-section">
+                    <p>Auf dieser Seite werden keine personenbezogenen Daten durch eigene Systeme erhoben. Das Hosting
+                        erfolgt über GitHub Pages (GitHub Inc., USA). Weitere Informationen finden Sie in der
+                        Datenschutzerklärung der Hauptseite.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="about_data.js"></script>
+    <script>
+        // Render skills from TXT:ABOUT_SKILLS
+        (function () {
+            var skills = typeof ABOUT_SKILLS !== 'undefined' ? ABOUT_SKILLS : 'Fotografie,Videografie,Webdesign,Editorial,Branding';
+            var wrap = document.getElementById('skills-wrap');
+            if (wrap && skills) {
+                skills.split(',').forEach(function (s) {
+                    s = s.trim();
+                    if (s) {
+                        var tag = document.createElement('span');
+                        tag.className = 'skill-tag';
+                        tag.textContent = s;
+                        wrap.appendChild(tag);
+                    }
+                });
+            }
+        })();
+
+        function openModal(name) {
+            var el = document.getElementById('modal-' + name);
+            if (el) { el.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+        }
+        function closeModal(name) {
+            var el = document.getElementById('modal-' + name);
+            if (el) { el.classList.remove('is-open'); document.body.style.overflow = ''; }
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.legal-modal-overlay.is-open').forEach(function (m) {
+                    m.classList.remove('is-open');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+
+</html>

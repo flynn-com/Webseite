@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Kontakt | .FLYNN — Flynn Bertsch</title>
+    <meta name="description" content="Kontaktiere Flynn Bertsch — Fotograf, Videograf und Webdesigner aus Leonberg.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://flynnbertsch.com/contact.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flynnbertsch.com/contact.html">
+    <meta property="og:title" content="Kontakt | .FLYNN">
+    <meta property="og:image" content="https://flynnbertsch.com/Bilder/background.png">
+    <meta property="og:locale" content="de_DE">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="Bilder/favicon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="Bilder/favicon.png">
+    <link rel="shortcut icon" href="Bilder/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ====== GLOBAL NAVIGATION ====== -->
+    <nav class="site-nav">
+        <a href="index.html" class="nav-logo">.Flynn</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#projekte">Projekte</a></li>
+            <li><a href="about.html">Über mich</a></li>
+            <li><a href="contact.html" class="active">Kontakt</a></li>
+        </ul>
+    </nav>
+
+    <!-- Frosted Glass Layer -->
+    <div class="glass-surface"></div>
+
+    <!-- ====== CONTACT PAGE ====== -->
+    <div class="page-wrapper" style="padding: 6rem 1.5rem 4rem;">
+
+        <!-- Header -->
+        <div style="max-width:900px; width:100%; margin-bottom:1.5rem; padding: 0 0.5rem;">
+            <div class="page-subtitle">Zusammenarbeit & Anfragen</div>
+            <h1 class="page-title">Kontakt.</h1>
+        </div>
+
+        <!-- Main Contact Card -->
+        <div class="glass-card">
+            <div class="contact-grid">
+
+                <!-- Left: Contact Info -->
+                <div>
+                    <p style="opacity:0.6; font-size:0.95rem; line-height:1.7; margin-bottom:2rem;">
+                        Hast du ein Projekt im Kopf oder möchtest du einfach Hallo sagen? Schreib mir gerne — ich freue
+                        mich über jede Anfrage.
+                    </p>
+
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">✉️</div>
+                        <div>
+                            <div class="contact-info-label">E-Mail</div>
+                            <div class="contact-info-value">
+                                <a
+                                    href="mailto:<!-- LGL:EMAIL -->info@flynnbertsch.com<!-- /LGL:EMAIL -->"><!-- LGL:EMAIL -->info@flynnbertsch.com<!-- /LGL:EMAIL --></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📍</div>
+                        <div>
+                            <div class="contact-info-label">Standort</div>
+                            <div class="contact-info-value"><!-- LGL:CITY -->Leonberg<!-- /LGL:CITY -->, Deutschland
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-info-item">
+                        <div class="contact-info-icon">📞</div>
+                        <div>
+                            <div class="contact-info-label">Telefon</div>
+                            <div class="contact-info-value">
+                                <a href="tel:<!-- LGL:PHONE -->+491627219889<!-- /LGL:PHONE -->"><!-- LGL:PHONE -->+49
+                                    1627219889<!-- /LGL:PHONE --></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Contact Form -->
+                <div class="contact-form">
+                    <div id="form-wrap">
+                        <div class="form-group">
+                            <label for="c-name">Name</label>
+                            <input type="text" id="c-name" placeholder="Dein Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="c-email">E-Mail</label>
+                            <input type="email" id="c-email" placeholder="deine@email.de" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="c-subject">Betreff</label>
+                            <input type="text" id="c-subject" placeholder="Worum geht es?">
+                        </div>
+                        <div class="form-group">
+                            <label for="c-message">Nachricht</label>
+                            <textarea id="c-message" placeholder="Erzähl mir von deinem Projekt..." required></textarea>
+                        </div>
+                        <button class="btn-send" onclick="sendMail()">Nachricht senden →</button>
+                    </div>
+
+                    <div class="form-success" id="form-success">
+                        <div class="check">✅</div>
+                        <div style="font-size:1.2rem; font-weight:700; margin-bottom:0.5rem;">Nachricht geöffnet!</div>
+                        <div style="opacity:0.6; font-size:0.9rem;">Dein E-Mail-Programm hat sich geöffnet. Sende die
+                            Nachricht von dort ab.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ====== SITE FOOTER ====== -->
+        <footer class="site-footer" style="width:100%; max-width:900px; margin-top:2rem;">
+            <div class="footer-glass">
+                <div class="footer-top">
+                    <div class="footer-brand">
+                        <div class="footer-logo-text"><!-- TXT:FOOTER_BRAND -->.Flynn<!-- /TXT:FOOTER_BRAND --></div>
+                        <div class="footer-tagline"><!-- TXT:FOOTER_TAGLINE -->Creative · Art Director ·
+                            Designer<br>Projekte mit Vision.<!-- /TXT:FOOTER_TAGLINE --></div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <span class="footer-copy"><!-- TXT:FOOTER_COPY -->© 2026 Flynn Bertsch — Alle Rechte
+                        vorbehalten<!-- /TXT:FOOTER_COPY --></span>
+                    <div class="footer-legal-inline">
+                        <a href="#" onclick="openModal('impressum'); return false;">Impressum</a>
+                        <a href="#" onclick="openModal('datenschutz'); return false;">Datenschutzerklärung</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ====== IMPRESSUM MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-impressum" role="dialog" aria-modal="true"
+        aria-labelledby="impressum-title-c">
+        <div class="modal-backdrop" onclick="closeModal('impressum')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('impressum')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="impressum-title-c">Impressum</div>
+            <div class="modal-content-scroll">
+                <div class="modal-section">
+                    <h3>Angaben gemäß § 5 TMG</h3>
+                    <p><!-- LGL:NAME -->Flynn Bertsch<!-- /LGL:NAME --><br>
+                        <!-- LGL:ADDRESS -->Musterstraße 1<!-- /LGL:ADDRESS --><br>
+                        <!-- LGL:CITY -->71229 Leonberg<!-- /LGL:CITY --></p>
+                </div>
+                <div class="modal-section">
+                    <h3>Kontakt</h3>
+                    <p>E-Mail: <!-- LGL:EMAIL -->info@flynnbertsch.com<!-- /LGL:EMAIL --><br>
+                        Tel.: <!-- LGL:PHONE -->+49 1627219889<!-- /LGL:PHONE --></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== DATENSCHUTZ MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-datenschutz" role="dialog" aria-modal="true"
+        aria-labelledby="ds-title-c">
+        <div class="modal-backdrop" onclick="closeModal('datenschutz')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('datenschutz')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="ds-title-c">Datenschutzerklärung</div>
+            <div class="modal-content-scroll">
+                <div class="modal-section">
+                    <p>Auf dieser Kontaktseite werden keine personenbezogenen Daten gespeichert. Die E-Mail-Funktion
+                        öffnet dein lokales E-Mail-Programm über einen mailto-Link. Die Verarbeitung deiner Nachricht
+                        erfolgt ausschließlich über deinen E-Mail-Anbieter.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function sendMail() {
+            var name = document.getElementById('c-name').value.trim();
+            var email = document.getElementById('c-email').value.trim();
+            var subject = document.getElementById('c-subject').value.trim() || 'Anfrage über flynnbertsch.com';
+            var message = document.getElementById('c-message').value.trim();
+
+            if (!name || !email || !message) {
+                alert('Bitte fülle alle Pflichtfelder aus (Name, E-Mail, Nachricht).');
+                return;
+            }
+
+            var body = 'Name: ' + name + '\nE-Mail: ' + email + '\n\n' + message;
+            var mailto = 'mailto:info@flynnbertsch.com'
+                + '?subject=' + encodeURIComponent(subject)
+                + '&body=' + encodeURIComponent(body);
+
+            window.location.href = mailto;
+
+            document.getElementById('form-wrap').style.display = 'none';
+            document.getElementById('form-success').style.display = 'block';
+        }
+
+        function openModal(name) {
+            var el = document.getElementById('modal-' + name);
+            if (el) { el.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
+        }
+        function closeModal(name) {
+            var el = document.getElementById('modal-' + name);
+            if (el) { el.classList.remove('is-open'); document.body.style.overflow = ''; }
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.legal-modal-overlay.is-open').forEach(function (m) {
+                    m.classList.remove('is-open');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+
+</html>
