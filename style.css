@@ -1,4 +1,4 @@
-/* Editorial Frosted Glass Theme */
+﻿/* Editorial Frosted Glass Theme */
 *,
 *::before,
 *::after {
@@ -48,10 +48,47 @@ body::before {
 .landing-section {
     height: 100vh;
     height: 100dvh;
-    /* Safari iOS Fix */
     width: 100%;
     position: relative;
-    /* Keeps the logic of the first screen */
+}
+
+.about-pill-btn {
+    position: absolute;
+    top: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 1.1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 100px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s;
+    white-space: nowrap;
+    z-index: 10;
+}
+.about-pill-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+    transform: translateX(-50%) translateY(-2px);
+}
+.about-pill-arrow {
+    font-size: 0.75rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+.about-pill-btn:hover .about-pill-arrow {
+    opacity: 1;
 }
 
 /* PROJECT SCROLL SECTION */

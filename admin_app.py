@@ -34,6 +34,8 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_get_legal()
         elif self.path == '/api/get_texts':
             self.handle_get_texts()
+        elif self.path == '/api/get_about':
+            self.handle_get_about()
         else:
             super().do_GET()
 
@@ -46,6 +48,10 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_save_legal()
         elif self.path == '/api/save_texts':
             self.handle_save_texts()
+        elif self.path == '/api/save_about_photo':
+            self.handle_save_about_photo()
+        elif self.path == '/api/save_about_texts':
+            self.handle_save_about_texts()
         else:
             self.send_response(404)
             self.end_headers()
@@ -98,6 +104,106 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
             self.send_json_response({"error": error_msg}, 500)
         except Exception as e:
             self.send_json_response({"error": str(e)}, 500)
+
+    def handle_get_about(self):
+        """Read current about page data from about.html and about_data.js"""
+        import re
+        try:
+            # Read text markers from about.html
+            with open('about.html', 'r', encoding='utf-8') as f:
+                html = f.read()
+            def get_txt(key):
+                m = re.search(r'<!-- TXT:' + key + r' -->(.*?)<!-- /TXT:' + key + r' -->', html, re.DOTALL)
+                return m.group(1).strip() if m else ''
+
+            # Read skills from about_data.js
+            skills = ''
+            try:
+                with open('about_data.js', 'r', encoding='utf-8') as f:
+                    js = f.read()
+                sm = re.search(r"var ABOUT_SKILLS\s*=\s*'([^']*?)'", js)
+                if sm: skills = sm.group(1)
+            except: pass
+
+            # Read photo path from about_data.js
+            photo = ''
+            try:
+                with open('about_data.js', 'r', encoding='utf-8') as f:
+                    js = f.read()
+                pm = re.search(r"var ABOUT_PHOTO\s*=\s*'([^']*?)'", js)
+                if pm: photo = pm.group(1)
+            except: pass
+
+            self.send_json_response({
+                'name':   get_txt('ABOUT_NAME'),
+                'role':   get_txt('ABOUT_ROLE'),
+                'bio':    get_txt('ABOUT_BIO'),
+                'skills': skills,
+                'photo':  photo,
+            })
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
+    def handle_save_about_photo(self):
+        """Save base64 profile photo to assets/profile/profile.jpg and update about_data.js"""
+        import base64, os, re
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+        try:
+            data = json.loads(post_data.decode('utf-8'))
+            b64  = data.get('photo', '')
+            if not b64 or ',' not in b64:
+                raise ValueError('Invalid image data')
+            header, encoded = b64.split(',', 1)
+            img_bytes = base64.b64decode(encoded)
+            os.makedirs('assets/profile', exist_ok=True)
+            img_path = 'assets/profile/profile.jpg'
+            with open(img_path, 'wb') as f:
+                f.write(img_bytes)
+            # Update about_data.js
+            js_path = 'assets/profile/profile.jpg'
+            with open('about_data.js', 'r', encoding='utf-8') as f:
+                js = f.read()
+            js = re.sub(r"var ABOUT_PHOTO\s*=.*?;", f"var ABOUT_PHOTO  = '{js_path}';", js)
+            with open('about_data.js', 'w', encoding='utf-8') as f:
+                f.write(js)
+            self.send_json_response({'status': 'success', 'path': js_path})
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
+    def handle_save_about_texts(self):
+        """Write TXT markers for about page into about.html"""
+        import re
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+        try:
+            data = json.loads(post_data.decode('utf-8'))
+            with open('about.html', 'r', encoding='utf-8') as f:
+                html = f.read()
+            mapping = {
+                'ABOUT_NAME': data.get('name', ''),
+                'ABOUT_ROLE': data.get('role', ''),
+                'ABOUT_BIO':  data.get('bio',  ''),
+            }
+            for key, value in mapping.items():
+                if value:
+                    html = re.sub(
+                        r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
+                        f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
+                        html, flags=re.DOTALL)
+            with open('about.html', 'w', encoding='utf-8') as f:
+                f.write(html)
+            # Update skills in about_data.js
+            if 'skills' in data:
+                with open('about_data.js', 'r', encoding='utf-8') as f:
+                    js = f.read()
+                js = re.sub(r"var ABOUT_SKILLS\s*=.*?;", f"var ABOUT_SKILLS = '{data['skills'].strip()}';", js)
+                with open('about_data.js', 'w', encoding='utf-8') as f:
+                    f.write(js)
+            self.send_json_response({'status': 'success'})
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
 
     def handle_get_texts(self):
         """Read all TXT: marker values from index.html"""
