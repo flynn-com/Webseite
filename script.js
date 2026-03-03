@@ -1,4 +1,4 @@
-// Basic animation on scroll
+﻿// Basic animation on scroll
 document.addEventListener('DOMContentLoaded', () => {
 
     const projectContainer = document.querySelector('.spacer-bottom');
@@ -219,7 +219,7 @@ const createProjectHTML = (p) => {
         if (p.gallery.length > 1) {
             let slides = '';
             for (let i = 1; i < p.gallery.length; i++) {
-                slides += `<div class="carousel-item"><img src="${p.gallery[i]}" alt="Project Image"></div>`;
+                slides += `<div class="carousel-item"><img src="${p.gallery[i]}" alt="${p.title} – Galeriebild ${i}" loading="lazy" decoding="async"></div>`;
             }
 
             galleryHtml = `
@@ -256,8 +256,8 @@ const createProjectHTML = (p) => {
                     
                     <!-- LEFT COLUMN: Main Feature Image (Rounded) -->
                     <div class="col-left">
-                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="Main">` : `<div class="placeholder-box">${p.mainImageText || 'IMG'}</div>`}
-                         ${p.companyLogo ? `<img src="${p.companyLogo}" class="project-company-logo" alt="Company Logo">` : ''}
+                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="${p.title} – Hauptbild" loading="lazy" decoding="async">` : `<div class="placeholder-box">${p.mainImageText || 'IMG'}</div>`}
+                         ${p.companyLogo ? `<img src="${p.companyLogo}" class="project-company-logo" alt="${p.title} Firmenlogo" loading="lazy" decoding="async">` : ''}
                     </div>
                     
                     <!-- RIGHT COLUMN: Content -->
@@ -293,3 +293,4 @@ const createProjectHTML = (p) => {
         </article>
     </div>
 `};
+

@@ -29,11 +29,23 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Expires", "0")
         super().end_headers()
 
+    def do_GET(self):
+        if self.path == '/api/get_legal':
+            self.handle_get_legal()
+        elif self.path == '/api/get_texts':
+            self.handle_get_texts()
+        else:
+            super().do_GET()
+
     def do_POST(self):
         if self.path == '/api/save_all':
             self.handle_save()
         elif self.path == '/api/deploy':
             self.handle_deploy()
+        elif self.path == '/api/save_legal':
+            self.handle_save_legal()
+        elif self.path == '/api/save_texts':
+            self.handle_save_texts()
         else:
             self.send_response(404)
             self.end_headers()
@@ -87,9 +99,136 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_json_response({"error": str(e)}, 500)
 
+    def handle_get_texts(self):
+        """Read all TXT: marker values from index.html"""
+        import re
+        try:
+            with open('index.html', 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            txt_keys = [
+                'CORNER_TL', 'CORNER_TR', 'CORNER_BL', 'CORNER_BR',
+                'FOOTER_BRAND', 'FOOTER_TAGLINE', 'FOOTER_COPY'
+            ]
+            data = {}
+            for key in txt_keys:
+                m = re.search(
+                    r'<!-- TXT:' + key + r' -->(.*?)<!-- /TXT:' + key + r' -->',
+                    content, re.DOTALL)
+                data[key] = m.group(1).strip() if m else ''
+            self.send_json_response(data)
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
+    def handle_save_texts(self):
+        """Write TXT: marker values into index.html and single_project.html"""
+        import re
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+        try:
+            data = json.loads(post_data.decode('utf-8'))
+
+            # Keys only in index.html (landing page)
+            index_only_keys = ['CORNER_TL', 'CORNER_TR', 'CORNER_BL', 'CORNER_BR']
+            # Keys in both files (footer)
+            both_keys = ['FOOTER_BRAND', 'FOOTER_TAGLINE', 'FOOTER_COPY']
+
+            def patch_file(filename, keys):
+                with open(filename, 'r', encoding='utf-8') as f:
+                    html = f.read()
+                for key in keys:
+                    if key in data:
+                        value = data[key].strip()
+                        html = re.sub(
+                            r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
+                            f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
+                            html, flags=re.DOTALL)
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(html)
+
+            patch_file('index.html', index_only_keys + both_keys)
+            patch_file('single_project.html', both_keys)
+            self.send_json_response({'status': 'success'})
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
+
+    def handle_get_legal(self):
+        """Read current legal placeholder values from index.html"""
+        try:
+            with open('index.html', 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            import re
+            # Extract current values (defaults if still placeholders)
+            name_match  = re.search(r'<!-- LGL:NAME -->(.*?)<!-- /LGL:NAME -->', content)
+            addr_match  = re.search(r'<!-- LGL:ADDRESS -->(.*?)<!-- /LGL:ADDRESS -->', content)
+            city_match  = re.search(r'<!-- LGL:CITY -->(.*?)<!-- /LGL:CITY -->', content)
+            email_match = re.search(r'<!-- LGL:EMAIL -->(.*?)<!-- /LGL:EMAIL -->', content)
+            phone_match = re.search(r'<!-- LGL:PHONE -->(.*?)<!-- /LGL:PHONE -->', content)
+
+            data = {
+                'name':  name_match.group(1)  if name_match  else '',
+                'addr':  addr_match.group(1)  if addr_match  else '',
+                'city':  city_match.group(1)  if city_match  else '',
+                'email': email_match.group(1) if email_match else '',
+                'phone': phone_match.group(1) if phone_match else '',
+            }
+            self.send_json_response(data)
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
+    def handle_save_legal(self):
+        """Write legal data into index.html and single_project.html"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+        try:
+            import re
+            data = json.loads(post_data.decode('utf-8'))
+            name  = data.get('name',  '').strip()
+            addr  = data.get('addr',  '').strip()
+            city  = data.get('city',  '').strip()
+            email = data.get('email', '').strip()
+            phone = data.get('phone', '').strip()
+
+            def patch_file(filename):
+                with open(filename, 'r', encoding='utf-8') as f:
+                    html = f.read()
+
+                html = re.sub(
+                    r'<!-- LGL:NAME -->.*?<!-- /LGL:NAME -->',
+                    f'<!-- LGL:NAME -->{name}<!-- /LGL:NAME -->',
+                    html, flags=re.DOTALL)
+                html = re.sub(
+                    r'<!-- LGL:ADDRESS -->.*?<!-- /LGL:ADDRESS -->',
+                    f'<!-- LGL:ADDRESS -->{addr}<!-- /LGL:ADDRESS -->',
+                    html, flags=re.DOTALL)
+                html = re.sub(
+                    r'<!-- LGL:CITY -->.*?<!-- /LGL:CITY -->',
+                    f'<!-- LGL:CITY -->{city}<!-- /LGL:CITY -->',
+                    html, flags=re.DOTALL)
+                html = re.sub(
+                    r'<!-- LGL:EMAIL -->.*?<!-- /LGL:EMAIL -->',
+                    f'<!-- LGL:EMAIL -->{email}<!-- /LGL:EMAIL -->',
+                    html, flags=re.DOTALL)
+                html = re.sub(
+                    r'<!-- LGL:PHONE -->.*?<!-- /LGL:PHONE -->',
+                    f'<!-- LGL:PHONE -->{phone}<!-- /LGL:PHONE -->',
+                    html, flags=re.DOTALL)
+
+                with open(filename, 'w', encoding='utf-8') as f:
+                    f.write(html)
+
+            patch_file('index.html')
+            patch_file('single_project.html')
+            self.send_json_response({'status': 'success'})
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
     def send_json_response(self, data, status=200):
         self.send_response(status)
         self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
         self.end_headers()
         self.wfile.write(json.dumps(data).encode('utf-8'))
 

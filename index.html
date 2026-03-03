@@ -3,17 +3,91 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>.FLYNN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
+    <!-- ===== SEO META TAGS ===== -->
+    <title>.FLYNN — Design, Foto & Web | Flynn Bertsch</title>
+    <meta name="description"
+        content="Flynn Bertsch – kreative Projekte aus den Bereichen Fotografie, Videografie und Webdesign. Portfolio mit abgeschlossenen und laufenden Projekten aus Leonberg.">
+    <meta name="keywords"
+        content="Flynn Bertsch, Fotografie, Videografie, Webdesign, Portfolio, Leonberg, Design, Kreativ">
+    <meta name="author" content="Flynn Bertsch">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="de">
+    <link rel="canonical" href="https://flynnbertsch.com/">
+
+    <!-- ===== OPEN GRAPH (Facebook, WhatsApp, LinkedIn) ===== -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://flynnbertsch.com/">
+    <meta property="og:title" content=".FLYNN — Design, Foto & Web">
+    <meta property="og:description"
+        content="Kreativprojekte aus Fotografie, Videografie und Webdesign. Portfolio von Flynn Bertsch aus Leonberg.">
+    <meta property="og:image" content="https://flynnbertsch.com/Bilder/background.png">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:site_name" content=".FLYNN">
+
+    <!-- ===== TWITTER CARD ===== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content=".FLYNN — Design, Foto & Web">
+    <meta name="twitter:description"
+        content="Portfolio von Flynn Bertsch – Fotografie, Videografie, Webdesign aus Leonberg.">
+    <meta name="twitter:image" content="https://flynnbertsch.com/Bilder/background.png">
+
+    <!-- ===== APPLE / iOS ===== -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content=".FLYNN">
+    <link rel="apple-touch-icon" href="Bilder/favicon.png">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/png" sizes="512x512" href="Bilder/favicon.png">
+    <link rel="shortcut icon" href="Bilder/favicon.png">
+
+    <!-- ===== JSON-LD STRUCTURED DATA ===== -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Flynn Bertsch",
+        "url": "https://flynnbertsch.com",
+        "jobTitle": "Fotograf, Videograf & Webdesigner",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Jahnstraße 19",
+            "addressLocality": "Leonberg",
+            "postalCode": "71229",
+            "addressCountry": "DE"
+        },
+        "email": "flynn@bertsch-web.de",
+        "telephone": "+4916272198891",
+        "sameAs": []
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": ".FLYNN",
+        "url": "https://flynnbertsch.com",
+        "description": "Portfolio von Flynn Bertsch – Fotografie, Videografie und Webdesign.",
+        "inLanguage": "de-DE"
+    }
+    </script>
+
+    <!-- ===== FONTS: Inter + Playfair Display via Google Fonts ===== -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="style.css?v=10">
+    <!-- ===== PRELOAD CRITICAL ASSETS ===== -->
+    <link rel="preload" href="Bilder/background.png" as="image">
+
+    <link rel="stylesheet" href="style.css?v=11">
 </head>
+
 
 <body>
 
@@ -26,30 +100,28 @@
 
         <!-- Top Left -->
         <div class="corner-tl meta-text">
-            Project<br>Becoming
+            <!-- TXT:CORNER_TL -->Project<br>Becoming<!-- /TXT:CORNER_TL -->
         </div>
 
         <!-- Top Right -->
         <div class="corner-tr meta-text">
-            Since<br>2026
+            <!-- TXT:CORNER_TR -->Since<br>2000<!-- /TXT:CORNER_TR -->
         </div>
 
         <!-- Center Logo -->
         <div class="center-stage">
-            <!-- Added 'invert' class assuming the source logo is black-on-transparent. 
-                 Remove 'invert' in CSS if logo is already white. -->
             <img src="Bilder/logo.png" alt=".FLYNN Logo" class="main-logo invert">
             <div class="scrolling-text meta-text" style="top: auto; bottom: -50px;">SCROLL TO EXPLORE</div>
         </div>
 
         <!-- Bottom Left -->
         <div class="corner-bl meta-text">
-            Design<br>Collection
+            <!-- TXT:CORNER_BL -->Design<br>Collection<!-- /TXT:CORNER_BL -->
         </div>
 
         <!-- Bottom Right -->
         <div class="corner-br meta-text">
-            The Time<br>Is Coming
+            <!-- TXT:CORNER_BR -->The Time<br>Is Coming<!-- /TXT:CORNER_BR -->
         </div>
 
     </main>
@@ -58,13 +130,183 @@
     <!-- Projects will be inserted here by script.js -->
 
     <!-- Section Title -->
-    <div class="project-section-title">PROJEKTE</div>
+    <h2 class="project-section-title">PROJEKTE</h2>
 
-    <div class="spacer-bottom" style="height: 50vh;"></div> <!-- Spacer at bottom -->
+    <div class="spacer-bottom" style="height: 20vh;"></div> <!-- Spacer at bottom -->
+
+    <!-- ====== SITE FOOTER ====== -->
+    <footer class="site-footer">
+        <div class="footer-glass">
+            <div class="footer-top">
+                <!-- Brand -->
+                <div class="footer-brand">
+                    <div class="footer-logo-text"><!-- TXT:FOOTER_BRAND -->.Flynn<!-- /TXT:FOOTER_BRAND --></div>
+                    <div class="footer-tagline"><!-- TXT:FOOTER_TAGLINE -->Creative · Art Director · Designer<br>Projekte mit Vision.<!-- /TXT:FOOTER_TAGLINE --></div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="footer-bottom">
+                <span class="footer-copy"><!-- TXT:FOOTER_COPY -->© 2026 Flynn Bertsch — Alle Rechte                    vorbehalten<!-- /TXT:FOOTER_COPY --></span>
+                <div class="footer-legal-inline">
+                    <a href="#" onclick="openModal('impressum'); return false;">Impressum</a>
+                    <a href="#" onclick="openModal('datenschutz'); return false;">Datenschutzerklärung</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ====== IMPRESSUM MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-impressum" role="dialog" aria-modal="true"
+        aria-labelledby="impressum-title">
+        <div class="modal-backdrop" onclick="closeModal('impressum')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('impressum')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="impressum-title">Impressum</div>
+            <div class="modal-subtitle">Angaben gemäß § 5 TMG</div>
+
+            <div class="modal-section">
+                <h3>Verantwortlich</h3>
+                <p>
+                    <!-- LGL:NAME -->Flynn Bertsch<!-- /LGL:NAME --><br>
+                    <!-- LGL:ADDRESS -->Jahnstraße 19<!-- /LGL:ADDRESS --><br>
+                    <!-- LGL:CITY -->71229 Leonberg<!-- /LGL:CITY --><br>
+                    Deutschland
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Kontakt</h3>
+                <p>
+                    E-Mail: <a
+                        href="mailto:<!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL -->"><!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL --></a><br>
+                    Telefon: <!-- LGL:PHONE -->+49 1627219889<!-- /LGL:PHONE -->
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Haftungsausschluss</h3>
+                <p>Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit
+                    und Aktualität der Inhalte übernehmen wir keine Gewähr. Als Privatperson bin ich gemäß § 7 Abs. 1
+                    TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Urheberrecht</h3>
+                <p>Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem
+                    deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung
+                    außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors
+                    bzw. Erstellers.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Streitschlichtung</h3>
+                <p>Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+                    <a href="https://ec.europa.eu/consumers/odr" target="_blank"
+                        rel="noopener noreferrer">https://ec.europa.eu/consumers/odr</a>.<br>
+                    Meine E-Mail-Adresse finden Sie oben im Impressum.
+                </p>
+                <p style="margin-top: 0.5rem;">Ich bin nicht bereit oder verpflichtet, an Streitbeilegungsverfahren
+                    vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== DATENSCHUTZ MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-datenschutz" role="dialog" aria-modal="true"
+        aria-labelledby="datenschutz-title">
+        <div class="modal-backdrop" onclick="closeModal('datenschutz')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('datenschutz')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="datenschutz-title">Datenschutzerklärung</div>
+            <div class="modal-subtitle">Gemäß DSGVO / GDPR</div>
+
+            <div class="modal-section">
+                <h3>Verantwortlicher</h3>
+                <p><!-- LGL:NAME -->Flynn Bertsch<!-- /LGL:NAME -->,
+                    <!-- LGL:ADDRESS -->Jahnstraße 19<!-- /LGL:ADDRESS -->, <!-- LGL:CITY -->71229
+                    Leonberg<!-- /LGL:CITY --> — <a
+                        href="mailto:<!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL -->"><!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL --></a>
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Datenerfassung auf dieser Website</h3>
+                <p>Diese Website erhebt und verarbeitet keine personenbezogenen Daten durch eigene Systeme.
+                    Es werden keine Analyse-Tools, Tracking-Cookies oder Werbedienste eingesetzt.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Hosting durch GitHub Pages</h3>
+                <p>Diese Website wird auf Servern von GitHub Inc. (88 Colin P Kelly Jr St, San Francisco, CA 94107, USA)
+                    gehostet. Beim Besuch können Verbindungsdaten (IP-Adresse, Zeitpunkt, Browser) in Server-Logs
+                    gespeichert werden. Speicherdauer: ca. 14 Tage. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO
+                    (berechtigtes Interesse am sicheren Betrieb der Website). Weitere Informationen:
+                    <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement"
+                        target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>.
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Google Fonts (Playfair Display)</h3>
+                <p>Diese Website lädt die Schriftart <em>Playfair Display</em> von Servern von Google LLC (1600
+                    Amphitheatre Parkway, Mountain View, CA 94043, USA). Dabei kann Ihre IP-Adresse an Google
+                    übertragen werden. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO. Weitere Informationen:
+                    <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google
+                        Datenschutzerklärung</a>.<br>
+                    <em>Hinweis:</em> Die Schriftart Inter wird lokal gehostet und erzeugt keinen Datentransfer
+                    an Google.
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Cookies</h3>
+                <p>Diese Website verwendet keine Cookies.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Ihre Rechte</h3>
+                <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer
+                    gespeicherten Daten sowie das Recht auf Datenübertragbarkeit. Wenden Sie sich hierzu an die oben
+                    genannte Kontaktadresse.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Beschwerderecht</h3>
+                <p>Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, wenn Sie der Ansicht
+                    sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt.</p>
+            </div>
+        </div>
+    </div>
 
     <script src="data.js?v=6"></script>
     <script src="db.js?v=6"></script>
     <script src="script.js?v=6"></script>
+    <script>
+        function openModal(name) {
+            const el = document.getElementById('modal-' + name);
+            if (el) {
+                el.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeModal(name) {
+            const el = document.getElementById('modal-' + name);
+            if (el) {
+                el.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+        }
+        // Close modals with Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.legal-modal-overlay.is-open').forEach(function (m) {
+                    m.classList.remove('is-open');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
 </body>
 
 </html>

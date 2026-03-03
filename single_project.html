@@ -3,10 +3,48 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Details | .FLYNN</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Projekt | .FLYNN — Flynn Bertsch</title>
+    <meta name="description"
+        content="Detailseite eines Projekts von Flynn Bertsch — Fotografie, Videografie und Webdesign aus Leonberg.">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Flynn Bertsch">
+    <link rel="canonical" href="https://flynnbertsch.com/single_project.html">
+
+    <!-- ===== OPEN GRAPH ===== -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://flynnbertsch.com/single_project.html">
+    <meta property="og:title" content="Projekt | .FLYNN">
+    <meta property="og:description" content="Projektdetails von Flynn Bertsch — Fotografie, Videografie und Webdesign.">
+    <meta property="og:image" content="https://flynnbertsch.com/Bilder/background.png">
+    <meta property="og:locale" content="de_DE">
+    <meta property="og:site_name" content=".FLYNN">
+
+    <!-- ===== APPLE / iOS ===== -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content=".FLYNN">
+    <link rel="apple-touch-icon" href="Bilder/favicon.png">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/png" sizes="512x512" href="Bilder/favicon.png">
+    <link rel="shortcut icon" href="Bilder/favicon.png">
+
+    <!-- ===== FONTS: Inter + Playfair Display via Google Fonts ===== -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- ===== PRELOAD CRITICAL ASSETS ===== -->
+    <link rel="preload" href="Bilder/background.png" as="image">
+
     <link rel="stylesheet" href="style.css">
+
     <style>
         /* Specific Detail Page Overrides */
         body {
@@ -281,6 +319,150 @@
                     </div>`;
             }
         })();
+    </script>
+
+    <!-- ====== SITE FOOTER ====== -->
+    <footer class="site-footer">
+        <div class="footer-glass">
+            <div class="footer-top">
+                <!-- Brand -->
+                <div class="footer-brand">
+                    <div class="footer-logo-text"><!-- TXT:FOOTER_BRAND -->.Flynn<!-- /TXT:FOOTER_BRAND --></div>
+                    <div class="footer-tagline"><!-- TXT:FOOTER_TAGLINE -->Creative · Art Director · Designer<br>Projekte mit Vision.<!-- /TXT:FOOTER_TAGLINE --></div>
+                </div>
+            </div>
+
+            <!-- Bottom Bar -->
+            <div class="footer-bottom">
+                <span class="footer-copy"><!-- TXT:FOOTER_COPY -->© 2026 Flynn Bertsch — Alle Rechte                    vorbehalten<!-- /TXT:FOOTER_COPY --></span>
+                <div class="footer-legal-inline">
+                    <a href="#" onclick="openModal('impressum'); return false;">Impressum</a>
+                    <a href="#" onclick="openModal('datenschutz'); return false;">Datenschutzerklärung</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ====== IMPRESSUM MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-impressum" role="dialog" aria-modal="true"
+        aria-labelledby="impressum-title">
+        <div class="modal-backdrop" onclick="closeModal('impressum')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('impressum')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="impressum-title">Impressum</div>
+            <div class="modal-subtitle">Angaben gemäß § 5 TMG</div>
+
+            <div class="modal-section">
+                <h3>Verantwortlich</h3>
+                <p>
+                    <!-- LGL:NAME -->Flynn Bertsch<!-- /LGL:NAME --><br>
+                    <!-- LGL:ADDRESS -->Jahnstraße 19<!-- /LGL:ADDRESS --><br>
+                    <!-- LGL:CITY -->71229 Leonberg<!-- /LGL:CITY --><br>
+                    Deutschland
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Kontakt</h3>
+                <p>
+                    E-Mail: <a
+                        href="mailto:<!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL -->"><!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL --></a><br>
+                    Telefon: <!-- LGL:PHONE -->+49 1627219889<!-- /LGL:PHONE -->
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Haftungsausschluss</h3>
+                <p>Die Inhalte dieser Seite wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit
+                    und Aktualität der Inhalte übernehmen wir keine Gewähr.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Urheberrecht</h3>
+                <p>Die durch den Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem
+                    deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung
+                    außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors
+                    bzw. Erstellers.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== DATENSCHUTZ MODAL ====== -->
+    <div class="legal-modal-overlay" id="modal-datenschutz" role="dialog" aria-modal="true"
+        aria-labelledby="datenschutz-title">
+        <div class="modal-backdrop" onclick="closeModal('datenschutz')"></div>
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('datenschutz')" aria-label="Schließen">✕</button>
+            <div class="modal-title" id="datenschutz-title">Datenschutzerklärung</div>
+            <div class="modal-subtitle">Gemäß DSGVO / GDPR</div>
+
+            <div class="modal-section">
+                <h3>Verantwortlicher</h3>
+                <p><!-- LGL:NAME -->Flynn Bertsch<!-- /LGL:NAME -->,
+                    <!-- LGL:ADDRESS -->Jahnstraße 19<!-- /LGL:ADDRESS -->, <!-- LGL:CITY -->71229
+                    Leonberg<!-- /LGL:CITY --> — <a
+                        href="mailto:<!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL -->"><!-- LGL:EMAIL -->flynn@bertsch-web.de<!-- /LGL:EMAIL --></a>
+                </p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Datenerfassung auf dieser Website</h3>
+                <p>Diese Website wird statisch über GitHub Pages gehostet. Es werden keine personenbezogenen Daten durch
+                    uns aktiv gesammelt oder verarbeitet. GitHub kann im Rahmen des Hostings Server-Logs speichern.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Hosting durch GitHub Pages</h3>
+                <p>Diese Website wird auf Servern von GitHub Inc. (88 Colin P Kelly Jr St, San Francisco, CA 94107, USA)
+                    gehostet. Beim Besuch dieser Website können Verbindungsdaten (wie IP-Adresse, Zeitpunkt des
+                    Zugriffs) an GitHub-Server übermittelt werden. Weitere Informationen: <a
+                        href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement"
+                        target="_blank" rel="noopener">GitHub Privacy Statement</a>.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Cookies</h3>
+                <p>Diese Website verwendet keine Cookies.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Ihre Rechte</h3>
+                <p>Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer
+                    gespeicherten Daten sowie das Recht auf Datenübertragbarkeit. Wenden Sie sich hierzu an die oben
+                    genannte Kontaktadresse.</p>
+            </div>
+
+            <div class="modal-section">
+                <h3>Beschwerderecht</h3>
+                <p>Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren, wenn Sie der Ansicht
+                    sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verstößt.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal(name) {
+            const el = document.getElementById('modal-' + name);
+            if (el) {
+                el.classList.add('is-open');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+        function closeModal(name) {
+            const el = document.getElementById('modal-' + name);
+            if (el) {
+                el.classList.remove('is-open');
+                document.body.style.overflow = '';
+            }
+        }
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.legal-modal-overlay.is-open').forEach(function (m) {
+                    m.classList.remove('is-open');
+                });
+                document.body.style.overflow = '';
+            }
+        });
     </script>
 </body>
 
