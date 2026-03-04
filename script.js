@@ -90,15 +90,18 @@ function attachObservers() {
                 const currentMargin = minMargin + (maxMargin - minMargin) * progress;
                 wrapper.style.marginBottom = `${currentMargin}px`;
             }
-
-            // Height: 80px -> 80vh
-            const minHeight = 80; // px
-            // On mobile viewports we need giving the card more height so content isn't clipped
             const isMobile = window.innerWidth <= 768;
-            // Provide at least 550px of height on mobile, but don't stretch excessively long
-            const maxHeight = isMobile ? Math.max(currentViewportHeight * 0.85, 550) : currentViewportHeight * 0.8;
+
+            // Height animation — always numeric for smooth transitions
+            const minHeight = 80;
+            const maxHeight = isMobile
+                ? Math.max(currentViewportHeight * 0.75, 480)
+                : currentViewportHeight * 0.8;
             const currentHeight = minHeight + (maxHeight - minHeight) * progress;
             card.style.height = `${currentHeight}px`;
+
+            // Allow content to overflow when fully open on mobile (no clipping)
+            card.style.overflow = (isMobile && progress >= 0.98) ? 'visible' : 'hidden';
 
             // Width: 90vw (always constant now per request)
             card.style.width = '90vw';
@@ -286,6 +289,13 @@ const createProjectHTML = (p) => {
                         
                         <div class="v2-secondary-area">
                              ${galleryHtml}
+                             <a href="single_project.html?id=${p.id}" class="btn-view-project btn-view-mobile">
+                                 VIEW 
+                                 <svg class="view-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                                     <line x1="10" y1="12" x2="22" y2="12"></line>
+                                     <polyline points="16 6 22 12 16 18"></polyline>
+                                 </svg>
+                             </a>
                         </div>
                     </div>
                 </div>

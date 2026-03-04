@@ -1,25 +1,26 @@
 // Initial Project Data
 const initialProjects = [
     {
-        "id": 1772570984643,
+        "id": 1772658855936,
         "number": "01",
         "title": "W123 230E",
         "bigNumber": "01",
-        "headerDetails": "Die 80er Jahre",
-        "shortDescription": "Die 80er Jahre bei Mercedes. Der W123 230E",
+        "headerDetails": "Mercedes",
+        "shortDescription": "Mercedes in seinen 80er Jahren.",
         "description": "",
         "youtube": "",
         "hasPhoto": true,
-        "hasVideo": true,
+        "hasVideo": false,
         "hasDesign": false,
         "companyLogo": null,
         "gallery": [
-            "assets/projects/img_ec478df3.avif",
-            "assets/projects/img_683a8440.avif",
-            "assets/projects/img_4da8b909.avif",
-            "assets/projects/img_abc6acd7.avif",
-            "assets/projects/img_8b500e47.avif",
-            "assets/projects/img_b3c8a6ea.avif"
+            "assets/projects/img_ab9c7775.jpg",
+            "assets/projects/img_2da4cb07.jpg",
+            "assets/projects/img_d13e58f4.jpg",
+            "assets/projects/img_14e9f468.jpg",
+            "assets/projects/img_5e37123d.jpg",
+            "assets/projects/img_4ac708ec.jpg",
+            "assets/projects/img_6e5347ed.jpg"
         ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"

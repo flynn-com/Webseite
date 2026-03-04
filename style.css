@@ -624,7 +624,11 @@ body::before {
 
 .btn-view-project:hover .view-arrow {
     transform: translateX(4px);
-    /* Arrow slides right slightly on hover */
+}
+
+/* Mobile-only VIEW button — hidden by default on desktop */
+.btn-view-mobile {
+    display: none;
 }
 
 /* Placeholder box */
@@ -913,19 +917,65 @@ body::before {
     }
 
     /* 3. PROJECT CARD ADAPTATIONS */
-    /* Stack content vertically */
     .card-grid-v2 {
-        grid-template-columns: 1fr;
-        /* Single column */
-        grid-template-rows: auto 1fr;
-        /* Image top, content bottom */
+        display: flex;
+        flex-direction: column;
         gap: 1rem;
     }
 
+    /* Dissolve col-right so its children participate in the flex column */
+    .col-right {
+        display: contents;
+    }
+
+    /* 1. Nummer → ganz oben */
+    .v2-header {
+        order: 1;
+    }
+
+    /* 2. Bild → nach der Nummer */
     .col-left {
+        order: 2;
         height: 220px;
-        /* Fixed height for image on mobile/iPad portrait */
         border-radius: 20px;
+    }
+
+    /* 3. Titel → nach dem Bild */
+    .title-row-v2 {
+        order: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        flex-shrink: 0;
+    }
+
+    /* 4. Beschreibung */
+    .v2-desc {
+        order: 4;
+    }
+
+    /* 5. VIEW-Button */
+    .v2-secondary-area {
+        order: 5;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    /* Hide the desktop VIEW button in title row */
+    .title-row-v2 .btn-view-project {
+        display: none;
+    }
+
+    /* Show the mobile VIEW button inside secondary area */
+    .btn-view-mobile {
+        display: inline-flex !important;
+        height: 2.8rem;
+        font-size: 1.1rem;
+        padding: 0 20px;
+        align-self: flex-start;
+        margin-top: 0.25rem;
     }
 
     .project-company-logo {
@@ -935,32 +985,14 @@ body::before {
         left: 1.5rem;
     }
 
-    .title-row-v2 {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0;
-        flex-shrink: 0;
-    }
-
-    .btn-view-project {
-        height: 2.8rem;
-        font-size: 1.1rem;
-        padding: 0 20px;
-        margin-top: 0.5rem;
-        flex-shrink: 0;
-        align-self: flex-start;
-    }
-
     .v2-title {
-        font-size: 2.2rem;
-        /* Smaller title */
+        font-size: 3rem;
         margin-bottom: 0;
         flex-shrink: 0;
     }
 
     .v2-number {
-        font-size: 3rem;
+        font-size: 5rem;
         -webkit-text-stroke: 1px #ffffff;
     }
 
@@ -1148,9 +1180,13 @@ body::before {
     inset: 0;
     z-index: 9000;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    /* Start from top so modal can grow downward */
     justify-content: center;
     padding: 2rem;
+    overflow-y: auto;
+    /* Overlay itself scrolls on mobile */
+    -webkit-overflow-scrolling: touch;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
@@ -1173,7 +1209,7 @@ body::before {
 .modal-box {
     position: relative;
     z-index: 10;
-    background: rgba(20, 20, 30, 0.85);
+    background: rgba(20, 20, 30, 0.92);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -1181,11 +1217,15 @@ body::before {
     padding: 3rem;
     max-width: 720px;
     width: 100%;
-    max-height: 80vh;
+    max-height: 90dvh;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
     transform: translateY(20px) scale(0.98);
     transition: transform 0.3s ease;
+    margin: auto 0;
+    /* Center vertically when enough space */
+    flex-shrink: 0;
 }
 
 .legal-modal-overlay.is-open .modal-box {
@@ -1310,10 +1350,19 @@ body::before {
         gap: 0.75rem;
     }
 
+    /* Modal on mobile: compact padding, full scrollability */
+    .legal-modal-overlay {
+        padding: 1rem;
+        align-items: flex-start;
+    }
+
     .modal-box {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1.25rem;
         border-radius: 20px;
-        max-height: 85vh;
+        max-height: none;
+        /* Let overlay handle scroll */
+        overflow-y: visible;
+        margin: 0;
     }
 
     .modal-title {
@@ -1426,6 +1475,30 @@ body::before {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: 800;
+    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    transition: background 0.2s ease, transform 0.2s ease;
+    width: fit-content;
+    align-self: flex-start;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-5px);
 }
 
 .glass-card {
