@@ -254,6 +254,8 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
 
             patch_file('index.html', index_only_keys + both_keys)
             patch_file('single_project.html', both_keys)
+            patch_file('about.html', both_keys)
+            patch_file('contact.html', both_keys)
             self.send_json_response({'status': 'success'})
         except Exception as e:
             self.send_json_response({'error': str(e)}, 500)
@@ -327,6 +329,8 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
 
             patch_file('index.html')
             patch_file('single_project.html')
+            patch_file('about.html')
+            patch_file('contact.html')
             self.send_json_response({'status': 'success'})
         except Exception as e:
             self.send_json_response({'error': str(e)}, 500)

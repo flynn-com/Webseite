@@ -52,11 +52,17 @@ body::before {
     position: relative;
 }
 
-.about-pill-btn {
+.nav-pill-group {
     position: absolute;
     top: 1.6rem;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    gap: 0.6rem;
+    z-index: 10;
+}
+
+.about-pill-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
@@ -74,21 +80,25 @@ body::before {
     -webkit-backdrop-filter: blur(12px);
     transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s;
     white-space: nowrap;
-    z-index: 10;
 }
+
 .about-pill-btn:hover {
     background: rgba(255, 255, 255, 0.18);
     border-color: rgba(255, 255, 255, 0.5);
     color: #fff;
-    transform: translateX(-50%) translateY(-2px);
+    transform: translateY(-2px);
 }
-.about-pill-arrow {
-    font-size: 0.75rem;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+
+.contact-pill-btn {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.9);
 }
-.about-pill-btn:hover .about-pill-arrow {
-    opacity: 1;
+
+.contact-pill-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #fff;
 }
 
 /* PROJECT SCROLL SECTION */
@@ -1426,7 +1436,6 @@ body::before {
     border-radius: 28px;
     padding: 2.5rem 3rem;
     width: 100%;
-    max-width: 900px;
     margin: 0 auto 2rem auto;
 }
 

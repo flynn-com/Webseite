@@ -55,7 +55,7 @@
         }
 
         .detail-container {
-            max-width: 1400px;
+            width: 100%;
             margin: 0 auto;
             padding: 4rem 2rem;
             position: relative;
@@ -63,6 +63,7 @@
             display: flex;
             flex-direction: column;
             gap: 4rem;
+            box-sizing: border-box;
         }
 
         /* Glass Card for Content */
@@ -94,7 +95,6 @@
             transition: all 0.2s ease;
             width: fit-content;
             margin-bottom: -2rem;
-            /* Pull closer to content */
             z-index: 30;
         }
 
@@ -164,17 +164,22 @@
         }
 
         .detail-gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 2rem;
             margin-bottom: 2rem;
         }
 
+        .gallery-img-wrap {
+            flex: 0 0 auto;
+            /* width set dynamically by JS */
+        }
+
         .gallery-img {
             width: 100%;
-            height: 400px;
-            /* Fixed height for uniform masonry look */
-            object-fit: cover;
+            height: auto;
+            display: block;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease;
@@ -187,7 +192,6 @@
         .video-container {
             position: relative;
             padding-bottom: 56.25%;
-            /* 16:9 */
             height: 0;
             overflow: hidden;
             border-radius: 16px;
@@ -206,25 +210,62 @@
         }
 
         @media (max-width: 768px) {
+            .detail-container {
+                padding: 2rem 1rem;
+                gap: 2rem;
+            }
+
             .glass-card {
-                padding: 2rem;
+                padding: 1.5rem;
                 border-radius: 20px;
             }
 
+            .back-btn {
+                font-size: 0.9rem;
+                padding: 0.7rem 1.2rem;
+            }
+
             .detail-title {
-                font-size: 3rem;
+                font-size: 2.2rem;
             }
 
             .detail-number {
-                font-size: 6rem;
+                font-size: 5rem;
                 top: 0;
             }
 
+            .detail-desc {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .detail-gallery {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
             .gallery-img {
-                height: 250px;
+                height: auto;
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .detail-container {
+                padding: 1.5rem 0.75rem;
+            }
+
+            .glass-card {
+                padding: 1.25rem;
+                border-radius: 16px;
             }
         }
     </style>
+
 </head>
 
 <body>
@@ -265,14 +306,16 @@
 
             if (p) {
                 // Gallery
-                let galleryHtml = '';
+                const galleryItems = [];
                 if (p.gallery && p.gallery.length > 0) {
-                    p.gallery.forEach(img => {
-                        galleryHtml += `<img src="${img}" class="gallery-img" alt="Gallery Image">`;
-                    });
+                    p.gallery.forEach(img => galleryItems.push(img));
                 } else if (p.image) {
-                    galleryHtml += `<img src="${p.image}" class="gallery-img" alt="Project Image">`;
+                    galleryItems.push(p.image);
                 }
+
+                let galleryHtml = galleryItems.map(img =>
+                    `<div class="gallery-img-wrap"><img src="${img}" class="gallery-img" alt="Gallery Image" loading="lazy"></div>`
+                ).join('');
 
                 // Video
                 let videoHtml = '';
@@ -311,6 +354,40 @@
                     </div>
                 `;
                 document.title = `${p.title} | .FLYNN`;
+
+                // Symmetric gallery layout
+                function layoutGallery() {
+                    const gallery = document.querySelector('.detail-gallery');
+                    if (!gallery) return;
+                    const wraps = gallery.querySelectorAll('.gallery-img-wrap');
+                    const count = wraps.length;
+                    if (count === 0) return;
+
+                    // Determine optimal column count
+                    let cols;
+                    if (count === 1) cols = 1;
+                    else if (count === 2) cols = 2;
+                    else if (count === 3) cols = 3;
+                    else if (count === 4) cols = 2;
+                    else if (count <= 6) cols = 3;
+                    else if (count <= 8) cols = 4;
+                    else if (count === 9) cols = 3;
+                    else cols = 4;
+
+                    // On small screens max 1-2 cols
+                    const w = gallery.offsetWidth;
+                    if (w < 500) cols = Math.min(cols, 1);
+                    else if (w < 800) cols = Math.min(cols, 2);
+
+                    const gap = 32; // 2rem in px (approx)
+                    const itemW = (w - gap * (cols - 1)) / cols;
+                    wraps.forEach(wrap => {
+                        wrap.style.width = itemW + 'px';
+                    });
+                }
+
+                layoutGallery();
+                window.addEventListener('resize', layoutGallery);
             } else {
                 content.innerHTML = `
                     <div style="text-align: center; padding: 10rem 0;">
