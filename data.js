@@ -12,19 +12,19 @@ const initialProjects = [
         "hasPhoto": true,
         "hasVideo": false,
         "hasDesign": false,
-        "companyLogo": "assets/projects/img_fccc4fd6.png",
+        "companyLogo": "assets/projects/img_fccc4fd6.webp",
         "gallery": [
-            "assets/projects/img_7b075ab9.jpg",
-            "assets/projects/img_df698a4e.jpg",
-            "assets/projects/img_062f41f6.jpg",
-            "assets/projects/img_2744ba03.jpg",
-            "assets/projects/img_3462a1ec.jpg",
-            "assets/projects/img_9d679931.jpg",
-            "assets/projects/img_23d52a9f.jpg",
-            "assets/projects/img_04f5c653.jpg",
-            "assets/projects/img_c3173fc5.jpg",
-            "assets/projects/img_fccc5910.jpg",
-            "assets/projects/img_e8c8fb22.jpg"
+            "assets/projects/img_7b075ab9.webp",
+            "assets/projects/img_df698a4e.webp",
+            "assets/projects/img_062f41f6.webp",
+            "assets/projects/img_2744ba03.webp",
+            "assets/projects/img_3462a1ec.webp",
+            "assets/projects/img_9d679931.webp",
+            "assets/projects/img_23d52a9f.webp",
+            "assets/projects/img_04f5c653.webp",
+            "assets/projects/img_c3173fc5.webp",
+            "assets/projects/img_fccc5910.webp",
+            "assets/projects/img_e8c8fb22.webp"
         ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"
@@ -43,10 +43,10 @@ const initialProjects = [
         "hasDesign": true,
         "companyLogo": null,
         "gallery": [
-            "assets/projects/img_2d9ae60b.png",
-            "assets/projects/img_9ecd94b0.png",
-            "assets/projects/img_de3cacc6.png",
-            "assets/projects/img_715fe8bc.png"
+            "assets/projects/img_2d9ae60b.webp",
+            "assets/projects/img_9ecd94b0.webp",
+            "assets/projects/img_de3cacc6.webp",
+            "assets/projects/img_715fe8bc.webp"
         ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"
@@ -65,13 +65,13 @@ const initialProjects = [
         "hasDesign": false,
         "companyLogo": null,
         "gallery": [
-            "assets/projects/img_ab9c7775.jpg",
-            "assets/projects/img_2da4cb07.jpg",
-            "assets/projects/img_d13e58f4.jpg",
-            "assets/projects/img_14e9f468.jpg",
-            "assets/projects/img_5e37123d.jpg",
-            "assets/projects/img_4ac708ec.jpg",
-            "assets/projects/img_6e5347ed.jpg"
+            "assets/projects/img_ab9c7775.webp",
+            "assets/projects/img_2da4cb07.webp",
+            "assets/projects/img_d13e58f4.webp",
+            "assets/projects/img_14e9f468.webp",
+            "assets/projects/img_5e37123d.webp",
+            "assets/projects/img_4ac708ec.webp",
+            "assets/projects/img_6e5347ed.webp"
         ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"
