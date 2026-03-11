@@ -1,4 +1,4 @@
-﻿// Basic animation on scroll
+// Basic animation on scroll
 document.addEventListener('DOMContentLoaded', () => {
 
     const projectContainer = document.querySelector('.spacer-bottom');
@@ -103,8 +103,8 @@ function attachObservers() {
             const currentHeight = minHeight + (maxHeight - minHeight) * progress;
             card.style.height = `${currentHeight}px`;
 
-            // Allow content to overflow when fully open on mobile/tablet (no clipping)
-            card.style.overflow = ((isMobile || isTablet) && progress >= 0.98) ? 'visible' : 'hidden';
+            // Allow content to overflow on mobile only (tablet keeps hidden so carousel clips correctly)
+            card.style.overflow = (isMobile && progress >= 0.98) ? 'visible' : 'hidden';
 
             // Width: 90vw (always constant now per request)
             card.style.width = '90vw';

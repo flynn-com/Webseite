@@ -431,12 +431,12 @@ body::before {
     /* Allows vertical constraints */
     align-items: stretch;
     /* Fills width */
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 1rem;
     width: 100%;
-    flex: 1 1 auto;
-    /* Important flex fix to prevent stretching past parent container in Safari */
-    /* overflow: hidden; Removed so absolute children aren't clipped if needed, though they are inside anyway */
+    flex: 1 1 0;
+    min-height: 0;
+    /* Critical: allows flex children (carousel) to fill remaining space */
 }
 
 .v2-half-img {
@@ -461,9 +461,41 @@ body::before {
     -webkit-transform: translateZ(0);
 }
 
+/* Carousel (Slider) — immer als Flex-Flow-Element, auf ALLEN Bildschirmgroessen */
+.v2-half-img.v2-carousel {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    right: auto;
+    width: 100%;
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    margin-top: 0.5rem;
+    /* Safari mask nicht noetig fuer Flow-Elemente */
+    -webkit-mask-image: none;
+    mask-image: none;
+    transform: none;
+    -webkit-transform: none;
+    z-index: auto;
+}
 
+/* Track streckt sich im Flex-Carousel */
+.v2-half-img.v2-carousel .v2-carousel-track {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+}
 
-
+/* Items strecken sich innerhalb des Tracks */
+.v2-half-img.v2-carousel .carousel-item {
+    align-self: stretch;
+}
 .v2-half-img img {
     width: 100%;
     height: 100%;
@@ -820,23 +852,45 @@ body::before {
         gap: 1rem;
     }
 
-    /* Carousel im Tablet-Modus: statisch in den Flow einbauen */
+    /* Carousel im Tablet-Modus: als Flex-Element den Restoraum fuellen */
     .v2-half-img {
         display: none;
         /* absolute version hidden */
     }
 
-    /* Carousel-Version (mit Slides) sichtbar als Flow-Element */
+    /* v2-secondary-area muss min-height:0 haben, damit flex:1 des Carousels funktioniert */
+    .v2-secondary-area {
+        flex: 1 1 0;
+        min-height: 0;
+        justify-content: flex-start;
+    }
+
+    /* Carousel fuellt den gesamten Restoraum bis zum unteren Kartenrand */
     .v2-half-img.v2-carousel {
-        display: block;
         position: relative;
         top: auto;
         bottom: auto;
         right: auto;
         width: 100%;
-        height: min(45vh, 460px);
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         margin-top: 0.5rem;
+        border-radius: 20px;
+    }
+
+    /* Track und Items muessen ebenfalls flex-basiert strecken */
+    .v2-half-img.v2-carousel .v2-carousel-track {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+    }
+
+    .v2-half-img.v2-carousel .carousel-item {
+        align-self: stretch;
     }
 }
 
@@ -850,16 +904,36 @@ body::before {
         /* absolute version hidden */
     }
 
+    .v2-secondary-area {
+        flex: 1 1 0;
+        min-height: 0;
+        justify-content: flex-start;
+    }
+
     .v2-half-img.v2-carousel {
-        display: block;
         position: relative;
         top: auto;
         bottom: auto;
         right: auto;
         width: 100%;
-        height: min(45vh, 460px);
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         margin-top: 0.5rem;
+        border-radius: 20px;
+    }
+
+    .v2-half-img.v2-carousel .v2-carousel-track {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+    }
+
+    .v2-half-img.v2-carousel .carousel-item {
+        align-self: stretch;
     }
 }
 
