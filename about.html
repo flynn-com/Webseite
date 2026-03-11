@@ -24,6 +24,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;900&family=Playfair+Display:ital,wght@0,400;0,900;1,400&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- Load about data FIRST so ABOUT_PHOTO is available for rendering -->
+    <script src="about_data.js"></script>
 </head>
 
 <body>
@@ -52,28 +54,17 @@
             <div class="about-hero">
 
                 <!-- Profile Photo -->
-                <div class="about-photo-wrap">
-                    <!-- ABOUT_PHOTO: shows img if uploaded, placeholder otherwise -->
-                    <script>
-                        (function () {
-                            var photoSrc = typeof ABOUT_PHOTO !== 'undefined' && ABOUT_PHOTO ? ABOUT_PHOTO : null;
-                            if (photoSrc) {
-                                document.write('<img src="' + photoSrc + '" class="about-photo" alt="Flynn Bertsch" loading="lazy" decoding="async">');
-                            } else {
-                                document.write('<div class="about-photo-placeholder"><span style="font-size:2.5rem;">📷</span><span>Foto wird über<br>Admin-Tool gesetzt</span></div>');
-                            }
-                        })();
-                    </script>
+                <div class="about-photo-wrap" id="about-photo-wrap">
+                    <!-- Photo injected by JS after about_data.js is loaded -->
                 </div>
 
                 <!-- Info -->
                 <div class="about-info">
                     <div class="about-name"><!-- TXT:ABOUT_NAME -->Flynn Bertsch<!-- /TXT:ABOUT_NAME --></div>
-                    <div class="about-role"><!-- TXT:ABOUT_ROLE -->Creative Director &amp;
-                        Designer<!-- /TXT:ABOUT_ROLE --></div>
+                    <div class="about-role"><!-- TXT:ABOUT_ROLE -->Creative Director &amp;                        Designer<!-- /TXT:ABOUT_ROLE --></div>
 
                     <div class="about-bio"><!-- TXT:ABOUT_BIO -->Ich bin Flynn Bertsch Fotograf, Videograf und
-                        Webdesigner aus Stuttgart. Meine Arbeit verbindet visuelle Ästhetik mit modernem Design, um
+                        Designer aus Stuttgart. Meine Arbeit verbindet visuelle Ästhetik mit modernem Design, um
                         Geschichten zu erzählen, die im Gedächtnis bleiben.
 
                         Ob Editorial-Fotografie, Filmproduktion oder digitale Markenpräsenzen — ich bringe Ideen zum
@@ -153,8 +144,18 @@
         </div>
     </div>
 
-    <script src="about_data.js"></script>
     <script>
+        // Inject profile photo now that about_data.js is already loaded
+        (function () {
+            var wrap = document.getElementById('about-photo-wrap');
+            if (!wrap) return;
+            var photoSrc = typeof ABOUT_PHOTO !== 'undefined' && ABOUT_PHOTO ? ABOUT_PHOTO : null;
+            if (photoSrc) {
+                wrap.innerHTML = '<img src="' + photoSrc + '" class="about-photo" alt="Flynn Bertsch" loading="lazy" decoding="async">';
+            } else {
+                wrap.innerHTML = '<div class="about-photo-placeholder"><span style="font-size:2.5rem;">📷</span><span>Foto wird über<br>Admin-Tool gesetzt</span></div>';
+            }
+        })();
         // Render skills from TXT:ABOUT_SKILLS
         (function () {
             var skills = typeof ABOUT_SKILLS !== 'undefined' ? ABOUT_SKILLS : 'Fotografie,Videografie,Webdesign,Editorial,Branding';

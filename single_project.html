@@ -558,11 +558,7 @@
             document.getElementById('lb-prev').onclick = () => showLb(lbIndex - 1);
             document.getElementById('lb-next').onclick = () => showLb(lbIndex + 1);
 
-            // Close on backdrop click
-            overlay.addEventListener('click', function (e) {
-                if (e.target === overlay || e.target === lbImg) return;
-                closeLightbox();
-            });
+            // Close only when clicking directly on the dark overlay background (not arrows, not image)
             overlay.addEventListener('click', function (e) {
                 if (e.target === overlay) closeLightbox();
             });

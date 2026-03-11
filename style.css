@@ -447,8 +447,6 @@ body::before {
     right: 0;
     width: calc(100% + 0rem);
     /* Extend into the gap on the left */
-    /* Respect the 2rem left padding of col-right */
-    /* Exactly up to the middle */
     border-radius: 20px;
     background: rgba(255, 255, 255, 0.1);
     overflow: hidden;
@@ -462,6 +460,9 @@ body::before {
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
 }
+
+
+
 
 .v2-half-img img {
     width: 100%;
@@ -819,22 +820,46 @@ body::before {
         gap: 1rem;
     }
 
-    /* Carousel-Bilder auf iPad/Tablet ausblenden —
-       zu wenig Kartenhöhe für absolutes Positioning */
+    /* Carousel im Tablet-Modus: statisch in den Flow einbauen */
     .v2-half-img {
         display: none;
+        /* absolute version hidden */
+    }
+
+    /* Carousel-Version (mit Slides) sichtbar als Flow-Element */
+    .v2-half-img.v2-carousel {
+        display: block;
+        position: relative;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        height: 220px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
     }
 }
 
 /* =========================================
-   LARGE TABLET / SMALL LAPTOP (bis 1200px)
-   Bild-Slider wird auch hier ausgeblendet,
-   da die Karte bei diesen Breiten zu wenig
-   Höhe für den Slider hat.
+   LARGE TABLET / SMALL LAPTOP (768px – 1200px)
+   Slider als Flow-Element anzeigen
    ========================================= */
 @media (max-width: 1200px) {
     .v2-half-img {
         display: none;
+        /* absolute version hidden */
+    }
+
+    .v2-half-img.v2-carousel {
+        display: block;
+        position: relative;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        height: 220px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
     }
 }
 
@@ -1009,9 +1034,22 @@ body::before {
         align-items: stretch;
     }
 
+    /* Slider auf Mobile sichtbar als Flow-Element */
     .v2-half-img {
         display: none;
-        /* Hide on mobile to save space */
+        /* absolute version hidden */
+    }
+
+    .v2-half-img.v2-carousel {
+        display: block;
+        position: relative;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        height: 180px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
     }
 
     .project-capabilities {

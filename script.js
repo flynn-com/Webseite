@@ -91,17 +91,20 @@ function attachObservers() {
                 wrapper.style.marginBottom = `${currentMargin}px`;
             }
             const isMobile = window.innerWidth <= 768;
+            const isTablet = window.innerWidth > 768 && window.innerWidth <= 1200;
 
             // Height animation — always numeric for smooth transitions
             const minHeight = 80;
             const maxHeight = isMobile
-                ? Math.max(currentViewportHeight * 0.75, 480)
-                : currentViewportHeight * 0.8;
+                ? Math.max(currentViewportHeight * 0.88, 560)
+                : isTablet
+                    ? Math.max(currentViewportHeight * 0.85, 620)
+                    : currentViewportHeight * 0.8;
             const currentHeight = minHeight + (maxHeight - minHeight) * progress;
             card.style.height = `${currentHeight}px`;
 
-            // Allow content to overflow when fully open on mobile (no clipping)
-            card.style.overflow = (isMobile && progress >= 0.98) ? 'visible' : 'hidden';
+            // Allow content to overflow when fully open on mobile/tablet (no clipping)
+            card.style.overflow = ((isMobile || isTablet) && progress >= 0.98) ? 'visible' : 'hidden';
 
             // Width: 90vw (always constant now per request)
             card.style.width = '90vw';
@@ -146,9 +149,9 @@ function initCarousel(carousel) {
     track.dataset.currentIndex = 0;
 }
 
-window.moveCarousel = function (button, direction) {
-    // Prevent default anchor behavior if applicable
-    event.preventDefault();
+window.moveCarousel = function (button, direction, e) {
+    // Stop click from bubbling up to the card
+    if (e) { e.preventDefault(); e.stopPropagation(); }
 
     const carousel = button.closest('.v2-carousel');
     const track = carousel.querySelector('.v2-carousel-track');
@@ -161,22 +164,20 @@ window.moveCarousel = function (button, direction) {
 
     currentIndex += direction;
 
-    // Bounds checking (loop around or stop at edges)
-    // Let's stop at edges for a cleaner feel
+    // Wrap-around looping
     if (currentIndex < 0) {
-        currentIndex = 0; // Or totalItems - 1 to loop
+        currentIndex = totalItems - 1;
     } else if (currentIndex >= totalItems) {
-        currentIndex = totalItems - 1; // Or 0 to loop
+        currentIndex = 0;
     }
 
     track.dataset.currentIndex = currentIndex;
 
     // Calculate translation percentage
-    // Each item is 100% of the track's parent width
     const translateX = -(currentIndex * 100);
     track.style.transform = `translateX(${translateX}%)`;
 
-    // Optional: Update button visibility based on bounds
+    // Update button opacity
     const prevBtn = carousel.querySelector('.carousel-prev');
     const nextBtn = carousel.querySelector('.carousel-next');
 
@@ -230,14 +231,15 @@ const createProjectHTML = (p) => {
                 <div class="v2-carousel-track" data-current-index="0">
                     ${slides}
                 </div>
-                <button class="carousel-btn carousel-prev" onclick="moveCarousel(this, -1)">
+                <button class="carousel-btn carousel-prev" onclick="moveCarousel(this, -1, event)">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                 </button>
-                <button class="carousel-btn carousel-next" onclick="moveCarousel(this, 1)">
+                <button class="carousel-btn carousel-next" onclick="moveCarousel(this, 1, event)">
                     <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
                 </button>
             </div>
             `;
+
         }
     } else if (p.image) {
         mainImg = p.image;
