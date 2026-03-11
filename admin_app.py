@@ -36,6 +36,8 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_get_texts()
         elif self.path == '/api/get_about':
             self.handle_get_about()
+        elif self.path == '/api/get_background':
+            self.handle_get_background()
         else:
             super().do_GET()
 
@@ -52,6 +54,10 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
             self.handle_save_about_photo()
         elif self.path == '/api/save_about_texts':
             self.handle_save_about_texts()
+        elif self.path == '/api/save_background':
+            self.handle_save_background()
+        elif self.path == '/api/delete_background':
+            self.handle_delete_background()
         else:
             self.send_response(404)
             self.end_headers()
@@ -204,6 +210,40 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         except Exception as e:
             self.send_json_response({'error': str(e)}, 500)
 
+
+    def handle_get_background(self):
+        """Return whether the background image exists and its path"""
+        bg_path = os.path.join('Bilder', 'background.png')
+        exists = os.path.isfile(bg_path)
+        self.send_json_response({'exists': exists, 'path': bg_path.replace('\\', '/') if exists else ''})
+
+    def handle_save_background(self):
+        """Save uploaded background image as Bilder/background.png"""
+        content_length = int(self.headers.get('Content-Length', 0))
+        post_data = self.rfile.read(content_length)
+        try:
+            data = json.loads(post_data.decode('utf-8'))
+            b64 = data.get('image', '')
+            if not b64 or ',' not in b64:
+                raise ValueError('Ungueltige Bilddaten')
+            header, encoded = b64.split(',', 1)
+            img_bytes = base64.b64decode(encoded)
+            os.makedirs('Bilder', exist_ok=True)
+            with open(os.path.join('Bilder', 'background.png'), 'wb') as f:
+                f.write(img_bytes)
+            self.send_json_response({'status': 'success'})
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
+
+    def handle_delete_background(self):
+        """Delete the background image"""
+        try:
+            bg_path = os.path.join('Bilder', 'background.png')
+            if os.path.isfile(bg_path):
+                os.remove(bg_path)
+            self.send_json_response({'status': 'success'})
+        except Exception as e:
+            self.send_json_response({'error': str(e)}, 500)
 
     def handle_get_texts(self):
         """Read all TXT: marker values from index.html"""
