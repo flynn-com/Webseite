@@ -24,11 +24,56 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Re-run observer attachment after injection
         attachObservers();
+
+        // Preload all project images silently in the background
+        // so they are cached before the user opens a card
+        preloadProjectImages(projects);
     }
 
     // Initialize carousels
     document.querySelectorAll('.v2-carousel').forEach(initCarousel);
 });
+
+// Preloads all project gallery images in the background after page load
+// Uses requestIdleCallback (or setTimeout fallback) to not block the main thread
+function preloadProjectImages(projects) {
+    const allImages = [];
+
+    projects.forEach(p => {
+        if (p.gallery && p.gallery.length > 0) {
+            // Add all gallery images to the preload queue
+            p.gallery.forEach(src => allImages.push(src));
+        }
+        if (p.companyLogo) allImages.push(p.companyLogo);
+    });
+
+    // Preload in small batches using idle time, so it doesn't compete with
+    // critical resources (background image, fonts, CSS)
+    let idx = 0;
+    const BATCH_SIZE = 3; // Load 3 images per idle callback
+
+    function loadNextBatch() {
+        const end = Math.min(idx + BATCH_SIZE, allImages.length);
+        for (; idx < end; idx++) {
+            const img = new Image();
+            img.src = allImages[idx];
+        }
+        if (idx < allImages.length) {
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(loadNextBatch, { timeout: 2000 });
+            } else {
+                setTimeout(loadNextBatch, 100);
+            }
+        }
+    }
+
+    // Start after a short delay so the page renders first
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadNextBatch, { timeout: 1500 });
+    } else {
+        setTimeout(loadNextBatch, 500);
+    }
+}
 
 // SCROLL-DRIVEN ANIMATION ENGINE
 // Replaces IntersectionObserver with direct scroll calculation
@@ -223,7 +268,9 @@ const createProjectHTML = (p) => {
         if (p.gallery.length > 1) {
             let slides = '';
             for (let i = 1; i < p.gallery.length; i++) {
-                slides += `<div class="carousel-item"><img src="${p.gallery[i]}" alt="${p.title} – Galeriebild ${i}" loading="lazy" decoding="async"></div>`;
+                // First slide loads eagerly so it's ready when the card opens
+                const imgLoading = (i === 1) ? 'eager' : 'lazy';
+                slides += `<div class="carousel-item"><img src="${p.gallery[i]}" alt="${p.title} – Galeriebild ${i}" loading="${imgLoading}" decoding="async"></div>`;
             }
 
             galleryHtml = `
@@ -261,7 +308,7 @@ const createProjectHTML = (p) => {
                     
                     <!-- LEFT COLUMN: Main Feature Image (Rounded) -->
                     <div class="col-left">
-                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="${p.title} – Hauptbild" loading="lazy" decoding="async">` : `<div class="placeholder-box">${p.mainImageText || 'IMG'}</div>`}
+                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="${p.title} – Hauptbild" loading="eager" decoding="async">` : `<div class="placeholder-box">${p.mainImageText || 'IMG'}</div>`}
                          ${p.companyLogo ? `<img src="${p.companyLogo}" class="project-company-logo" alt="${p.title} Firmenlogo" loading="lazy" decoding="async">` : ''}
                     </div>
                     
