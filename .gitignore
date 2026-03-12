@@ -3,8 +3,5 @@ Stand 14.02/
 .env
 node_modules/
 .DS_Store
-admin.html
-admin_app.py
-Admin Starten.bat
-backend/
+SaaS_Plattform/
 _löschen/
