@@ -4,3 +4,7 @@ Stand 14.02/
 node_modules/
 .DS_Store
 admin.html
+admin_app.py
+Admin Starten.bat
+backend/
+_löschen/
