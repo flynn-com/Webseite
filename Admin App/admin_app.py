@@ -12,6 +12,11 @@ from PyQt6.QtCore import QUrl, QThread, pyqtSignal, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 
+# Fix paths for new structure
+ORIGINAL_DIR = os.path.dirname(os.path.abspath(__file__))
+WEBSITE_DIR = os.path.join(ORIGINAL_DIR, '..', 'Website')
+os.chdir(WEBSITE_DIR)
+
 PORT = 8080
 DIRECTORY = "."
 
@@ -30,7 +35,15 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def do_GET(self):
-        if self.path == '/api/get_legal':
+        if self.path == '/admin.html':
+            admin_path = os.path.join(ORIGINAL_DIR, 'admin.html')
+            with open(admin_path, 'rb') as f:
+                self.send_response(200)
+                self.send_header("Content-Type", "text/html")
+                self.end_headers()
+                self.wfile.write(f.read())
+            return
+        elif self.path == '/api/get_legal':
             self.handle_get_legal()
         elif self.path == '/api/get_texts':
             self.handle_get_texts()

@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | .FLYNN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #000;
+            --surface: rgba(255, 255, 255, 0.1);
+            --text: #eee;
+            --accent: #4caf50;
+            --danger: #f44336;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 2rem;
+            display: none;
+            /* Hidden until auth */
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('Bilder/background.png');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.8;
+            z-index: -1;
+            /* Fix for iOS Safari background-attachment: fixed bug */
+            will-change: transform;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 1rem;
+            text-align: center;
+            font-weight: 200;
+            letter-spacing: 2px;
+        }
+
+        .project-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: background 0.2s ease;
+        }
+
+        .project-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .actions button {
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            margin-left: 0.5rem;
+            font-weight: 600;
+            transition: opacity 0.2s ease;
+        }
+
+        .actions button:hover {
+            opacity: 0.8;
+        }
+
+        .btn-edit {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .btn-add {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            color: white;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            border: 1px dashed rgba(255, 255, 255, 0.4) !important;
+        }
+
+        .btn-add:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 24px;
+            width: 600px;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 8px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-save {
+            background: #fff;
+            color: #000;
+            width: 100%;
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 12px !important;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .close {
+            float: right;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #fff;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        .close:hover {
+            opacity: 1;
+        }
+
+        /* Gallery Grid */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .gallery-item {
+            position: relative;
+            background: #000;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            overflow: hidden;
+            cursor: grab;
+            border: 2px solid transparent;
+            transition: border-color 0.15s, opacity 0.15s, transform 0.15s;
+            user-select: none;
+        }
+
+        .gallery-item:active {
+            cursor: grabbing;
+        }
+
+        .gallery-item.drag-over {
+            border-color: rgba(255, 255, 255, 0.7);
+            opacity: 0.7;
+        }
+
+        .gallery-item.dragging-gallery {
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .gallery-item .remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: red;
+            color: white;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+            line-height: 20px;
+            border-radius: 50%;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .gallery-item .drag-handle {
+            position: absolute;
+            bottom: 2px;
+            left: 2px;
+            font-size: 10px;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        /* Settings Panel */
+        .settings-panel {
+            display: none;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .settings-panel.is-open {
+            display: block;
+        }
+
+        .settings-panel h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .settings-grid .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .btn-settings {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 1rem;
+            font-size: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-settings:hover,
+        .btn-settings.active {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        .btn-settings-save {
+            background: #fff;
+            color: #000;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: 0.9rem;
+            border-radius: 12px !important;
+            font-weight: bold;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-settings-save:hover {
+            opacity: 0.85;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Dashboard</h1>
+        <button class="actions btn-add" onclick="openModal()">+ Neues Projekt anlegen</button>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
+            <button class="actions" onclick="saveOrder()"
+                style="flex: 1; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; padding: 1rem; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2) !important; border-radius: 12px; cursor: pointer; transition: 0.2s;">
+                💾 Reihenfolge speichern
+            </button>
+            <button class="actions" id="btn-deploy" onclick="deployToGithub()"
+                style="flex: 1; background: linear-gradient(135deg, #00C853, #64DD17); color: black; padding: 1rem; font-size: 1rem; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4); transition: 0.2s;">
+                🚀 Auf Website veröffentlichen
+            </button>
+        </div>
+
+        <!-- Settings Button -->
+        <button class="btn-settings" id="btn-settings" onclick="toggleSettings()"
+            style="width:100%; margin-bottom:1.5rem;">
+            ⚙️ Einstellungen &mdash; Impressum &amp; Datenschutz
+        </button>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel" id="settings-panel">
+            <h2>⚖️ Rechtliche Angaben (Impressum &amp; Datenschutz)</h2>
+            <div class="settings-grid">
+                <div class="form-group full-width">
+                    <label>Vor- und Nachname (Verantwortliche Person)</label>
+                    <input type="text" id="s-name" placeholder="Max Mustermann">
+                </div>
+                <div class="form-group">
+                    <label>Straße &amp; Hausnummer</label>
+                    <input type="text" id="s-addr" placeholder="Musterstraße 1">
+                </div>
+                <div class="form-group">
+                    <label>PLZ &amp; Stadt</label>
+                    <input type="text" id="s-city" placeholder="12345 Musterstadt">
+                </div>
+                <div class="form-group">
+                    <label>E-Mail Adresse</label>
+                    <input type="email" id="s-email" placeholder="info@example.de">
+                </div>
+                <div class="form-group">
+                    <label>Telefonnummer (optional)</label>
+                    <input type="tel" id="s-phone" placeholder="+49 123 456789">
+                </div>
+            </div>
+            <button class="btn-settings-save" onclick="saveLegal()">💾 Angaben speichern</button>
+            <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Diese Daten werden in
+                Impressum &amp; Datenschutz auf der Website angezeigt.</p>
+        </div>
+
+        <!-- Texts Settings Button -->
+        <button class="btn-settings" id="btn-texts" onclick="toggleTexts()" style="width:100%; margin-bottom:1.5rem;">
+            ✏️ Webseitentext &mdash; Footer &amp; Startseite
+        </button>
+
+        <!-- Texts Settings Panel -->
+        <div class="settings-panel" id="texts-panel">
+            <h2>🖊️ Texte anpassen</h2>
+
+            <p style="font-size:0.85rem; opacity:0.6; margin-bottom:1.5rem;">Für Zeilenumbrüche: &lt;br&gt; im Text
+                eingeben.</p>
+
+            <div style="margin-bottom:1.5rem;">
+                <div
+                    style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
+                    📌 Footer</div>
+                <div class="settings-grid">
+                    <div class="form-group full-width">
+                        <label>Footer Name / Logo-Text</label>
+                        <input type="text" id="t-footer-brand" placeholder=".Flynn">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Footer Tagline (Untertitel)</label>
+                        <input type="text" id="t-footer-tagline"
+                            placeholder="Design · Web · Digital&lt;br&gt;Projekte mit Vision.">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Copyright Zeile (unten im Footer)</label>
+                        <input type="text" id="t-footer-copy" placeholder="© 2026 .Flynn — Alle Rechte vorbehalten">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div
+                    style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
+                    🏠 Startseite — Ecktexte</div>
+                <div class="settings-grid">
+                    <div class="form-group">
+                        <label>Oben Links</label>
+                        <input type="text" id="t-corner-tl" placeholder="Project&lt;br&gt;Becoming">
+                    </div>
+                    <div class="form-group">
+                        <label>Oben Rechts</label>
+                        <input type="text" id="t-corner-tr" placeholder="Since&lt;br&gt;2026">
+                    </div>
+                    <div class="form-group">
+                        <label>Unten Links</label>
+                        <input type="text" id="t-corner-bl" placeholder="Design&lt;br&gt;Collection">
+                    </div>
+                    <div class="form-group">
+                        <label>Unten Rechts</label>
+                        <input type="text" id="t-corner-br" placeholder="The Time&lt;br&gt;Is Coming">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-settings-save" onclick="saveTexts()">💾 Texte speichern</button>
+            <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Gespeicherte Texte
+                erscheinen nach dem n&auml;chsten Publish auf der Website.</p>
+        </div>
+
+        <!-- About Page Settings Button -->
+        <button class="btn-settings" id="btn-about" onclick="toggleAbout()" style="width:100%; margin-bottom:1.5rem;">
+            👤 &Uuml;ber mich &mdash; Foto &amp; Bio
+        </button>
+
+        <!-- About Settings Panel -->
+        <div class="settings-panel" id="about-panel">
+            <h2>👤 Über-mich Seite</h2>
+
+            <div style="margin-bottom:2rem;">
+                <div
+                    style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
+                    📷 Profilfoto</div>
+                <div id="about-photo-preview"
+                    style="width:140px; height:185px; border-radius:14px; background:rgba(255,255,255,0.06); border:2px dashed rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; overflow:hidden;">
+                    <span style="opacity:0.4; font-size:2rem;">📷</span>
+                </div>
+                <input type="file" id="about-photo-file" accept="image/*" style="display:none"
+                    onchange="previewAboutPhoto(event)">
+                <button onclick="document.getElementById('about-photo-file').click()"
+                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem;">Foto
+                    ausw&auml;hlen</button>
+                <button onclick="saveAboutPhoto()"
+                    style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem;">Foto
+                    speichern</button>
+                <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem; margin-bottom:0;">
+                    ✅ Erlaubt: JPG, PNG, WebP, GIF &nbsp;·&nbsp; ❌ Nicht erlaubt: HEIC, BMP, TIFF
+                </p>
+            </div>
+
+            <div class="settings-grid">
+                <div class="form-group full-width">
+                    <label>Name (Anzeige auf der Seite)</label>
+                    <input type="text" id="about-name" placeholder="Flynn Bertsch">
+                </div>
+                <div class="form-group full-width">
+                    <label>Titel / Rolle</label>
+                    <input type="text" id="about-role" placeholder="Creative Director &amp; Designer">
+                </div>
+                <div class="form-group full-width">
+                    <label>Bio-Text (Zeilenumbr&uuml;che m&ouml;glich)</label>
+                    <textarea id="about-bio" rows="5"
+                        style="width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:0.85rem 1rem; color:#fff; font-family:inherit; font-size:0.9rem; resize:vertical; outline:none;"></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label>Skills (kommagetrennt)</label>
+                    <input type="text" id="about-skills" placeholder="Fotografie,Videografie,Webdesign">
+                </div>
+            </div>
+
+            <button class="btn-settings-save" onclick="saveAboutTexts()">💾 Über-mich speichern</button>
+        </div>
+
+        <!-- Background Image Settings Button -->
+        <button class="btn-settings" id="btn-background" onclick="toggleBackground()" style="width:100%; margin-bottom:1.5rem;">
+            🖼️ Hintergrundbild &mdash; Bild &auml;ndern oder l&ouml;schen
+        </button>
+
+        <!-- Background Image Panel -->
+        <div class="settings-panel" id="background-panel">
+            <h2>🖼️ Hintergrundbild</h2>
+
+            <div style="margin-bottom:1.5rem;">
+                <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">🔍 Aktuelles Bild</div>
+                <div id="bg-current-preview" style="width:100%; max-height:200px; border-radius:12px; background:rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.15); overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+                    <span style="opacity:0.4; font-size:1rem;">⏳ Lade Vorschau…</span>
+                </div>
+                <button id="btn-delete-bg" onclick="deleteBackground()"
+                    style="background:rgba(244,67,54,0.15); border:1px solid rgba(244,67,54,0.4); color:#f44336; padding:0.6rem 1.4rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem; transition:0.2s;"
+                    onmouseover="this.style.background='rgba(244,67,54,0.28)'" onmouseout="this.style.background='rgba(244,67,54,0.15)'">
+                    🗑️ Bild l&ouml;schen
+                </button>
+                <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem;">Wenn kein Bild vorhanden ist, wird ein schwarzer Hintergrund angezeigt.</p>
+            </div>
+
+            <div style="margin-bottom:1.5rem;">
+                <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">⬆️ Neues Bild hochladen</div>
+                <div id="bg-new-preview" style="width:100%; max-height:200px; border-radius:12px; background:rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.15); overflow:hidden; display:none; align-items:center; justify-content:center; margin-bottom:1rem;">
+                    <img id="bg-new-img" style="width:100%; max-height:200px; object-fit:cover; border-radius:10px;">
+                </div>
+                <input type="file" id="bg-file-input" accept="image/*" style="display:none" onchange="previewBackground(event)">
+                <button onclick="document.getElementById('bg-file-input').click()"
+                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem;">
+                    📁 Bild ausw&auml;hlen
+                </button>
+                <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem;">✅ Erlaubt: JPG, PNG, WebP, GIF</p>
+            </div>
+
+            <button class="btn-settings-save" id="btn-save-bg" onclick="saveBackground()" disabled style="opacity:0.4; cursor:not-allowed;">💾 Neues Hintergrundbild speichern</button>
+            <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Bitte danach die Seite per &bdquo;Auf Website ver&ouml;ffentlichen&ldquo; deployen.</p>
+        </div>
+
+        <div id="project-list"></div>
+    </div>
+
+    <!-- Edit/Add Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Edit Project</h2>
+            <form id="project-form">
+                <input type="hidden" id="p-id">
+
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Number (01)</label>
+                        <input type="text" id="p-number" required>
+                    </div>
+                    <div class="form-group" style="flex: 3;">
+                        <label>Title</label>
+                        <input type="text" id="p-title" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Big Number (Bg)</label>
+                    <input type="text" id="p-bigNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Header Short Info (HTML allowed)</label>
+                    <textarea id="p-headerDetails" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Short Description (Card View, Max 250)</label>
+                    <textarea id="p-shortDescription" rows="3" maxlength="250"
+                        placeholder="Brief summary..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Full Description (Detail Page)</label>
+                    <textarea id="p-description" rows="5"
+                        placeholder="Write a deeper story about the project..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>YouTube Link (Optional)</label>
+                    <input type="text" id="p-youtube" placeholder="https://www.youtube.com/watch?v=...">
+                </div>
+
+                <div class="form-group"
+                    style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <label style="margin-bottom: 10px;">Project Capability Icons (Displays top-left of the right
+                        image)</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 1;">
+                            <input type="checkbox" id="p-icon-photo" style="width: auto;"> Photo Camera
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 1;">
+                            <input type="checkbox" id="p-icon-video" style="width: auto;"> Video Camera
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; cursor: pointer; opacity: 1;">
+                            <input type="checkbox" id="p-icon-design" style="width: auto;"> Design
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group"
+                    style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <label>Company Logo (Optional, Transparent background recommended)</label>
+                    <input type="file" id="p-logo-file" accept="image/*">
+                    <div id="logo-preview-container" style="margin-top: 10px; display: none; align-items: center;">
+                        <img id="logo-preview"
+                            style="max-height: 80px; max-width: 150px; border-radius: 4px; background: rgba(0,0,0,0.5); padding: 5px;">
+                        <button type="button" onclick="removeLogo()"
+                            style="margin-left: 10px; background: transparent; border: 1px solid red; color: red; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Remove</button>
+                    </div>
+                </div>
+
+                <!-- MAIN IMAGE -->
+                <div class="form-group"
+                    style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                    <label style="font-weight:700; margin-bottom:6px; display:block;">📸 Hauptbild <span
+                            style="opacity:0.5; font-weight:400;">(Karten-Vorschau)</span></label>
+                    <input type="file" id="p-main-image-file" accept="image/*">
+                    <div id="main-image-preview" style="margin-top:8px; display:none; align-items:center; gap:8px;">
+                        <img id="main-img-thumb"
+                            style="max-height:100px; border-radius:8px; border:1px solid rgba(255,255,255,0.2);">
+                        <button type="button" onclick="removeMainImage()"
+                            style="background:transparent; border:1px solid red; color:red; padding:4px 8px; border-radius:4px; cursor:pointer;">✕
+                            Entfernen</button>
+                    </div>
+                </div>
+
+                <!-- GALLERY IMAGES -->
+                <div class="form-group" style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px;">
+                    <label style="font-weight:700; margin-bottom:4px; display:block;">🖼️ Weitere Bilder <span
+                            style="opacity:0.5; font-weight:400;">(Galerie / Slider)</span></label>
+                    <p style="font-size:0.75rem; opacity:0.5; margin: 0.25rem 0 0.5rem;">🖐 Zum Sortieren ziehen</p>
+                    <input type="file" id="p-image-file" accept="image/*" multiple>
+                    <div id="gallery-preview" class="gallery-grid"></div>
+                </div>
+
+                <button type="submit" class="actions btn-save">Save Project</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        const AUTH_PASS = "admin123";
+        let projects = [];
+        const editProject = openModal;
+
+        // Save helper
+        async function saveToServer() {
+            try {
+                const response = await fetch('/api/save_all', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projects)
+                });
+                if (!response.ok) throw new Error("Server returned " + response.status);
+                const result = await response.json();
+                if (result.error) throw new Error(result.error);
+                return true;
+            } catch (err) {
+                console.error(err);
+                alert("Error saving: " + err.message);
+                return false;
+            }
+        }
+
+        // Deploy Helper
+        async function deployToGithub() {
+            const btn = document.getElementById('btn-deploy');
+            const originalText = btn.innerText;
+            btn.innerText = "⏳ Lädt hoch... Bitte warten...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('/api/deploy', {
+                    method: 'POST'
+                });
+                const result = await response.json();
+
+                if (!response.ok || result.error) {
+                    throw new Error(result.error || "Unbekannter Fehler beim Hochladen.");
+                }
+
+                alert(result.message);
+            } catch (err) {
+                console.error(err);
+                alert("Fehler beim Hochladen:\n\n" + err.message);
+            } finally {
+                btn.innerText = originalText;
+                btn.style.opacity = "1";
+                btn.disabled = false;
+            }
+        }
+
+        // Security Check & Init
+        (async () => {
+            let isAuthenticated = sessionStorage.getItem('adminAuth') === 'true';
+
+            if (!isAuthenticated) {
+                const pass = prompt("Enter Admin Password:");
+                if (pass === AUTH_PASS) {
+                    sessionStorage.setItem('adminAuth', 'true');
+                    isAuthenticated = true;
+                }
+            }
+
+            if (isAuthenticated) {
+                document.body.style.display = "block";
+                projects = window.initialProjects || [];
+                renderList();
+                loadLegalData();
+                loadTexts();
+            } else {
+                alert("Access Denied");
+                window.location.href = "index.html";
+            }
+        })();
+
+        // Settings Panel Toggle
+        function toggleSettings() {
+            const panel = document.getElementById('settings-panel');
+            const btn = document.getElementById('btn-settings');
+            panel.classList.toggle('is-open');
+            btn.classList.toggle('active');
+        }
+
+        // Texts Panel Toggle
+        function toggleTexts() {
+            const panel = document.getElementById('texts-panel');
+            const btn = document.getElementById('btn-texts');
+            panel.classList.toggle('is-open');
+            btn.classList.toggle('active');
+        }
+
+        // Load current legal data from server
+        async function loadLegalData() {
+            try {
+                const res = await fetch('/api/get_legal');
+                const data = await res.json();
+                if (!data.error) {
+                    document.getElementById('s-name').value = data.name || '';
+                    document.getElementById('s-addr').value = data.addr || '';
+                    document.getElementById('s-city').value = data.city || '';
+                    document.getElementById('s-email').value = data.email || '';
+                    document.getElementById('s-phone').value = data.phone || '';
+                }
+            } catch (e) {
+                console.warn('Could not load legal data:', e);
+            }
+        }
+
+        // Load website texts from server
+        async function loadTexts() {
+            try {
+                const res = await fetch('/api/get_texts');
+                const d = await res.json();
+                if (!d.error) {
+                    document.getElementById('t-footer-brand').value = d.FOOTER_BRAND || '';
+                    document.getElementById('t-footer-tagline').value = d.FOOTER_TAGLINE || '';
+                    document.getElementById('t-footer-copy').value = d.FOOTER_COPY || '';
+                    document.getElementById('t-corner-tl').value = d.CORNER_TL || '';
+                    document.getElementById('t-corner-tr').value = d.CORNER_TR || '';
+                    document.getElementById('t-corner-bl').value = d.CORNER_BL || '';
+                    document.getElementById('t-corner-br').value = d.CORNER_BR || '';
+                }
+            } catch (e) { console.warn('Could not load texts:', e); }
+        }
+
+        // Save website texts to server
+        async function saveTexts() {
+            const btn = document.querySelectorAll('.btn-settings-save')[1];
+            const orig = btn.innerText;
+            btn.innerText = '⏳ Speichert...';
+            btn.disabled = true;
+            try {
+                const payload = {
+                    FOOTER_BRAND: document.getElementById('t-footer-brand').value.trim(),
+                    FOOTER_TAGLINE: document.getElementById('t-footer-tagline').value.trim(),
+                    FOOTER_COPY: document.getElementById('t-footer-copy').value.trim(),
+                    CORNER_TL: document.getElementById('t-corner-tl').value.trim(),
+                    CORNER_TR: document.getElementById('t-corner-tr').value.trim(),
+                    CORNER_BL: document.getElementById('t-corner-bl').value.trim(),
+                    CORNER_BR: document.getElementById('t-corner-br').value.trim(),
+                };
+                const res = await fetch('/api/save_texts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+                btn.innerText = '✅ Gespeichert!';
+                setTimeout(() => { btn.innerText = orig; btn.disabled = false; }, 2000);
+            } catch (err) {
+                alert('Fehler:\n' + err.message);
+                btn.innerText = orig;
+                btn.disabled = false;
+            }
+        }
+
+        // About Panel Toggle
+        function toggleAbout() {
+            const panel = document.getElementById('about-panel');
+            const btn = document.getElementById('btn-about');
+            panel.classList.toggle('is-open');
+            btn.classList.toggle('active');
+            if (panel.classList.contains('is-open')) loadAboutData();
+        }
+
+        // About photo preview with format validation
+        let _aboutPhotoBase64 = null;
+        const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+
+        function previewAboutPhoto(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Format check
+            if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
+                alert(
+                    '❌ Bildformat nicht unterstützt!\n\n' +
+                    'Dein Bild hat das Format: ' + (file.type || 'unbekannt') + '\n\n' +
+                    'Erlaubte Formate: JPG, PNG, WebP, GIF\n\n' +
+                    'Tipp: Öffne das Bild in der Fotos-App und exportiere es als JPG oder PNG.'
+                );
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                _aboutPhotoBase64 = e.target.result;
+                const preview = document.getElementById('about-photo-preview');
+                preview.innerHTML = `<img src="${_aboutPhotoBase64}" style="width:100%;height:100%;object-fit:cover;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Save profile photo to server
+        async function saveAboutPhoto() {
+            if (!_aboutPhotoBase64) { alert('Bitte zuerst ein Foto auswählen.'); return; }
+            const saveBtn = document.querySelector('[onclick="saveAboutPhoto()"]');
+            const origText = saveBtn ? saveBtn.innerText : '';
+            if (saveBtn) { saveBtn.innerText = '⏳ Speichert...'; saveBtn.disabled = true; }
+            try {
+                const res = await fetch('/api/save_about_photo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ photo: _aboutPhotoBase64 })
+                });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+                if (saveBtn) { saveBtn.innerText = '✅ Gespeichert!'; }
+                setTimeout(() => {
+                    if (saveBtn) { saveBtn.innerText = origText; saveBtn.disabled = false; }
+                }, 2000);
+            } catch (err) {
+                alert('Fehler beim Speichern:\n' + err.message);
+                if (saveBtn) { saveBtn.innerText = origText; saveBtn.disabled = false; }
+            }
+        }
+
+        // Load about data from server
+        async function loadAboutData() {
+            try {
+                const res = await fetch('/api/get_about');
+                const d = await res.json();
+                if (!d.error) {
+                    document.getElementById('about-name').value = d.name || '';
+                    document.getElementById('about-role').value = d.role || '';
+                    document.getElementById('about-bio').value = d.bio || '';
+                    document.getElementById('about-skills').value = d.skills || '';
+                    if (d.photo) {
+                        const preview = document.getElementById('about-photo-preview');
+                        preview.innerHTML = `<img src="${d.photo}" style="width:100%;height:100%;object-fit:cover;">`;
+                    }
+                }
+            } catch (e) { console.warn('Could not load about data:', e); }
+        }
+
+        // Save about page texts via API
+        async function saveAboutTexts() {
+            const btns = document.querySelectorAll('.btn-settings-save');
+            const btn = btns[2]; // 0=legal, 1=texts, 2=about
+            const orig = btn.innerText;
+            btn.innerText = '⏳ Speichert...';
+            btn.disabled = true;
+            try {
+                const payload = {
+                    name: document.getElementById('about-name').value.trim(),
+                    role: document.getElementById('about-role').value.trim(),
+                    bio: document.getElementById('about-bio').value.trim(),
+                    skills: document.getElementById('about-skills').value.trim(),
+                };
+                const res = await fetch('/api/save_about_texts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+                btn.innerText = '✅ Gespeichert!';
+                setTimeout(() => { btn.innerText = orig; btn.disabled = false; }, 2000);
+            } catch (err) {
+                alert('Fehler:\n' + err.message);
+                btn.innerText = orig;
+                btn.disabled = false;
+            }
+        }
+
+        // Background Image Panel
+        let _bgBase64 = null;
+
+        function toggleBackground() {
+            const panel = document.getElementById('background-panel');
+            const btn = document.getElementById('btn-background');
+            panel.classList.toggle('is-open');
+            btn.classList.toggle('active');
+            if (panel.classList.contains('is-open')) loadBackgroundData();
+        }
+
+        async function loadBackgroundData() {
+            const preview = document.getElementById('bg-current-preview');
+            try {
+                const res = await fetch('/api/get_background');
+                const d = await res.json();
+                if (d.exists) {
+                    preview.innerHTML = `<img src="${d.path}?t=${Date.now()}" style="width:100%;max-height:200px;object-fit:cover;border-radius:10px;">`;
+                    document.getElementById('btn-delete-bg').disabled = false;
+                    document.getElementById('btn-delete-bg').style.opacity = '1';
+                } else {
+                    preview.innerHTML = `<span style="opacity:0.4;">❌ Kein Hintergrundbild vorhanden</span>`;
+                    document.getElementById('btn-delete-bg').disabled = true;
+                    document.getElementById('btn-delete-bg').style.opacity = '0.4';
+                }
+            } catch (e) {
+                preview.innerHTML = `<span style="opacity:0.4; color:red;">Fehler beim Laden</span>`;
+            }
+        }
+
+        function previewBackground(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                _bgBase64 = e.target.result;
+                document.getElementById('bg-new-img').src = _bgBase64;
+                const newPreview = document.getElementById('bg-new-preview');
+                newPreview.style.display = 'flex';
+                const saveBtn = document.getElementById('btn-save-bg');
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+                saveBtn.style.cursor = 'pointer';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function saveBackground() {
+            if (!_bgBase64) { alert('Bitte zuerst ein Bild auswählen.'); return; }
+            const btn = document.getElementById('btn-save-bg');
+            const orig = btn.innerText;
+            btn.innerText = '⏳ Speichert...';
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/save_background', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image: _bgBase64 })
+                });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+                btn.innerText = '✅ Gespeichert!';
+                _bgBase64 = null;
+                document.getElementById('bg-file-input').value = '';
+                document.getElementById('bg-new-preview').style.display = 'none';
+                btn.style.opacity = '0.4';
+                btn.style.cursor = 'not-allowed';
+                setTimeout(() => { btn.innerText = orig; btn.disabled = true; }, 2000);
+                // Refresh current preview
+                loadBackgroundData();
+            } catch (err) {
+                alert('Fehler beim Speichern:\n' + err.message);
+                btn.innerText = orig;
+                btn.disabled = false;
+            }
+        }
+
+        async function deleteBackground() {
+            if (!confirm('Hintergrundbild wirklich löschen?\nDie Website zeigt danach einen schwarzen Hintergrund.')) return;
+            const btn = document.getElementById('btn-delete-bg');
+            const orig = btn.innerText;
+            btn.innerText = '⏳ Löscht...';
+            btn.disabled = true;
+            try {
+                const res = await fetch('/api/delete_background', { method: 'POST' });
+                const result = await res.json();
+                if (result.error) throw new Error(result.error);
+                btn.innerText = '✅ Gelöscht!';
+                setTimeout(() => {
+                    btn.innerText = orig;
+                    loadBackgroundData();
+                }, 1500);
+            } catch (err) {
+                alert('Fehler beim Löschen:\n' + err.message);
+                btn.innerText = orig;
+                btn.disabled = false;
+            }
+        }
+
+        // Save legal data to server (patches index.html + single_project.html)
+        async function saveLegal() {
+            const btn = document.querySelector('.btn-settings-save');
+            const orig = btn.innerText;
+            btn.innerText = '⏳ Speichert...';
+            btn.disabled = true;
+
+            try {
+                const payload = {
+                    name: document.getElementById('s-name').value.trim(),
+                    addr: document.getElementById('s-addr').value.trim(),
+                    city: document.getElementById('s-city').value.trim(),
+                    email: document.getElementById('s-email').value.trim(),
+                    phone: document.getElementById('s-phone').value.trim(),
+                };
+
+                const res = await fetch('/api/save_legal', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await res.json();
+
+                if (result.error) throw new Error(result.error);
+                btn.innerText = '✅ Gespeichert!';
+                setTimeout(() => { btn.innerText = orig; btn.disabled = false; }, 2000);
+            } catch (err) {
+                alert('Fehler beim Speichern:\n' + err.message);
+                btn.innerText = orig;
+                btn.disabled = false;
+            }
+        }
+
+        // Logic
+        let currentGallery = []; // Additional gallery images (after main)
+        let currentMainImage = null; // The primary/hero image
+        let currentLogo = null;
+
+        const logoInput = document.getElementById('p-logo-file');
+        const logoPreviewContainer = document.getElementById('logo-preview-container');
+        const logoPreviewImg = document.getElementById('logo-preview');
+
+        logoInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (evt) {
+                    currentLogo = evt.target.result;
+                    logoPreviewImg.src = currentLogo;
+                    logoPreviewContainer.style.display = 'flex';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        window.removeLogo = function () {
+            currentLogo = null;
+            logoInput.value = "";
+            logoPreviewContainer.style.display = 'none';
+            logoPreviewImg.src = "";
+        };
+        // Main image input handler
+        const mainImageInput = document.getElementById('p-main-image-file');
+        mainImageInput.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                currentMainImage = evt.target.result;
+                document.getElementById('main-img-thumb').src = currentMainImage;
+                document.getElementById('main-image-preview').style.display = 'flex';
+                document.getElementById('main-image-preview').style.alignItems = 'center';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        window.removeMainImage = function () {
+            currentMainImage = null;
+            mainImageInput.value = '';
+            document.getElementById('main-image-preview').style.display = 'none';
+            document.getElementById('main-img-thumb').src = '';
+        };
+
+        const fileInput = document.getElementById('p-image-file');
+        const galleryPreview = document.getElementById('gallery-preview');
+
+        fileInput.addEventListener('change', function (e) {
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (evt) {
+                        currentGallery.push(evt.target.result);
+                        renderGallery();
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+        });
+
+        let galleryDragSrcIdx = null;
+
+        function renderGallery() {
+            galleryPreview.innerHTML = '';
+            currentGallery.forEach((img, idx) => {
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.draggable = true;
+                item.dataset.idx = idx;
+
+                item.innerHTML = `
+                    <img src="${img}">
+                    <div class="remove" onclick="removeImage(${idx})">&times;</div>
+                    <div class="drag-handle">⠿</div>
+                `;
+
+                // Drag events for reordering
+                item.addEventListener('dragstart', () => {
+                    galleryDragSrcIdx = idx;
+                    setTimeout(() => item.classList.add('dragging-gallery'), 0);
+                });
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging-gallery');
+                    document.querySelectorAll('.gallery-item').forEach(i => i.classList.remove('drag-over'));
+                });
+                item.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    item.classList.add('drag-over');
+                });
+                item.addEventListener('dragleave', () => {
+                    item.classList.remove('drag-over');
+                });
+                item.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    item.classList.remove('drag-over');
+                    if (galleryDragSrcIdx === null || galleryDragSrcIdx === idx) return;
+                    // Swap images
+                    const moved = currentGallery.splice(galleryDragSrcIdx, 1)[0];
+                    currentGallery.splice(idx, 0, moved);
+                    galleryDragSrcIdx = null;
+                    renderGallery();
+                });
+
+                galleryPreview.appendChild(item);
+            });
+        }
+
+        window.removeImage = function (idx) {
+            currentGallery.splice(idx, 1);
+            renderGallery();
+        }
+
+        // Render List with Drag Support
+        function renderList() {
+            const list = document.getElementById('project-list');
+            list.innerHTML = '';
+            // Sort by number
+            projects.sort((a, b) => a.number - b.number);
+
+            projects.forEach((p, index) => {
+                const item = document.createElement('div');
+                item.className = 'project-item';
+                item.draggable = true;
+                item.dataset.id = p.id; // Store ID for reordering
+
+                item.innerHTML = `
+                    <div style="cursor: grab; display: flex; align-items: center;">
+                        <span style="font-size: 1.5rem; margin-right: 1rem; color: #555;">☰</span>
+                        <div>
+                            <strong>${p.number}</strong> ${p.title} 
+                            <span style="opacity: 0.5; font-size: 0.8rem">(${p.gallery ? p.gallery.length : 0} images)</span>
+                            ${p.youtube ? '<span style="color:red; margin-left:5px;">▶</span>' : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn-edit" onclick="editProject(${index})">Edit</button>
+                        <button class="btn-delete" onclick="deleteProject(${index})">Delete</button>
+                    </div>
+                `;
+
+                // Drag Events
+                item.addEventListener('dragstart', () => {
+                    item.classList.add('dragging');
+                });
+
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    saveOrder(); // Auto-save on drop
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        // Drag Over Logic
+        const listContainer = document.getElementById('project-list');
+        listContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(listContainer, e.clientY);
+            const draggable = document.querySelector('.dragging');
+            if (afterElement == null) {
+                listContainer.appendChild(draggable);
+            } else {
+                listContainer.insertBefore(draggable, afterElement);
+            }
+        });
+
+        // Helper to find position
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.project-item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // Save New Order
+        async function saveOrder() {
+            const listItems = document.querySelectorAll('.project-item');
+            const newOrderProjects = [];
+
+            console.log("Saving order...", listItems.length, "items found in DOM");
+
+            // Update numbers based on new DOM order
+            for (let i = 0; i < listItems.length; i++) {
+                const domId = listItems[i].dataset.id;
+                const id = parseInt(domId);
+
+                // Find project by ID
+                const project = projects.find(p => p.id == id);
+
+                if (project) {
+                    // Update number ("01", "02", etc.)
+                    const newNum = (i + 1).toString().padStart(2, '0');
+                    console.log(`Updating Project ${project.title} (${project.id}) to #${newNum}`);
+
+                    project.number = newNum;
+                    project.bigNumber = newNum;
+                    newOrderProjects.push(project);
+                } else {
+                    console.error("Project not found for ID:", id, "DOM ID:", domId);
+                }
+            }
+
+            // Update local array
+            projects = newOrderProjects;
+
+            if (await saveToServer()) {
+                renderList();
+                alert("New order saved to local files!");
+            }
+        }
+
+        async function deleteProject(index) {
+            if (confirm('Are you sure?')) {
+                projects.splice(index, 1);
+
+                // Re-calculate numbers after delete
+                for (let i = 0; i < projects.length; i++) {
+                    const newNum = (i + 1).toString().padStart(2, '0');
+                    projects[i].number = newNum;
+                    projects[i].bigNumber = newNum;
+                }
+
+                if (await saveToServer()) {
+                    renderList();
+                }
+            }
+        }
+
+        function openModal(index = null) {
+            document.getElementById('modal').style.display = 'flex';
+            currentGallery = [];
+            currentMainImage = null;
+            currentLogo = null;
+            document.getElementById('p-image-file').value = "";
+            document.getElementById('p-main-image-file').value = "";
+            document.getElementById('main-image-preview').style.display = 'none';
+            document.getElementById('main-img-thumb').src = '';
+            document.getElementById('p-logo-file').value = "";
+            document.getElementById('logo-preview-container').style.display = 'none';
+
+            if (index !== null) {
+                // Edit existing project
+                const p = projects[index];
+                document.getElementById('modal-title').innerText = "Edit Project";
+                document.getElementById('p-id').value = index;
+                document.getElementById('p-number').value = p.number;
+                document.getElementById('p-title').value = p.title;
+                document.getElementById('p-bigNumber').value = p.bigNumber;
+                document.getElementById('p-headerDetails').value = p.headerDetails;
+                document.getElementById('p-shortDescription').value = p.shortDescription || "";
+                document.getElementById('p-description').value = p.description || "";
+                document.getElementById('p-youtube').value = p.youtube || "";
+
+                document.getElementById('p-icon-photo').checked = !!p.hasPhoto;
+                document.getElementById('p-icon-video').checked = !!p.hasVideo;
+                document.getElementById('p-icon-design').checked = !!p.hasDesign;
+
+                if (p.companyLogo) {
+                    currentLogo = p.companyLogo;
+                    document.getElementById('logo-preview').src = currentLogo;
+                    document.getElementById('logo-preview-container').style.display = 'flex';
+                }
+
+                // Load gallery: first image = main, rest = gallery
+                const allImgs = (p.gallery && Array.isArray(p.gallery)) ? [...p.gallery] : (p.image ? [p.image] : []);
+                if (allImgs.length > 0) {
+                    currentMainImage = allImgs[0];
+                    document.getElementById('main-img-thumb').src = currentMainImage;
+                    document.getElementById('main-image-preview').style.display = 'flex';
+                    document.getElementById('main-image-preview').style.alignItems = 'center';
+                }
+                currentGallery = allImgs.slice(1); // Rest go into the gallery slider
+                renderGallery();
+            } else {
+                // New project
+                document.getElementById('modal-title').innerText = "New Project";
+                document.getElementById('project-form').reset();
+                document.getElementById('p-id').value = "-1";
+                galleryPreview.innerHTML = "";
+                document.getElementById('main-image-preview').style.display = 'none';
+                document.getElementById('main-img-thumb').src = '';
+
+                // Default numbers
+                document.getElementById('p-number').value = (projects.length + 1).toString().padStart(2, '0');
+                document.getElementById('p-bigNumber').value = (projects.length + 1).toString().padStart(2, '0');
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        document.getElementById('project-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const index = parseInt(document.getElementById('p-id').value);
+
+            // Extract YT ID if link provided
+            let ytLink = document.getElementById('p-youtube').value;
+
+            // Combine main image + gallery for saving
+            const fullGallery = currentMainImage
+                ? [currentMainImage, ...currentGallery]
+                : [...currentGallery];
+
+            const newProject = {
+                id: index === -1 ? Date.now() : projects[index].id,
+                number: document.getElementById('p-number').value,
+                title: document.getElementById('p-title').value,
+                bigNumber: document.getElementById('p-bigNumber').value,
+                headerDetails: document.getElementById('p-headerDetails').value,
+                shortDescription: document.getElementById('p-shortDescription').value,
+                description: document.getElementById('p-description').value,
+                youtube: ytLink,
+                hasPhoto: document.getElementById('p-icon-photo').checked,
+                hasVideo: document.getElementById('p-icon-video').checked,
+                hasDesign: document.getElementById('p-icon-design').checked,
+                companyLogo: currentLogo,
+                gallery: fullGallery,
+                previewText: "PREVIEW",
+                mainImageText: "IMG"
+            };
+
+            console.log("Saving project...", newProject);
+            const originalProjects = [...projects];
+
+            // Update local list
+            if (index === -1) {
+                projects.push(newProject);
+            } else {
+                projects[index] = newProject;
+            }
+
+            if (await saveToServer()) {
+                alert("Saved locally! Reloading to ensure updated images are fetched.");
+                window.location.reload();
+            } else {
+                projects = originalProjects; // Revert
+            }
+        });
+
+    </script>
+</body>
+
+</html>
