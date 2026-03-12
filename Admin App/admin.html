@@ -20,9 +20,11 @@
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 2rem;
-            display: none;
-            /* Hidden until auth */
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             position: relative;
         }
 
@@ -336,217 +338,251 @@
         .btn-settings-save:hover {
             opacity: 0.85;
         }
+
+        /* Tabs */
+        .tabs-nav {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: rgba(255,255,255,0.6);
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <h1>Dashboard</h1>
-        <button class="actions btn-add" onclick="openModal()">+ Neues Projekt anlegen</button>
+    <!-- LOGIN SCREEN -->
+    <div id="login-container" class="container" style="max-width: 400px; text-align: center; margin: auto;">
+        <h1 style="border-bottom: none;">.FLYNN</h1>
+        <p style="opacity: 0.7; margin-bottom: 2rem;">Bitte melde dich an, um das Admin Center zu öffnen.</p>
+        <input type="password" id="login-password" placeholder="Passwort eingeben..." style="margin-bottom: 1rem; text-align: center;" onkeypress="if(event.key === 'Enter') checkLogin()">
+        <button class="actions btn-save" style="margin-top: 0;" onclick="checkLogin()">Anmelden</button>
+        <div id="login-error" style="color: #f44336; margin-top: 1rem; font-size: 0.9rem; display: none;">Falsches Passwort!</div>
+    </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-            <button class="actions" onclick="saveOrder()"
-                style="flex: 1; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; padding: 1rem; font-size: 1rem; border: 1px solid rgba(255,255,255,0.2) !important; border-radius: 12px; cursor: pointer; transition: 0.2s;">
-                💾 Reihenfolge speichern
-            </button>
-            <button class="actions" id="btn-deploy" onclick="deployToGithub()"
-                style="flex: 1; background: linear-gradient(135deg, #00C853, #64DD17); color: black; padding: 1rem; font-size: 1rem; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4); transition: 0.2s;">
-                🚀 Auf Website veröffentlichen
-            </button>
-        </div>
-
-        <!-- Settings Button -->
-        <button class="btn-settings" id="btn-settings" onclick="toggleSettings()"
-            style="width:100%; margin-bottom:1.5rem;">
-            ⚙️ Einstellungen &mdash; Impressum &amp; Datenschutz
-        </button>
-
-        <!-- Settings Panel -->
-        <div class="settings-panel" id="settings-panel">
-            <h2>⚖️ Rechtliche Angaben (Impressum &amp; Datenschutz)</h2>
-            <div class="settings-grid">
-                <div class="form-group full-width">
-                    <label>Vor- und Nachname (Verantwortliche Person)</label>
-                    <input type="text" id="s-name" placeholder="Max Mustermann">
-                </div>
-                <div class="form-group">
-                    <label>Straße &amp; Hausnummer</label>
-                    <input type="text" id="s-addr" placeholder="Musterstraße 1">
-                </div>
-                <div class="form-group">
-                    <label>PLZ &amp; Stadt</label>
-                    <input type="text" id="s-city" placeholder="12345 Musterstadt">
-                </div>
-                <div class="form-group">
-                    <label>E-Mail Adresse</label>
-                    <input type="email" id="s-email" placeholder="info@example.de">
-                </div>
-                <div class="form-group">
-                    <label>Telefonnummer (optional)</label>
-                    <input type="tel" id="s-phone" placeholder="+49 123 456789">
-                </div>
+    <!-- MAIN APP SCREEN -->
+    <div id="app-container" class="container" style="display: none; width: 100%; max-width: 1000px; margin: 2rem auto;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h1 style="border-bottom: none; margin: 0; padding: 0;">Dashboard</h1>
+            <div style="display: flex; gap: 10px;">
+                <button class="actions" onclick="saveOrder()"
+                    style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; padding: 0.75rem 1rem; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.2) !important; border-radius: 12px; cursor: pointer; transition: 0.2s;">
+                    💾 Reihenfolge speichern
+                </button>
+                <button class="actions" id="btn-deploy" onclick="deployToGithub()"
+                    style="background: linear-gradient(135deg, #00C853, #64DD17); color: black; padding: 0.75rem 1rem; font-size: 0.9rem; font-weight: bold; border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4); transition: 0.2s;">
+                    🚀 Auf Website veröffentlichen
+                </button>
             </div>
-            <button class="btn-settings-save" onclick="saveLegal()">💾 Angaben speichern</button>
-            <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Diese Daten werden in
-                Impressum &amp; Datenschutz auf der Website angezeigt.</p>
         </div>
 
-        <!-- Texts Settings Button -->
-        <button class="btn-settings" id="btn-texts" onclick="toggleTexts()" style="width:100%; margin-bottom:1.5rem;">
-            ✏️ Webseitentext &mdash; Footer &amp; Startseite
-        </button>
+        <div class="tabs-nav">
+            <button class="tab-btn active" onclick="switchTab('tab-projects', this)">📂 Projekte</button>
+            <button class="tab-btn" onclick="switchTab('tab-profile', this)">👤 Profil & Design</button>
+            <button class="tab-btn" onclick="switchTab('tab-texts', this)">✏️ Texte</button>
+            <button class="tab-btn" onclick="switchTab('tab-legal', this)">⚖️ Rechtliches</button>
+        </div>
 
-        <!-- Texts Settings Panel -->
-        <div class="settings-panel" id="texts-panel">
-            <h2>🖊️ Texte anpassen</h2>
+        <!-- TAB: PROJEKTE -->
+        <div id="tab-projects" class="tab-content active">
+            <button class="actions btn-add" onclick="openModal()">+ Neues Projekt anlegen</button>
+            <div id="project-list"></div>
+        </div>
 
-            <p style="font-size:0.85rem; opacity:0.6; margin-bottom:1.5rem;">Für Zeilenumbrüche: &lt;br&gt; im Text
-                eingeben.</p>
+        <!-- TAB: PROFIL & DESIGN -->
+        <div id="tab-profile" class="tab-content">
+            <div class="settings-panel is-open" style="margin-bottom: 2rem;">
+                <h2>👤 Über-mich Seite</h2>
+                <div style="margin-bottom:2rem;">
+                    <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
+                        📷 Profilfoto</div>
+                    <div id="about-photo-preview"
+                        style="width:140px; height:185px; border-radius:14px; background:rgba(255,255,255,0.06); border:2px dashed rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; overflow:hidden;">
+                        <span style="opacity:0.4; font-size:2rem;">📷</span>
+                    </div>
+                    <input type="file" id="about-photo-file" accept="image/*" style="display:none" onchange="previewAboutPhoto(event)">
+                    <button onclick="document.getElementById('about-photo-file').click()"
+                        style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem;">Foto auswählen</button>
+                    <button onclick="saveAboutPhoto()"
+                        style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem;">Foto speichern</button>
+                    <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem; margin-bottom:0;">
+                        ✅ Erlaubt: JPG, PNG, WebP, GIF &nbsp;·&nbsp; ❌ Nicht erlaubt: HEIC, BMP, TIFF
+                    </p>
+                </div>
 
-            <div style="margin-bottom:1.5rem;">
-                <div
-                    style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
-                    📌 Footer</div>
                 <div class="settings-grid">
                     <div class="form-group full-width">
-                        <label>Footer Name / Logo-Text</label>
-                        <input type="text" id="t-footer-brand" placeholder=".Flynn">
+                        <label>Name (Anzeige auf der Seite)</label>
+                        <input type="text" id="about-name" placeholder="Flynn Bertsch">
                     </div>
                     <div class="form-group full-width">
-                        <label>Footer Tagline (Untertitel)</label>
-                        <input type="text" id="t-footer-tagline"
-                            placeholder="Design · Web · Digital&lt;br&gt;Projekte mit Vision.">
+                        <label>Titel / Rolle</label>
+                        <input type="text" id="about-role" placeholder="Creative Director &amp; Designer">
                     </div>
                     <div class="form-group full-width">
-                        <label>Copyright Zeile (unten im Footer)</label>
-                        <input type="text" id="t-footer-copy" placeholder="© 2026 .Flynn — Alle Rechte vorbehalten">
+                        <label>Bio-Text (Zeilenumbr&uuml;che m&ouml;glich)</label>
+                        <textarea id="about-bio" rows="5"
+                            style="width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:0.85rem 1rem; color:#fff; font-family:inherit; font-size:0.9rem; resize:vertical; outline:none;"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Skills (kommagetrennt)</label>
+                        <input type="text" id="about-skills" placeholder="Fotografie,Videografie,Webdesign">
                     </div>
                 </div>
+                <button class="btn-settings-save" onclick="saveAboutTexts()">💾 Über-mich speichern</button>
             </div>
 
-            <div>
-                <div
-                    style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
-                    🏠 Startseite — Ecktexte</div>
+            <div class="settings-panel is-open">
+                <h2>🖼️ Hintergrundbild</h2>
+                <div style="margin-bottom:1.5rem;">
+                    <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">🔍 Aktuelles Bild</div>
+                    <div id="bg-current-preview" style="width:100%; max-height:200px; border-radius:12px; background:rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.15); overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+                        <span style="opacity:0.4; font-size:1rem;">⏳ Lade Vorschau…</span>
+                    </div>
+                    <button id="btn-delete-bg" onclick="deleteBackground()"
+                        style="background:rgba(244,67,54,0.15); border:1px solid rgba(244,67,54,0.4); color:#f44336; padding:0.6rem 1.4rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem; transition:0.2s;"
+                        onmouseover="this.style.background='rgba(244,67,54,0.28)'" onmouseout="this.style.background='rgba(244,67,54,0.15)'">
+                        🗑️ Bild l&ouml;schen
+                    </button>
+                    <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem;">Wenn kein Bild vorhanden ist, wird ein schwarzer Hintergrund angezeigt.</p>
+                </div>
+
+                <div style="margin-bottom:1.5rem;">
+                    <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">⬆️ Neues Bild hochladen</div>
+                    <div id="bg-new-preview" style="width:100%; max-height:200px; border-radius:12px; background:rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.15); overflow:hidden; display:none; align-items:center; justify-content:center; margin-bottom:1rem;">
+                        <img id="bg-new-img" style="width:100%; max-height:200px; object-fit:cover; border-radius:10px;">
+                    </div>
+                    <input type="file" id="bg-file-input" accept="image/*" style="display:none" onchange="previewBackground(event)">
+                    <button onclick="document.getElementById('bg-file-input').click()"
+                        style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem;">
+                        📁 Bild ausw&auml;hlen
+                    </button>
+                    <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem;">✅ Erlaubt: JPG, PNG, WebP, GIF</p>
+                </div>
+
+                <button class="btn-settings-save" id="btn-save-bg" onclick="saveBackground()" disabled style="opacity:0.4; cursor:not-allowed;">💾 Neues Hintergrundbild speichern</button>
+                <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Bitte danach die Seite per &bdquo;Auf Website ver&ouml;ffentlichen&ldquo; deployen.</p>
+            </div>
+        </div>
+
+        <!-- TAB: TEXTE -->
+        <div id="tab-texts" class="tab-content">
+            <div class="settings-panel is-open">
+                <h2>🖊️ Webseitentexte anpassen</h2>
+                <p style="font-size:0.85rem; opacity:0.6; margin-bottom:1.5rem;">Für Zeilenumbrüche: &lt;br&gt; im Text eingeben.</p>
+
+                <div style="margin-bottom:1.5rem;">
+                    <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
+                        📌 Footer</div>
+                    <div class="settings-grid">
+                        <div class="form-group full-width">
+                            <label>Footer Name / Logo-Text</label>
+                            <input type="text" id="t-footer-brand" placeholder=".Flynn">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Footer Tagline (Untertitel)</label>
+                            <input type="text" id="t-footer-tagline" placeholder="Design · Web · Digital&lt;br&gt;Projekte mit Vision.">
+                        </div>
+                        <div class="form-group full-width">
+                            <label>Copyright Zeile (unten im Footer)</label>
+                            <input type="text" id="t-footer-copy" placeholder="© 2026 .Flynn — Alle Rechte vorbehalten">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
+                        🏠 Startseite — Ecktexte</div>
+                    <div class="settings-grid">
+                        <div class="form-group">
+                            <label>Oben Links</label>
+                            <input type="text" id="t-corner-tl" placeholder="Project&lt;br&gt;Becoming">
+                        </div>
+                        <div class="form-group">
+                            <label>Oben Rechts</label>
+                            <input type="text" id="t-corner-tr" placeholder="Since&lt;br&gt;2026">
+                        </div>
+                        <div class="form-group">
+                            <label>Unten Links</label>
+                            <input type="text" id="t-corner-bl" placeholder="Design&lt;br&gt;Collection">
+                        </div>
+                        <div class="form-group">
+                            <label>Unten Rechts</label>
+                            <input type="text" id="t-corner-br" placeholder="The Time&lt;br&gt;Is Coming">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-settings-save" onclick="saveTexts()">💾 Texte speichern</button>
+            </div>
+        </div>
+
+        <!-- TAB: RECHTLICHES -->
+        <div id="tab-legal" class="tab-content">
+            <div class="settings-panel is-open">
+                <h2>⚖️ Rechtliche Angaben (Impressum &amp; Datenschutz)</h2>
                 <div class="settings-grid">
-                    <div class="form-group">
-                        <label>Oben Links</label>
-                        <input type="text" id="t-corner-tl" placeholder="Project&lt;br&gt;Becoming">
+                    <div class="form-group full-width">
+                        <label>Vor- und Nachname (Verantwortliche Person)</label>
+                        <input type="text" id="s-name" placeholder="Max Mustermann">
                     </div>
                     <div class="form-group">
-                        <label>Oben Rechts</label>
-                        <input type="text" id="t-corner-tr" placeholder="Since&lt;br&gt;2026">
+                        <label>Straße &amp; Hausnummer</label>
+                        <input type="text" id="s-addr" placeholder="Musterstraße 1">
                     </div>
                     <div class="form-group">
-                        <label>Unten Links</label>
-                        <input type="text" id="t-corner-bl" placeholder="Design&lt;br&gt;Collection">
+                        <label>PLZ &amp; Stadt</label>
+                        <input type="text" id="s-city" placeholder="12345 Musterstadt">
                     </div>
                     <div class="form-group">
-                        <label>Unten Rechts</label>
-                        <input type="text" id="t-corner-br" placeholder="The Time&lt;br&gt;Is Coming">
+                        <label>E-Mail Adresse</label>
+                        <input type="email" id="s-email" placeholder="info@example.de">
+                    </div>
+                    <div class="form-group">
+                        <label>Telefonnummer (optional)</label>
+                        <input type="tel" id="s-phone" placeholder="+49 123 456789">
                     </div>
                 </div>
+                <button class="btn-settings-save" onclick="saveLegal()">💾 Angaben speichern</button>
+                <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Diese Daten werden in
+                    Impressum &amp; Datenschutz auf der Website angezeigt.</p>
             </div>
-
-            <button class="btn-settings-save" onclick="saveTexts()">💾 Texte speichern</button>
-            <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Gespeicherte Texte
-                erscheinen nach dem n&auml;chsten Publish auf der Website.</p>
         </div>
 
-        <!-- About Page Settings Button -->
-        <button class="btn-settings" id="btn-about" onclick="toggleAbout()" style="width:100%; margin-bottom:1.5rem;">
-            👤 &Uuml;ber mich &mdash; Foto &amp; Bio
-        </button>
-
-        <!-- About Settings Panel -->
-        <div class="settings-panel" id="about-panel">
-            <h2>👤 Über-mich Seite</h2>
-
-            <div style="margin-bottom:2rem;">
-                <div
-                    style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">
-                    📷 Profilfoto</div>
-                <div id="about-photo-preview"
-                    style="width:140px; height:185px; border-radius:14px; background:rgba(255,255,255,0.06); border:2px dashed rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; margin-bottom:1rem; overflow:hidden;">
-                    <span style="opacity:0.4; font-size:2rem;">📷</span>
-                </div>
-                <input type="file" id="about-photo-file" accept="image/*" style="display:none"
-                    onchange="previewAboutPhoto(event)">
-                <button onclick="document.getElementById('about-photo-file').click()"
-                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem;">Foto
-                    ausw&auml;hlen</button>
-                <button onclick="saveAboutPhoto()"
-                    style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem;">Foto
-                    speichern</button>
-                <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem; margin-bottom:0;">
-                    ✅ Erlaubt: JPG, PNG, WebP, GIF &nbsp;·&nbsp; ❌ Nicht erlaubt: HEIC, BMP, TIFF
-                </p>
-            </div>
-
-            <div class="settings-grid">
-                <div class="form-group full-width">
-                    <label>Name (Anzeige auf der Seite)</label>
-                    <input type="text" id="about-name" placeholder="Flynn Bertsch">
-                </div>
-                <div class="form-group full-width">
-                    <label>Titel / Rolle</label>
-                    <input type="text" id="about-role" placeholder="Creative Director &amp; Designer">
-                </div>
-                <div class="form-group full-width">
-                    <label>Bio-Text (Zeilenumbr&uuml;che m&ouml;glich)</label>
-                    <textarea id="about-bio" rows="5"
-                        style="width:100%; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:0.85rem 1rem; color:#fff; font-family:inherit; font-size:0.9rem; resize:vertical; outline:none;"></textarea>
-                </div>
-                <div class="form-group full-width">
-                    <label>Skills (kommagetrennt)</label>
-                    <input type="text" id="about-skills" placeholder="Fotografie,Videografie,Webdesign">
-                </div>
-            </div>
-
-            <button class="btn-settings-save" onclick="saveAboutTexts()">💾 Über-mich speichern</button>
-        </div>
-
-        <!-- Background Image Settings Button -->
-        <button class="btn-settings" id="btn-background" onclick="toggleBackground()" style="width:100%; margin-bottom:1.5rem;">
-            🖼️ Hintergrundbild &mdash; Bild &auml;ndern oder l&ouml;schen
-        </button>
-
-        <!-- Background Image Panel -->
-        <div class="settings-panel" id="background-panel">
-            <h2>🖼️ Hintergrundbild</h2>
-
-            <div style="margin-bottom:1.5rem;">
-                <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">🔍 Aktuelles Bild</div>
-                <div id="bg-current-preview" style="width:100%; max-height:200px; border-radius:12px; background:rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.15); overflow:hidden; display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
-                    <span style="opacity:0.4; font-size:1rem;">⏳ Lade Vorschau…</span>
-                </div>
-                <button id="btn-delete-bg" onclick="deleteBackground()"
-                    style="background:rgba(244,67,54,0.15); border:1px solid rgba(244,67,54,0.4); color:#f44336; padding:0.6rem 1.4rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem; transition:0.2s;"
-                    onmouseover="this.style.background='rgba(244,67,54,0.28)'" onmouseout="this.style.background='rgba(244,67,54,0.15)'">
-                    🗑️ Bild l&ouml;schen
-                </button>
-                <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem;">Wenn kein Bild vorhanden ist, wird ein schwarzer Hintergrund angezeigt.</p>
-            </div>
-
-            <div style="margin-bottom:1.5rem;">
-                <div style="font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; opacity:0.5; margin-bottom:0.75rem;">⬆️ Neues Bild hochladen</div>
-                <div id="bg-new-preview" style="width:100%; max-height:200px; border-radius:12px; background:rgba(255,255,255,0.05); border:2px dashed rgba(255,255,255,0.15); overflow:hidden; display:none; align-items:center; justify-content:center; margin-bottom:1rem;">
-                    <img id="bg-new-img" style="width:100%; max-height:200px; object-fit:cover; border-radius:10px;">
-                </div>
-                <input type="file" id="bg-file-input" accept="image/*" style="display:none" onchange="previewBackground(event)">
-                <button onclick="document.getElementById('bg-file-input').click()"
-                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:#fff; padding:0.6rem 1.2rem; border-radius:8px; cursor:pointer; font-size:0.85rem; margin-right:0.5rem;">
-                    📁 Bild ausw&auml;hlen
-                </button>
-                <p style="font-size:0.72rem; opacity:0.45; margin-top:0.6rem;">✅ Erlaubt: JPG, PNG, WebP, GIF</p>
-            </div>
-
-            <button class="btn-settings-save" id="btn-save-bg" onclick="saveBackground()" disabled style="opacity:0.4; cursor:not-allowed;">💾 Neues Hintergrundbild speichern</button>
-            <p style="font-size:0.75rem; opacity:0.45; margin-top:0.75rem; text-align:center;">Bitte danach die Seite per &bdquo;Auf Website ver&ouml;ffentlichen&ldquo; deployen.</p>
-        </div>
-
-        <div id="project-list"></div>
     </div>
 
     <!-- Edit/Add Modal -->
@@ -708,43 +744,46 @@
         }
 
         // Security Check & Init
+        function checkLogin() {
+            const pass = document.getElementById('login-password').value;
+            const errorMsg = document.getElementById('login-error');
+            
+            if (pass === AUTH_PASS) {
+                sessionStorage.setItem('adminAuth', 'true');
+                showApp();
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('login-password').value = '';
+            }
+        }
+
+        function showApp() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            document.body.style.alignItems = 'flex-start';
+            projects = window.initialProjects || [];
+            renderList();
+            loadLegalData();
+            loadTexts();
+            loadAbout();
+            loadBackground();
+        }
+
         (async () => {
             let isAuthenticated = sessionStorage.getItem('adminAuth') === 'true';
 
-            if (!isAuthenticated) {
-                const pass = prompt("Enter Admin Password:");
-                if (pass === AUTH_PASS) {
-                    sessionStorage.setItem('adminAuth', 'true');
-                    isAuthenticated = true;
-                }
-            }
-
             if (isAuthenticated) {
-                document.body.style.display = "block";
-                projects = window.initialProjects || [];
-                renderList();
-                loadLegalData();
-                loadTexts();
-            } else {
-                alert("Access Denied");
-                window.location.href = "index.html";
+                showApp();
             }
         })();
 
-        // Settings Panel Toggle
-        function toggleSettings() {
-            const panel = document.getElementById('settings-panel');
-            const btn = document.getElementById('btn-settings');
-            panel.classList.toggle('is-open');
-            btn.classList.toggle('active');
-        }
-
-        // Texts Panel Toggle
-        function toggleTexts() {
-            const panel = document.getElementById('texts-panel');
-            const btn = document.getElementById('btn-texts');
-            panel.classList.toggle('is-open');
-            btn.classList.toggle('active');
+        // Tab Switcher
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
         }
 
         // Load current legal data from server
