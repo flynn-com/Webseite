@@ -8,21 +8,9 @@ import base64
 import re
 import uuid
 import subprocess
-from PyQt6.QtCore import QUrl, QThread, pyqtSignal, Qt, QTimer
+from PyQt6.QtCore import QUrl, QThread, pyqtSignal, Qt
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtWebEngineCore import QWebEnginePage
-
-class WebPage(QWebEnginePage):
-    def javaScriptConsoleMessage(self, level, message, lineNumber, sourceID):
-        print(f"JS [{level}]: {message} (Line {lineNumber})")
-
-ORIGINAL_DIR = os.path.dirname(os.path.abspath(__file__))
-WEBSITE_DIR = os.path.join(ORIGINAL_DIR, '..', 'Website')
-os.chdir(WEBSITE_DIR)
-
-# Fix white screen bug by disabling GPU acceleration in Chromium
-os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = "--disable-gpu --no-sandbox"
 
 PORT = 8080
 DIRECTORY = "."
@@ -42,15 +30,7 @@ class AdminHandler(http.server.SimpleHTTPRequestHandler):
         super().end_headers()
 
     def do_GET(self):
-        if self.path == '/admin.html':
-            admin_path = os.path.join(ORIGINAL_DIR, 'admin.html')
-            with open(admin_path, 'rb') as f:
-                self.send_response(200)
-                self.send_header("Content-Type", "text/html; charset=utf-8")
-                self.end_headers()
-                self.wfile.write(f.read())
-            return
-        elif self.path == '/api/get_legal':
+        if self.path == '/api/get_legal':
             self.handle_get_legal()
         elif self.path == '/api/get_texts':
             self.handle_get_texts()
@@ -479,20 +459,13 @@ class AdminApp(QMainWindow):
         
         # Chromium Webkit Engine
         self.browser = QWebEngineView()
-        self.web_page = WebPage()
-        self.browser.setPage(self.web_page)
+        self.browser.setUrl(QUrl(f"http://localhost:{PORT}/admin.html"))
         
         layout.addWidget(self.browser)
         
         # Start Server
         self.server_thread = ServerThread()
         self.server_thread.start()
-        
-        # Delay load to prevent white screen race condition
-        QTimer.singleShot(500, self.load_page)
-
-    def load_page(self):
-        self.browser.setUrl(QUrl(f"http://localhost:{PORT}/admin.html"))
 
     def closeEvent(self, event):
         # Forcefully terminate the entire process to prevent the server thread from hanging
