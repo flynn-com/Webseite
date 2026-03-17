@@ -6,18 +6,95 @@ import re
 import uuid
 import shutil
 from PyQt6.QtCore import Qt, QSize
-from PyQt6.QtGui import QPixmap, QIcon, QImage
+from PyQt6.QtGui import QPixmap, QIcon, QImage, QFont
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
     QTabWidget, QLabel, QLineEdit, QTextEdit, QPushButton, 
-    QFileDialog, QMessageBox, QListWidget, QListWidgetItem, QInputDialog
+    QFileDialog, QMessageBox, QListWidget, QListWidgetItem, QInputDialog,
+    QScrollArea
 )
 
 class AdminApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(".FLYNN | Admin Center")
-        self.resize(800, 600)
+        self.resize(1000, 750)
+        
+        # Apply Global Stylesheet matching glassmorphism/dark theme
+        self.setStyleSheet("""
+            QMainWindow {
+                background-color: #0d0d0d;
+            }
+            QWidget {
+                background-color: transparent;
+                color: #ffffff;
+                font-family: 'Inter', 'Segoe UI', sans-serif;
+                font-size: 14px;
+            }
+            QLabel {
+                font-weight: 500;
+                margin-top: 5px;
+            }
+            QLineEdit, QTextEdit, QListWidget {
+                background-color: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                padding: 10px;
+                color: white;
+            }
+            QLineEdit:focus, QTextEdit:focus, QListWidget:focus {
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                background-color: rgba(255, 255, 255, 0.08);
+            }
+            QListWidget::item:selected {
+                background-color: rgba(255, 255, 255, 0.2);
+                border-radius: 4px;
+            }
+            QPushButton {
+                background-color: white;
+                color: #0d0d0d;
+                border: none;
+                border-radius: 20px; /* Pill shape */
+                padding: 12px 24px;
+                font-weight: 700;
+                font-size: 13px;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                margin-top: 15px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+            }
+            QPushButton:pressed {
+                background-color: #cccccc;
+            }
+            QTabWidget::pane {
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 12px;
+                background-color: rgba(255, 255, 255, 0.02);
+            }
+            QTabBar::tab {
+                background-color: transparent;
+                color: rgba(255, 255, 255, 0.5);
+                padding: 12px 25px;
+                font-weight: 600;
+                font-size: 15px;
+                border-bottom: 2px solid transparent;
+            }
+            QTabBar::tab:selected {
+                color: #ffffff;
+                border-bottom: 2px solid #ffffff;
+            }
+            QTabBar::tab:hover {
+                color: #dddddd;
+            }
+            QMessageBox {
+                background-color: #1a1a1a;
+            }
+            QInputDialog {
+                background-color: #1a1a1a;
+            }
+        """)
         
         # Bestimme Original-Ordner für Dateien
         if getattr(sys, 'frozen', False):
@@ -27,9 +104,23 @@ class AdminApp(QMainWindow):
             
         self.website_dir = os.path.join(self.base_dir, "..", "Website")
         
+        # Main Layout Construct
+        main_widget = QWidget()
+        self.setCentralWidget(main_widget)
+        main_layout = QVBoxLayout(main_widget)
+        main_layout.setContentsMargins(30, 20, 30, 30)
+        main_layout.setSpacing(20)
+
+        # Prominent Header
+        header_label = QLabel(".FLYNN ADMIN")
+        header_font = QFont("Inter", 24, QFont.Weight.Bold)
+        header_label.setFont(header_font)
+        header_label.setStyleSheet("color: white; letter-spacing: 2px;")
+        main_layout.addWidget(header_label)
+
         # UI Aufbau
         self.tabs = QTabWidget()
-        self.setCentralWidget(self.tabs)
+        main_layout.addWidget(self.tabs)
         
         self.setup_about_tab()
         self.setup_projects_tab()
