@@ -1,484 +1,344 @@
 import sys
 import os
-import threading
-import http.server
-import socketserver
 import json
 import base64
 import re
 import uuid
-import subprocess
-from PyQt6.QtCore import QUrl, QThread, pyqtSignal, Qt
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget
-from PyQt6.QtWebEngineWidgets import QWebEngineView
+import shutil
+from PyQt6.QtCore import Qt, QSize
+from PyQt6.QtGui import QPixmap, QIcon, QImage
+from PyQt6.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
+    QTabWidget, QLabel, QLineEdit, QTextEdit, QPushButton, 
+    QFileDialog, QMessageBox, QListWidget, QListWidgetItem, QInputDialog
+)
 
-PORT = 8080
-DIRECTORY = "."
-
-# ----------------------------------------------------
-# 1. LOCAL PYTHON BACKEND SERVER
-# ----------------------------------------------------
-class AdminHandler(http.server.SimpleHTTPRequestHandler):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, directory=DIRECTORY, **kwargs)
-
-    def end_headers(self):
-        # Force the browser to never cache files from this local server
-        self.send_header("Cache-Control", "no-cache, no-store, must-revalidate")
-        self.send_header("Pragma", "no-cache")
-        self.send_header("Expires", "0")
-        super().end_headers()
-
-    def do_GET(self):
-        if self.path == '/api/get_legal':
-            self.handle_get_legal()
-        elif self.path == '/api/get_texts':
-            self.handle_get_texts()
-        elif self.path == '/api/get_about':
-            self.handle_get_about()
-        elif self.path == '/api/get_background':
-            self.handle_get_background()
-        else:
-            super().do_GET()
-
-    def do_POST(self):
-        if self.path == '/api/save_all':
-            self.handle_save()
-        elif self.path == '/api/deploy':
-            self.handle_deploy()
-        elif self.path == '/api/save_legal':
-            self.handle_save_legal()
-        elif self.path == '/api/save_texts':
-            self.handle_save_texts()
-        elif self.path == '/api/save_about_photo':
-            self.handle_save_about_photo()
-        elif self.path == '/api/save_about_texts':
-            self.handle_save_about_texts()
-        elif self.path == '/api/save_background':
-            self.handle_save_background()
-        elif self.path == '/api/delete_background':
-            self.handle_delete_background()
-        else:
-            self.send_response(404)
-            self.end_headers()
-
-    def handle_save(self):
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        try:
-            projects = json.loads(post_data.decode('utf-8'))
-            
-            # Make sure assets directory exists
-            os.makedirs(os.path.join('assets', 'projects'), exist_ok=True)
-            
-            # Process images
-            for p in projects:
-                p = self.process_project_images(p)
-            
-            # Save to data.js
-            with open('data.js', 'w', encoding='utf-8') as f:
-                js_content = "// Initial Project Data\n"
-                js_content += "const initialProjects = " + json.dumps(projects, indent=4) + ";\n\n"
-                js_content += "// Export initial data for seeding\n"
-                js_content += "window.initialProjects = initialProjects;\n"
-                f.write(js_content)
-            
-            self.send_json_response({"status": "success"})
-            
-        except Exception as e:
-            self.send_json_response({"error": str(e)}, 500)
-
-    def handle_deploy(self):
-        """Executes git add, commit, push"""
-        try:
-            # Check if git exists
-            subprocess.run(["git", "--version"], check=True, capture_output=True, text=True)
-            
-            # Git add
-            subprocess.run(["git", "add", "."], check=True, capture_output=True, text=True)
-            
-            # Git commit
-            # We ignore the error if there's nothing to commit
-            subprocess.run(["git", "commit", "-m", "Auto-Deploy from Admin App"], capture_output=True, text=True)
-            
-            # Git push
-            result = subprocess.run(["git", "push", "origin", "main"], check=True, capture_output=True, text=True)
-            
-            self.send_json_response({"status": "success", "message": "Erfolgreich hochgeladen!\nIn 1-2 Minuten ist deine Website online."})
-        except subprocess.CalledProcessError as e:
-            error_msg = f"Git Error (Exit Code {e.returncode}):\n{e.stderr or e.stdout}"
-            self.send_json_response({"error": error_msg}, 500)
-        except Exception as e:
-            self.send_json_response({"error": str(e)}, 500)
-
-    def handle_get_about(self):
-        """Read current about page data from about.html and about_data.js"""
-        import re
-        try:
-            # Read text markers from about.html
-            with open('about.html', 'r', encoding='utf-8') as f:
-                html = f.read()
-            def get_txt(key):
-                m = re.search(r'<!-- TXT:' + key + r' -->(.*?)<!-- /TXT:' + key + r' -->', html, re.DOTALL)
-                return m.group(1).strip() if m else ''
-
-            # Read skills from about_data.js
-            skills = ''
-            try:
-                with open('about_data.js', 'r', encoding='utf-8') as f:
-                    js = f.read()
-                sm = re.search(r"var ABOUT_SKILLS\s*=\s*'([^']*?)'", js)
-                if sm: skills = sm.group(1)
-            except: pass
-
-            # Read photo path from about_data.js
-            photo = ''
-            try:
-                with open('about_data.js', 'r', encoding='utf-8') as f:
-                    js = f.read()
-                pm = re.search(r"var ABOUT_PHOTO\s*=\s*'([^']*?)'", js)
-                if pm: photo = pm.group(1)
-            except: pass
-
-            self.send_json_response({
-                'name':   get_txt('ABOUT_NAME'),
-                'role':   get_txt('ABOUT_ROLE'),
-                'bio':    get_txt('ABOUT_BIO'),
-                'skills': skills,
-                'photo':  photo,
-            })
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def handle_save_about_photo(self):
-        """Save base64 profile photo to assets/profile/profile.jpg and update about_data.js"""
-        import base64, os, re
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        try:
-            data = json.loads(post_data.decode('utf-8'))
-            b64  = data.get('photo', '')
-            if not b64 or ',' not in b64:
-                raise ValueError('Invalid image data')
-            header, encoded = b64.split(',', 1)
-            img_bytes = base64.b64decode(encoded)
-            os.makedirs('assets/profile', exist_ok=True)
-            img_path = 'assets/profile/profile.jpg'
-            with open(img_path, 'wb') as f:
-                f.write(img_bytes)
-            # Update about_data.js
-            js_path = 'assets/profile/profile.jpg'
-            with open('about_data.js', 'r', encoding='utf-8') as f:
-                js = f.read()
-            js = re.sub(r"var ABOUT_PHOTO\s*=.*?;", f"var ABOUT_PHOTO  = '{js_path}';", js)
-            with open('about_data.js', 'w', encoding='utf-8') as f:
-                f.write(js)
-            self.send_json_response({'status': 'success', 'path': js_path})
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def handle_save_about_texts(self):
-        """Write TXT markers for about page into about.html"""
-        import re
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        try:
-            data = json.loads(post_data.decode('utf-8'))
-            with open('about.html', 'r', encoding='utf-8') as f:
-                html = f.read()
-            mapping = {
-                'ABOUT_NAME': data.get('name', ''),
-                'ABOUT_ROLE': data.get('role', ''),
-                'ABOUT_BIO':  data.get('bio',  ''),
-            }
-            for key, value in mapping.items():
-                if value:
-                    html = re.sub(
-                        r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
-                        f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
-                        html, flags=re.DOTALL)
-            with open('about.html', 'w', encoding='utf-8') as f:
-                f.write(html)
-            # Update skills in about_data.js
-            if 'skills' in data:
-                with open('about_data.js', 'r', encoding='utf-8') as f:
-                    js = f.read()
-                js = re.sub(r"var ABOUT_SKILLS\s*=.*?;", f"var ABOUT_SKILLS = '{data['skills'].strip()}';", js)
-                with open('about_data.js', 'w', encoding='utf-8') as f:
-                    f.write(js)
-            self.send_json_response({'status': 'success'})
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-
-    def handle_get_background(self):
-        """Return whether the background image exists and its path"""
-        bg_path = os.path.join('Bilder', 'background.png')
-        exists = os.path.isfile(bg_path)
-        self.send_json_response({'exists': exists, 'path': bg_path.replace('\\', '/') if exists else ''})
-
-    def handle_save_background(self):
-        """Save uploaded background image as Bilder/background.png"""
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        try:
-            data = json.loads(post_data.decode('utf-8'))
-            b64 = data.get('image', '')
-            if not b64 or ',' not in b64:
-                raise ValueError('Ungueltige Bilddaten')
-            header, encoded = b64.split(',', 1)
-            img_bytes = base64.b64decode(encoded)
-            os.makedirs('Bilder', exist_ok=True)
-            with open(os.path.join('Bilder', 'background.png'), 'wb') as f:
-                f.write(img_bytes)
-            self.send_json_response({'status': 'success'})
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def handle_delete_background(self):
-        """Delete the background image"""
-        try:
-            bg_path = os.path.join('Bilder', 'background.png')
-            if os.path.isfile(bg_path):
-                os.remove(bg_path)
-            self.send_json_response({'status': 'success'})
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def handle_get_texts(self):
-        """Read all TXT: marker values from index.html"""
-        import re
-        try:
-            with open('index.html', 'r', encoding='utf-8') as f:
-                content = f.read()
-
-            txt_keys = [
-                'CORNER_TL', 'CORNER_TR', 'CORNER_BL', 'CORNER_BR',
-                'FOOTER_BRAND', 'FOOTER_TAGLINE', 'FOOTER_COPY'
-            ]
-            data = {}
-            for key in txt_keys:
-                m = re.search(
-                    r'<!-- TXT:' + key + r' -->(.*?)<!-- /TXT:' + key + r' -->',
-                    content, re.DOTALL)
-                data[key] = m.group(1).strip() if m else ''
-            self.send_json_response(data)
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def handle_save_texts(self):
-        """Write TXT: marker values into index.html and single_project.html"""
-        import re
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        try:
-            data = json.loads(post_data.decode('utf-8'))
-
-            # Keys only in index.html (landing page)
-            index_only_keys = ['CORNER_TL', 'CORNER_TR', 'CORNER_BL', 'CORNER_BR']
-            # Keys in both files (footer)
-            both_keys = ['FOOTER_BRAND', 'FOOTER_TAGLINE', 'FOOTER_COPY']
-
-            def patch_file(filename, keys):
-                with open(filename, 'r', encoding='utf-8') as f:
-                    html = f.read()
-                for key in keys:
-                    if key in data:
-                        value = data[key].strip()
-                        html = re.sub(
-                            r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
-                            f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
-                            html, flags=re.DOTALL)
-                with open(filename, 'w', encoding='utf-8') as f:
-                    f.write(html)
-
-            patch_file('index.html', index_only_keys + both_keys)
-            patch_file('single_project.html', both_keys)
-            patch_file('about.html', both_keys)
-            patch_file('contact.html', both_keys)
-            self.send_json_response({'status': 'success'})
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-
-    def handle_get_legal(self):
-        """Read current legal placeholder values from index.html"""
-        try:
-            with open('index.html', 'r', encoding='utf-8') as f:
-                content = f.read()
-
-            import re
-            # Extract current values (defaults if still placeholders)
-            name_match  = re.search(r'<!-- LGL:NAME -->(.*?)<!-- /LGL:NAME -->', content)
-            addr_match  = re.search(r'<!-- LGL:ADDRESS -->(.*?)<!-- /LGL:ADDRESS -->', content)
-            city_match  = re.search(r'<!-- LGL:CITY -->(.*?)<!-- /LGL:CITY -->', content)
-            email_match = re.search(r'<!-- LGL:EMAIL -->(.*?)<!-- /LGL:EMAIL -->', content)
-            phone_match = re.search(r'<!-- LGL:PHONE -->(.*?)<!-- /LGL:PHONE -->', content)
-
-            data = {
-                'name':  name_match.group(1)  if name_match  else '',
-                'addr':  addr_match.group(1)  if addr_match  else '',
-                'city':  city_match.group(1)  if city_match  else '',
-                'email': email_match.group(1) if email_match else '',
-                'phone': phone_match.group(1) if phone_match else '',
-            }
-            self.send_json_response(data)
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def handle_save_legal(self):
-        """Write legal data into index.html and single_project.html"""
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        try:
-            import re
-            data = json.loads(post_data.decode('utf-8'))
-            name  = data.get('name',  '').strip()
-            addr  = data.get('addr',  '').strip()
-            city  = data.get('city',  '').strip()
-            email = data.get('email', '').strip()
-            phone = data.get('phone', '').strip()
-
-            def patch_file(filename):
-                with open(filename, 'r', encoding='utf-8') as f:
-                    html = f.read()
-
-                html = re.sub(
-                    r'<!-- LGL:NAME -->.*?<!-- /LGL:NAME -->',
-                    f'<!-- LGL:NAME -->{name}<!-- /LGL:NAME -->',
-                    html, flags=re.DOTALL)
-                html = re.sub(
-                    r'<!-- LGL:ADDRESS -->.*?<!-- /LGL:ADDRESS -->',
-                    f'<!-- LGL:ADDRESS -->{addr}<!-- /LGL:ADDRESS -->',
-                    html, flags=re.DOTALL)
-                html = re.sub(
-                    r'<!-- LGL:CITY -->.*?<!-- /LGL:CITY -->',
-                    f'<!-- LGL:CITY -->{city}<!-- /LGL:CITY -->',
-                    html, flags=re.DOTALL)
-                html = re.sub(
-                    r'<!-- LGL:EMAIL -->.*?<!-- /LGL:EMAIL -->',
-                    f'<!-- LGL:EMAIL -->{email}<!-- /LGL:EMAIL -->',
-                    html, flags=re.DOTALL)
-                html = re.sub(
-                    r'<!-- LGL:PHONE -->.*?<!-- /LGL:PHONE -->',
-                    f'<!-- LGL:PHONE -->{phone}<!-- /LGL:PHONE -->',
-                    html, flags=re.DOTALL)
-
-                with open(filename, 'w', encoding='utf-8') as f:
-                    f.write(html)
-
-            patch_file('index.html')
-            patch_file('single_project.html')
-            patch_file('about.html')
-            patch_file('contact.html')
-            self.send_json_response({'status': 'success'})
-        except Exception as e:
-            self.send_json_response({'error': str(e)}, 500)
-
-    def send_json_response(self, data, status=200):
-        self.send_response(status)
-        self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.end_headers()
-        self.wfile.write(json.dumps(data).encode('utf-8'))
-
-    def process_project_images(self, p):
-        # Handle companyLogo
-        if p.get('companyLogo') and p['companyLogo'].startswith('data:image'):
-            p['companyLogo'] = self.save_base64_image(p['companyLogo'])
-            
-        # Handle gallery
-        if p.get('gallery'):
-            new_gallery = []
-            for img in p['gallery']:
-                if img.startswith('data:image'):
-                    new_gallery.append(self.save_base64_image(img))
-                else:
-                    new_gallery.append(img)
-            p['gallery'] = new_gallery
-            
-        return p
-
-    def save_base64_image(self, data_uri):
-        match = re.match(r'data:image/(?P<ext>[a-zA-Z0-9]+);base64,(?P<data>.+)', data_uri)
-        if not match:
-            return data_uri
-        
-        ext = match.group('ext')
-        if ext == 'jpeg':
-            ext = 'jpg'
-        
-        b64_data = match.group('data')
-        image_data = base64.b64decode(b64_data)
-        
-        filename = f"img_{uuid.uuid4().hex[:8]}.{ext}"
-        filepath = os.path.join('assets', 'projects', filename)
-        
-        with open(filepath, 'wb') as f:
-            f.write(image_data)
-            
-        return filepath.replace('\\', '/')
-
-class ServerThread(QThread):
-    def run(self):
-        AdminHandler.protocol_version = "HTTP/1.0"
-        
-        class ReusableTCPServer(socketserver.TCPServer):
-            allow_reuse_address = True
-            
-        with ReusableTCPServer(("", PORT), AdminHandler) as httpd:
-            print(f"Backend listening on port {PORT}")
-            self.httpd = httpd
-            httpd.serve_forever()
-            
-    def stop(self):
-        if hasattr(self, 'httpd'):
-            self.httpd.shutdown()
-
-# ----------------------------------------------------
-# 2. DESKTOP GUI
-# ----------------------------------------------------
 class AdminApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        
         self.setWindowTitle(".FLYNN | Admin Center")
-        self.resize(1200, 800)
+        self.resize(800, 600)
         
-        # Determine center of screen
-        screen = QApplication.primaryScreen().geometry()
-        x = (screen.width() - self.width()) // 2
-        y = (screen.height() - self.height()) // 2
-        self.move(x, y)
+        # Bestimme Original-Ordner für Dateien
+        if getattr(sys, 'frozen', False):
+            self.base_dir = os.path.dirname(sys.executable)
+        else:
+            self.base_dir = os.path.dirname(os.path.abspath(__file__))
+            
+        self.website_dir = os.path.join(self.base_dir, "..", "Website")
+        
+        # UI Aufbau
+        self.tabs = QTabWidget()
+        self.setCentralWidget(self.tabs)
+        
+        self.setup_about_tab()
+        self.setup_projects_tab()
+        self.setup_legal_tab()
 
-        # Main Widget & Layout
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
-        layout = QVBoxLayout(central_widget)
-        layout.setContentsMargins(0, 0, 0, 0)
+    # ================= ABOUT TAB =================
+    def setup_about_tab(self):
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
         
-        # Chromium Webkit Engine
-        self.browser = QWebEngineView()
-        self.browser.setUrl(QUrl(f"http://localhost:{PORT}/admin.html"))
+        # Name
+        layout.addWidget(QLabel("Name:"))
+        self.about_name = QLineEdit()
+        layout.addWidget(self.about_name)
         
-        layout.addWidget(self.browser)
+        # Rolle
+        layout.addWidget(QLabel("Rolle/Beruf:"))
+        self.about_role = QLineEdit()
+        layout.addWidget(self.about_role)
         
-        # Start Server
-        self.server_thread = ServerThread()
-        self.server_thread.start()
+        # Bio
+        layout.addWidget(QLabel("Über mich Text:"))
+        self.about_bio = QTextEdit()
+        layout.addWidget(self.about_bio)
+        
+        # Skills
+        layout.addWidget(QLabel("Skills (z.B. Design, Foto, Web):"))
+        self.about_skills = QLineEdit()
+        layout.addWidget(self.about_skills)
+        
+        btn_save = QPushButton("About-Seite Speichern")
+        btn_save.clicked.connect(self.save_about)
+        layout.addWidget(btn_save)
+        
+        self.tabs.addTab(tab, "About Me")
+        self.load_about()
 
-    def closeEvent(self, event):
-        # Forcefully terminate the entire process to prevent the server thread from hanging
-        event.accept()
-        os._exit(0)
+    def load_about(self):
+        try:
+            html_path = os.path.join(self.website_dir, "about.html")
+            with open(html_path, "r", encoding="utf-8") as f:
+                html = f.read()
+            
+            name = re.search(r'<!-- TXT:ABOUT_NAME -->(.*?)<!-- /TXT:ABOUT_NAME -->', html, re.DOTALL)
+            role = re.search(r'<!-- TXT:ABOUT_ROLE -->(.*?)<!-- /TXT:ABOUT_ROLE -->', html, re.DOTALL)
+            bio = re.search(r'<!-- TXT:ABOUT_BIO -->(.*?)<!-- /TXT:ABOUT_BIO -->', html, re.DOTALL)
+            
+            if name: self.about_name.setText(name.group(1).strip())
+            if role: self.about_role.setText(role.group(1).strip())
+            if bio: self.about_bio.setText(bio.group(1).strip())
+                
+            js_path = os.path.join(self.website_dir, "about_data.js")
+            with open(js_path, "r", encoding="utf-8") as f:
+                js = f.read()
+            skills = re.search(r"var ABOUT_SKILLS\s*=\s*'([^']*?)'", js)
+            if skills: self.about_skills.setText(skills.group(1).strip())
+        except Exception as e:
+            print("Fehler beim Laden von About:", e)
+
+    def save_about(self):
+        try:
+            html_path = os.path.join(self.website_dir, "about.html")
+            with open(html_path, "r", encoding="utf-8") as f:
+                html = f.read()
+                
+            mapping = {
+                'ABOUT_NAME': self.about_name.text(),
+                'ABOUT_ROLE': self.about_role.text(),
+                'ABOUT_BIO':  self.about_bio.toPlainText(),
+            }
+            
+            for key, value in mapping.items():
+                html = re.sub(
+                    r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
+                    f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
+                    html, flags=re.DOTALL)
+                    
+            with open(html_path, "w", encoding="utf-8") as f:
+                f.write(html)
+                
+            js_path = os.path.join(self.website_dir, "about_data.js")
+            with open(js_path, "r", encoding="utf-8") as f:
+                js = f.read()
+            js = re.sub(r"var ABOUT_SKILLS\s*=.*?;", f"var ABOUT_SKILLS = '{self.about_skills.text()}';", js)
+            with open(js_path, "w", encoding="utf-8") as f:
+                f.write(js)
+                
+            QMessageBox.information(self, "Erfolg", "About-Seite erfolgreich gespeichert!")
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+
+    # ================= LEGAL TAB =================
+    def setup_legal_tab(self):
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        
+        layout.addWidget(QLabel("Name:"))
+        self.leg_name = QLineEdit()
+        layout.addWidget(self.leg_name)
+        
+        layout.addWidget(QLabel("Adresse:"))
+        self.leg_addr = QLineEdit()
+        layout.addWidget(self.leg_addr)
+        
+        layout.addWidget(QLabel("Stadt / PLZ:"))
+        self.leg_city = QLineEdit()
+        layout.addWidget(self.leg_city)
+        
+        layout.addWidget(QLabel("E-Mail:"))
+        self.leg_email = QLineEdit()
+        layout.addWidget(self.leg_email)
+        
+        layout.addWidget(QLabel("Telefon:"))
+        self.leg_phone = QLineEdit()
+        layout.addWidget(self.leg_phone)
+        
+        btn_save = QPushButton("Impressum / Footer Speichern")
+        btn_save.clicked.connect(self.save_legal)
+        layout.addWidget(btn_save)
+        
+        self.tabs.addTab(tab, "Impressum & Kontakt")
+        self.load_legal()
+
+    def load_legal(self):
+        try:
+            idx_path = os.path.join(self.website_dir, "index.html")
+            with open(idx_path, "r", encoding="utf-8") as f:
+                html = f.read()
+            name = re.search(r'<!-- LGL:NAME -->(.*?)<!-- /LGL:NAME -->', html)
+            addr = re.search(r'<!-- LGL:ADDRESS -->(.*?)<!-- /LGL:ADDRESS -->', html)
+            city = re.search(r'<!-- LGL:CITY -->(.*?)<!-- /LGL:CITY -->', html)
+            email = re.search(r'<!-- LGL:EMAIL -->(.*?)<!-- /LGL:EMAIL -->', html)
+            phone = re.search(r'<!-- LGL:PHONE -->(.*?)<!-- /LGL:PHONE -->', html)
+            
+            if name: self.leg_name.setText(name.group(1).strip())
+            if addr: self.leg_addr.setText(addr.group(1).strip())
+            if city: self.leg_city.setText(city.group(1).strip())
+            if email: self.leg_email.setText(email.group(1).strip())
+            if phone: self.leg_phone.setText(phone.group(1).strip())
+        except Exception as e:
+            print("Fehler beim Laden von Legal:", e)
+
+    def save_legal(self):
+        try:
+            files_to_patch = ["index.html", "single_project.html", "about.html", "contact.html"]
+            for fname in files_to_patch:
+                fpath = os.path.join(self.website_dir, fname)
+                if not os.path.exists(fpath): continue
+                with open(fpath, "r", encoding="utf-8") as f:
+                    html = f.read()
+                    
+                html = re.sub(r'<!-- LGL:NAME -->.*?<!-- /LGL:NAME -->', f'<!-- LGL:NAME -->{self.leg_name.text()}<!-- /LGL:NAME -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:ADDRESS -->.*?<!-- /LGL:ADDRESS -->', f'<!-- LGL:ADDRESS -->{self.leg_addr.text()}<!-- /LGL:ADDRESS -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:CITY -->.*?<!-- /LGL:CITY -->', f'<!-- LGL:CITY -->{self.leg_city.text()}<!-- /LGL:CITY -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:EMAIL -->.*?<!-- /LGL:EMAIL -->', f'<!-- LGL:EMAIL -->{self.leg_email.text()}<!-- /LGL:EMAIL -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:PHONE -->.*?<!-- /LGL:PHONE -->', f'<!-- LGL:PHONE -->{self.leg_phone.text()}<!-- /LGL:PHONE -->', html, flags=re.DOTALL)
+                
+                with open(fpath, "w", encoding="utf-8") as f:
+                    f.write(html)
+            QMessageBox.information(self, "Erfolg", "Rechtliche Daten gespeichert!")
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+
+    # ================= PROJECTS TAB =================
+    def setup_projects_tab(self):
+        tab = QWidget()
+        layout = QHBoxLayout(tab)
+        
+        # Linke Liste
+        left_layout = QVBoxLayout()
+        self.project_list = QListWidget()
+        self.project_list.itemClicked.connect(self.select_project)
+        left_layout.addWidget(QLabel("Deine Projekte:"))
+        left_layout.addWidget(self.project_list)
+        
+        btn_add = QPushButton("Neues Projekt")
+        btn_add.clicked.connect(self.add_project)
+        btn_del = QPushButton("Projekt Löschen")
+        btn_del.clicked.connect(self.del_project)
+        left_layout.addWidget(btn_add)
+        left_layout.addWidget(btn_del)
+        
+        layout.addLayout(left_layout, stretch=1)
+        
+        # Rechte Bearbeitung
+        right_layout = QVBoxLayout()
+        self.proj_title = QLineEdit()
+        self.proj_category = QLineEdit()
+        self.proj_desc = QTextEdit()
+        
+        right_layout.addWidget(QLabel("Titel:"))
+        right_layout.addWidget(self.proj_title)
+        right_layout.addWidget(QLabel("Kategorie:"))
+        right_layout.addWidget(self.proj_category)
+        right_layout.addWidget(QLabel("Beschreibung:"))
+        right_layout.addWidget(self.proj_desc)
+        
+        # Bild Upload (Main Image)
+        img_layout = QHBoxLayout()
+        self.proj_img_path = QLineEdit()
+        self.proj_img_path.setReadOnly(True)
+        btn_img = QPushButton("Hintergrundbild wählen")
+        btn_img.clicked.connect(self.choose_image)
+        img_layout.addWidget(self.proj_img_path)
+        img_layout.addWidget(btn_img)
+        right_layout.addLayout(img_layout)
+        
+        btn_save = QPushButton("Projekt Speichern")
+        btn_save.clicked.connect(self.save_current_project)
+        right_layout.addWidget(btn_save)
+        
+        layout.addLayout(right_layout, stretch=2)
+        self.tabs.addTab(tab, "Projekte verwalten")
+        
+        self.projects = []
+        self.current_project_index = -1
+        self.load_projects()
+
+    def load_projects(self):
+        self.project_list.clear()
+        try:
+            data_path = os.path.join(self.website_dir, "data.js")
+            with open(data_path, "r", encoding="utf-8") as f:
+                js = f.read()
+            match = re.search(r'const\s+initialProjects\s*=\s*(\[.*?\]);', js, re.DOTALL)
+            if match:
+                self.projects = json.loads(match.group(1))
+                for idx, p in enumerate(self.projects):
+                    self.project_list.addItem(f"{idx+1}. {p.get('title', 'Unbenannt')}")
+        except Exception as e:
+            print("Konnte data.js nicht laden:", e)
+            self.projects = []
+
+    def select_project(self, item):
+        self.current_project_index = self.project_list.currentRow()
+        p = self.projects[self.current_project_index]
+        self.proj_title.setText(p.get("title", ""))
+        self.proj_category.setText(p.get("category", ""))
+        self.proj_desc.setText(p.get("description", ""))
+        self.proj_img_path.setText(p.get("image", ""))
+
+    def add_project(self):
+        title, ok = QInputDialog.getText(self, "Neues Projekt", "Projekttitel:")
+        if ok and title:
+            new_p = {
+                "id": len(self.projects) + 1,
+                "title": title,
+                "category": "",
+                "description": "",
+                "image": "",
+                "gallery": [],
+                "video": "",
+                "companyLogo": ""
+            }
+            self.projects.append(new_p)
+            self.project_list.addItem(f"{len(self.projects)}. {title}")
+            self.project_list.setCurrentRow(len(self.projects) - 1)
+            self.select_project(None)
+
+    def del_project(self):
+        if self.current_project_index >= 0:
+            del self.projects[self.current_project_index]
+            self.current_project_index = -1
+            self.proj_title.clear()
+            self.proj_category.clear()
+            self.proj_desc.clear()
+            self.proj_img_path.clear()
+            self.write_projects_to_disk()
+            self.load_projects()
+
+    def choose_image(self):
+        if self.current_project_index < 0: return
+        fname, _ = QFileDialog.getOpenFileName(self, "Bild auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
+        if fname:
+            # Kopiere Bild nach assets/projects
+            ext = os.path.splitext(fname)[1]
+            new_filename = f"img_{uuid.uuid4().hex[:8]}{ext}"
+            dest_dir = os.path.join(self.website_dir, "assets", "projects")
+            os.makedirs(dest_dir, exist_ok=True)
+            dest_path = os.path.join(dest_dir, new_filename)
+            shutil.copy2(fname, dest_path)
+            
+            rel_path = f"assets/projects/{new_filename}"
+            self.proj_img_path.setText(rel_path)
+
+    def save_current_project(self):
+        if self.current_project_index >= 0:
+            p = self.projects[self.current_project_index]
+            p["title"] = self.proj_title.text()
+            p["category"] = self.proj_category.text()
+            p["description"] = self.proj_desc.toPlainText()
+            p["image"] = self.proj_img_path.text()
+            self.write_projects_to_disk()
+            self.load_projects()
+            self.project_list.setCurrentRow(self.current_project_index)
+            QMessageBox.information(self, "Erfolg", "Projekt gespeichert!")
+
+    def write_projects_to_disk(self):
+        try:
+            data_path = os.path.join(self.website_dir, "data.js")
+            js_content = "// Initial Project Data\n"
+            js_content += "const initialProjects = " + json.dumps(self.projects, indent=4) + ";\n\n"
+            js_content += "window.initialProjects = initialProjects;\n"
+            with open(data_path, "w", encoding="utf-8") as f:
+                f.write(js_content)
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", f"Konnte Projekte nicht speichern: {e}")
 
 if __name__ == '__main__':
-    # Add Git context to PATH if it's the standard Windows installation
-    # because subprocess.run might not find it otherwise
-    git_path = r"C:\Program Files\Git\cmd"
-    if os.path.exists(git_path) and git_path not in os.environ["PATH"]:
-        os.environ["PATH"] += os.pathsep + git_path
-
     app = QApplication(sys.argv)
     window = AdminApp()
     window.show()
