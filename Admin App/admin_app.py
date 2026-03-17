@@ -18,46 +18,48 @@ class ProjectDialog(QDialog):
     def __init__(self, parent=None, project_data=None, website_dir=None):
         super().__init__(parent)
         self.setWindowTitle("Projekt bearbeiten")
-        self.resize(800, 700)
+        self.resize(900, 750)
         self.website_dir = website_dir
         self.project_data = project_data or {}
         
         # Apply standard style to Dialog
         self.setStyleSheet("""
             QDialog {
-                background-color: #1a1a1a;
+                background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1, stop: 0 #18181A, stop: 1 #080809);
                 color: white;
                 font-family: 'Inter', sans-serif;
             }
-            QLabel { color: white; font-weight: 500; }
+            QLabel { color: white; font-weight: 500; font-size: 15px; }
             QLineEdit, QTextEdit, QListWidget {
-                background-color: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 6px;
-                padding: 8px;
+                background-color: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 10px;
+                padding: 10px;
                 color: white;
+                font-size: 14px;
             }
             QPushButton {
-                background-color: white;
+                background-color: rgba(255, 255, 255, 0.9);
                 color: black;
-                border-radius: 12px;
-                padding: 8px 16px;
+                border-radius: 18px;
+                padding: 10px 20px;
                 font-weight: bold;
+                font-size: 14px;
             }
-            QPushButton:hover { background-color: #e0e0e0; }
+            QPushButton:hover { background-color: #ffffff; }
             QGroupBox {
-                border: 1px solid rgba(255,255,255,0.2);
-                border-radius: 6px;
-                margin-top: 10px;
-                padding-top: 15px;
+                border: 1px solid rgba(255,255,255,0.12);
+                border-radius: 12px;
+                margin-top: 15px;
+                padding-top: 20px;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
-                left: 10px;
+                left: 15px;
                 padding: 0 5px;
-                color: #aaa;
+                color: #bbbbbb;
             }
-            QCheckBox { color: white; }
+            QCheckBox { color: white; font-size: 14px;}
         """)
 
         layout = QVBoxLayout(self)
@@ -244,55 +246,55 @@ class AdminApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle(".FLYNN | Admin Center")
-        self.resize(1000, 750)
+        self.resize(1200, 850)
         
         # Apply Global Stylesheet matching glassmorphism/dark theme
         self.setStyleSheet("""
             QMainWindow {
-                background-color: #0d0d0d;
+                background-color: qlineargradient(x1: 0, y1: 0, x2: 1, y2: 1, stop: 0 #18181A, stop: 1 #080809);
             }
             QWidget {
                 background-color: transparent;
                 color: #ffffff;
                 font-family: 'Inter', 'Segoe UI', sans-serif;
-                font-size: 14px;
+                font-size: 15px;
             }
             QLabel {
                 font-weight: 500;
                 margin-top: 5px;
             }
             QLineEdit, QTextEdit, QListWidget {
-                background-color: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.2);
-                border-radius: 8px;
-                padding: 10px;
+                background-color: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(255, 255, 255, 0.12);
+                border-radius: 12px;
+                padding: 12px;
                 color: white;
             }
             QLineEdit:focus, QTextEdit:focus, QListWidget:focus {
-                border: 1px solid rgba(255, 255, 255, 0.6);
-                background-color: rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.4);
+                background-color: rgba(255, 255, 255, 0.07);
             }
             QListWidget::item:selected {
-                background-color: rgba(255, 255, 255, 0.2);
-                border-radius: 4px;
+                background-color: rgba(255, 255, 255, 0.15);
+                border-radius: 8px;
             }
             QPushButton {
-                background-color: white;
-                color: #0d0d0d;
+                background-color: rgba(255, 255, 255, 0.95);
+                color: #080809;
                 border: none;
-                border-radius: 20px; /* Pill shape */
-                padding: 12px 24px;
+                border-radius: 24px; /* Pill shape */
+                padding: 14px 28px;
                 font-weight: 700;
-                font-size: 13px;
+                font-size: 14px;
                 letter-spacing: 1px;
                 text-transform: uppercase;
-                margin-top: 15px;
+                margin-top: 10px;
             }
             QPushButton:hover {
-                background-color: #e0e0e0;
+                background-color: #ffffff;
             }
             QPushButton:pressed {
-                background-color: #cccccc;
+                background-color: #e6e6e6;
             }
             QMessageBox {
                 background-color: #1a1a1a;
@@ -304,11 +306,11 @@ class AdminApp(QMainWindow):
         
         if getattr(sys, 'frozen', False):
             self.base_dir = os.path.dirname(sys.executable)
+            self.website_dir = os.path.join(self.base_dir, "Website")
         else:
             self.base_dir = os.path.dirname(os.path.abspath(__file__))
+            self.website_dir = os.path.join(self.base_dir, "..", "Website")
             
-        self.website_dir = os.path.join(self.base_dir, "..", "Website")
-        
         main_widget = QWidget()
         self.setCentralWidget(main_widget)
         main_layout = QVBoxLayout(main_widget)
