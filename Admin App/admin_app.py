@@ -9,9 +9,9 @@ from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QPixmap, QIcon, QImage, QFont
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
-    QTabWidget, QLabel, QLineEdit, QTextEdit, QPushButton, 
+    QStackedWidget, QLabel, QLineEdit, QTextEdit, QPushButton, 
     QFileDialog, QMessageBox, QListWidget, QListWidgetItem, QInputDialog,
-    QScrollArea
+    QScrollArea, QSpacerItem, QSizePolicy
 )
 
 class AdminApp(QMainWindow):
@@ -68,26 +68,6 @@ class AdminApp(QMainWindow):
             QPushButton:pressed {
                 background-color: #cccccc;
             }
-            QTabWidget::pane {
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
-                background-color: rgba(255, 255, 255, 0.02);
-            }
-            QTabBar::tab {
-                background-color: transparent;
-                color: rgba(255, 255, 255, 0.5);
-                padding: 12px 25px;
-                font-weight: 600;
-                font-size: 15px;
-                border-bottom: 2px solid transparent;
-            }
-            QTabBar::tab:selected {
-                color: #ffffff;
-                border-bottom: 2px solid #ffffff;
-            }
-            QTabBar::tab:hover {
-                color: #dddddd;
-            }
             QMessageBox {
                 background-color: #1a1a1a;
             }
@@ -111,183 +91,117 @@ class AdminApp(QMainWindow):
         main_layout.setContentsMargins(30, 20, 30, 30)
         main_layout.setSpacing(20)
 
-        # Prominent Header
-        header_label = QLabel(".FLYNN ADMIN")
-        header_font = QFont("Inter", 24, QFont.Weight.Bold)
-        header_label.setFont(header_font)
-        header_label.setStyleSheet("color: white; letter-spacing: 2px;")
-        main_layout.addWidget(header_label)
+        # UI Aufbau Stack
+        self.stack = QStackedWidget()
+        main_layout.addWidget(self.stack)
+        
+        self.setup_main_menu()
+        self.setup_projects_page()
+        self.setup_about_page()
+        self.setup_settings_page()
+        self.setup_legal_page()
 
-        # UI Aufbau
-        self.tabs = QTabWidget()
-        main_layout.addWidget(self.tabs)
-        
-        self.setup_about_tab()
-        self.setup_projects_tab()
-        self.setup_legal_tab()
-
-    # ================= ABOUT TAB =================
-    def setup_about_tab(self):
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
-        
-        # Name
-        layout.addWidget(QLabel("Name:"))
-        self.about_name = QLineEdit()
-        layout.addWidget(self.about_name)
-        
-        # Rolle
-        layout.addWidget(QLabel("Rolle/Beruf:"))
-        self.about_role = QLineEdit()
-        layout.addWidget(self.about_role)
-        
-        # Bio
-        layout.addWidget(QLabel("Über mich Text:"))
-        self.about_bio = QTextEdit()
-        layout.addWidget(self.about_bio)
-        
-        # Skills
-        layout.addWidget(QLabel("Skills (z.B. Design, Foto, Web):"))
-        self.about_skills = QLineEdit()
-        layout.addWidget(self.about_skills)
-        
-        btn_save = QPushButton("About-Seite Speichern")
-        btn_save.clicked.connect(self.save_about)
-        layout.addWidget(btn_save)
-        
-        self.tabs.addTab(tab, "About Me")
-        self.load_about()
-
-    def load_about(self):
-        try:
-            html_path = os.path.join(self.website_dir, "about.html")
-            with open(html_path, "r", encoding="utf-8") as f:
-                html = f.read()
-            
-            name = re.search(r'<!-- TXT:ABOUT_NAME -->(.*?)<!-- /TXT:ABOUT_NAME -->', html, re.DOTALL)
-            role = re.search(r'<!-- TXT:ABOUT_ROLE -->(.*?)<!-- /TXT:ABOUT_ROLE -->', html, re.DOTALL)
-            bio = re.search(r'<!-- TXT:ABOUT_BIO -->(.*?)<!-- /TXT:ABOUT_BIO -->', html, re.DOTALL)
-            
-            if name: self.about_name.setText(name.group(1).strip())
-            if role: self.about_role.setText(role.group(1).strip())
-            if bio: self.about_bio.setText(bio.group(1).strip())
-                
-            js_path = os.path.join(self.website_dir, "about_data.js")
-            with open(js_path, "r", encoding="utf-8") as f:
-                js = f.read()
-            skills = re.search(r"var ABOUT_SKILLS\s*=\s*'([^']*?)'", js)
-            if skills: self.about_skills.setText(skills.group(1).strip())
-        except Exception as e:
-            print("Fehler beim Laden von About:", e)
-
-    def save_about(self):
-        try:
-            html_path = os.path.join(self.website_dir, "about.html")
-            with open(html_path, "r", encoding="utf-8") as f:
-                html = f.read()
-                
-            mapping = {
-                'ABOUT_NAME': self.about_name.text(),
-                'ABOUT_ROLE': self.about_role.text(),
-                'ABOUT_BIO':  self.about_bio.toPlainText(),
+    def add_back_button(self, layout, title):
+        top_bar = QHBoxLayout()
+        btn_back = QPushButton("< Zurück")
+        btn_back.setFixedWidth(120)
+        btn_back.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                border: 1px solid rgba(255,255,255,0.3);
+                color: white;
+                margin-top: 0px;
+                padding: 8px 16px;
             }
-            
-            for key, value in mapping.items():
-                html = re.sub(
-                    r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
-                    f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
-                    html, flags=re.DOTALL)
-                    
-            with open(html_path, "w", encoding="utf-8") as f:
-                f.write(html)
-                
-            js_path = os.path.join(self.website_dir, "about_data.js")
-            with open(js_path, "r", encoding="utf-8") as f:
-                js = f.read()
-            js = re.sub(r"var ABOUT_SKILLS\s*=.*?;", f"var ABOUT_SKILLS = '{self.about_skills.text()}';", js)
-            with open(js_path, "w", encoding="utf-8") as f:
-                f.write(js)
-                
-            QMessageBox.information(self, "Erfolg", "About-Seite erfolgreich gespeichert!")
-        except Exception as e:
-            QMessageBox.critical(self, "Fehler", str(e))
+            QPushButton:hover {
+                background-color: rgba(255,255,255,0.1);
+            }
+        """)
+        btn_back.clicked.connect(lambda: self.stack.setCurrentIndex(0))
+        top_bar.addWidget(btn_back)
+        
+        lbl_title = QLabel(title)
+        lbl_title.setFont(QFont("Inter", 18, QFont.Weight.Bold))
+        lbl_title.setStyleSheet("margin-left: 20px; margin-top: 0px;")
+        top_bar.addWidget(lbl_title)
+        top_bar.addStretch(1)
+        
+        layout.addLayout(top_bar)
+        layout.addSpacing(10)
 
-    # ================= LEGAL TAB =================
-    def setup_legal_tab(self):
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+    # ================= MAIN MENU =================
+    def setup_main_menu(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
         
-        layout.addWidget(QLabel("Name:"))
-        self.leg_name = QLineEdit()
-        layout.addWidget(self.leg_name)
+        layout.addStretch(1)
         
-        layout.addWidget(QLabel("Adresse:"))
-        self.leg_addr = QLineEdit()
-        layout.addWidget(self.leg_addr)
+        # Logo / Title
+        logo_label = QLabel(".FLYNN")
+        logo_font = QFont("Inter", 64, QFont.Weight.Bold)
+        logo_label.setFont(logo_font)
+        logo_label.setStyleSheet("color: white; letter-spacing: 4px;")
+        logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(logo_label)
         
-        layout.addWidget(QLabel("Stadt / PLZ:"))
-        self.leg_city = QLineEdit()
-        layout.addWidget(self.leg_city)
+        layout.addSpacing(50)
         
-        layout.addWidget(QLabel("E-Mail:"))
-        self.leg_email = QLineEdit()
-        layout.addWidget(self.leg_email)
+        # Buttons Container
+        btn_container = QWidget()
+        btn_layout = QVBoxLayout(btn_container)
+        btn_layout.setSpacing(20)
+        btn_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        layout.addWidget(QLabel("Telefon:"))
-        self.leg_phone = QLineEdit()
-        layout.addWidget(self.leg_phone)
+        # Style für die dicken Hauptmenü-Buttons
+        main_btn_style = """
+            QPushButton {
+                padding: 16px; 
+                font-size: 15px;
+                border-radius: 25px;
+                margin-top: 0px;
+            }
+            QPushButton:hover {
+                background-color: #e0e0e0;
+            }
+        """
         
-        btn_save = QPushButton("Impressum / Footer Speichern")
-        btn_save.clicked.connect(self.save_legal)
-        layout.addWidget(btn_save)
+        btn_projects = QPushButton("Projekte")
+        btn_projects.setFixedWidth(350)
+        btn_projects.setStyleSheet(main_btn_style)
+        btn_projects.clicked.connect(lambda: self.stack.setCurrentIndex(1))
+        btn_layout.addWidget(btn_projects)
         
-        self.tabs.addTab(tab, "Impressum & Kontakt")
-        self.load_legal()
+        btn_about = QPushButton("About me")
+        btn_about.setFixedWidth(350)
+        btn_about.setStyleSheet(main_btn_style)
+        btn_about.clicked.connect(lambda: self.stack.setCurrentIndex(2))
+        btn_layout.addWidget(btn_about)
+        
+        btn_settings = QPushButton("Webseiten Einstellungen")
+        btn_settings.setFixedWidth(350)
+        btn_settings.setStyleSheet(main_btn_style)
+        btn_settings.clicked.connect(lambda: self.stack.setCurrentIndex(3))
+        btn_layout.addWidget(btn_settings)
+        
+        btn_legal = QPushButton("Rechtliches")
+        btn_legal.setFixedWidth(350)
+        btn_legal.setStyleSheet(main_btn_style)
+        btn_legal.clicked.connect(lambda: self.stack.setCurrentIndex(4))
+        btn_layout.addWidget(btn_legal)
+        
+        layout.addWidget(btn_container)
+        layout.addStretch(1)
+        
+        self.stack.addWidget(page)
 
-    def load_legal(self):
-        try:
-            idx_path = os.path.join(self.website_dir, "index.html")
-            with open(idx_path, "r", encoding="utf-8") as f:
-                html = f.read()
-            name = re.search(r'<!-- LGL:NAME -->(.*?)<!-- /LGL:NAME -->', html)
-            addr = re.search(r'<!-- LGL:ADDRESS -->(.*?)<!-- /LGL:ADDRESS -->', html)
-            city = re.search(r'<!-- LGL:CITY -->(.*?)<!-- /LGL:CITY -->', html)
-            email = re.search(r'<!-- LGL:EMAIL -->(.*?)<!-- /LGL:EMAIL -->', html)
-            phone = re.search(r'<!-- LGL:PHONE -->(.*?)<!-- /LGL:PHONE -->', html)
-            
-            if name: self.leg_name.setText(name.group(1).strip())
-            if addr: self.leg_addr.setText(addr.group(1).strip())
-            if city: self.leg_city.setText(city.group(1).strip())
-            if email: self.leg_email.setText(email.group(1).strip())
-            if phone: self.leg_phone.setText(phone.group(1).strip())
-        except Exception as e:
-            print("Fehler beim Laden von Legal:", e)
-
-    def save_legal(self):
-        try:
-            files_to_patch = ["index.html", "single_project.html", "about.html", "contact.html"]
-            for fname in files_to_patch:
-                fpath = os.path.join(self.website_dir, fname)
-                if not os.path.exists(fpath): continue
-                with open(fpath, "r", encoding="utf-8") as f:
-                    html = f.read()
-                    
-                html = re.sub(r'<!-- LGL:NAME -->.*?<!-- /LGL:NAME -->', f'<!-- LGL:NAME -->{self.leg_name.text()}<!-- /LGL:NAME -->', html, flags=re.DOTALL)
-                html = re.sub(r'<!-- LGL:ADDRESS -->.*?<!-- /LGL:ADDRESS -->', f'<!-- LGL:ADDRESS -->{self.leg_addr.text()}<!-- /LGL:ADDRESS -->', html, flags=re.DOTALL)
-                html = re.sub(r'<!-- LGL:CITY -->.*?<!-- /LGL:CITY -->', f'<!-- LGL:CITY -->{self.leg_city.text()}<!-- /LGL:CITY -->', html, flags=re.DOTALL)
-                html = re.sub(r'<!-- LGL:EMAIL -->.*?<!-- /LGL:EMAIL -->', f'<!-- LGL:EMAIL -->{self.leg_email.text()}<!-- /LGL:EMAIL -->', html, flags=re.DOTALL)
-                html = re.sub(r'<!-- LGL:PHONE -->.*?<!-- /LGL:PHONE -->', f'<!-- LGL:PHONE -->{self.leg_phone.text()}<!-- /LGL:PHONE -->', html, flags=re.DOTALL)
-                
-                with open(fpath, "w", encoding="utf-8") as f:
-                    f.write(html)
-            QMessageBox.information(self, "Erfolg", "Rechtliche Daten gespeichert!")
-        except Exception as e:
-            QMessageBox.critical(self, "Fehler", str(e))
-
-    # ================= PROJECTS TAB =================
-    def setup_projects_tab(self):
-        tab = QWidget()
-        layout = QHBoxLayout(tab)
+    # ================= PROJECTS PAGE =================
+    def setup_projects_page(self):
+        page = QWidget()
+        main_vbox = QVBoxLayout(page)
+        self.add_back_button(main_vbox, "Projekte")
+        
+        layout = QHBoxLayout()
+        main_vbox.addLayout(layout)
         
         # Linke Liste
         left_layout = QVBoxLayout()
@@ -333,7 +247,8 @@ class AdminApp(QMainWindow):
         right_layout.addWidget(btn_save)
         
         layout.addLayout(right_layout, stretch=2)
-        self.tabs.addTab(tab, "Projekte verwalten")
+        
+        self.stack.addWidget(page)
         
         self.projects = []
         self.current_project_index = -1
@@ -395,7 +310,6 @@ class AdminApp(QMainWindow):
         if self.current_project_index < 0: return
         fname, _ = QFileDialog.getOpenFileName(self, "Bild auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
         if fname:
-            # Kopiere Bild nach assets/projects
             ext = os.path.splitext(fname)[1]
             new_filename = f"img_{uuid.uuid4().hex[:8]}{ext}"
             dest_dir = os.path.join(self.website_dir, "assets", "projects")
@@ -428,6 +342,184 @@ class AdminApp(QMainWindow):
                 f.write(js_content)
         except Exception as e:
             QMessageBox.critical(self, "Fehler", f"Konnte Projekte nicht speichern: {e}")
+
+    # ================= ABOUT PAGE =================
+    def setup_about_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        self.add_back_button(layout, "About Me")
+        
+        # Name
+        layout.addWidget(QLabel("Name:"))
+        self.about_name = QLineEdit()
+        layout.addWidget(self.about_name)
+        
+        # Rolle
+        layout.addWidget(QLabel("Rolle/Beruf:"))
+        self.about_role = QLineEdit()
+        layout.addWidget(self.about_role)
+        
+        # Bio
+        layout.addWidget(QLabel("Über mich Text:"))
+        self.about_bio = QTextEdit()
+        layout.addWidget(self.about_bio)
+        
+        # Skills
+        layout.addWidget(QLabel("Skills (z.B. Design, Foto, Web):"))
+        self.about_skills = QLineEdit()
+        layout.addWidget(self.about_skills)
+        
+        btn_save = QPushButton("About-Seite Speichern")
+        btn_save.clicked.connect(self.save_about)
+        layout.addWidget(btn_save)
+        
+        self.stack.addWidget(page)
+        self.load_about()
+
+    def load_about(self):
+        try:
+            html_path = os.path.join(self.website_dir, "about.html")
+            with open(html_path, "r", encoding="utf-8") as f:
+                html = f.read()
+            
+            name = re.search(r'<!-- TXT:ABOUT_NAME -->(.*?)<!-- /TXT:ABOUT_NAME -->', html, re.DOTALL)
+            role = re.search(r'<!-- TXT:ABOUT_ROLE -->(.*?)<!-- /TXT:ABOUT_ROLE -->', html, re.DOTALL)
+            bio = re.search(r'<!-- TXT:ABOUT_BIO -->(.*?)<!-- /TXT:ABOUT_BIO -->', html, re.DOTALL)
+            
+            if name: self.about_name.setText(name.group(1).strip())
+            if role: self.about_role.setText(role.group(1).strip())
+            if bio: self.about_bio.setText(bio.group(1).strip())
+                
+            js_path = os.path.join(self.website_dir, "about_data.js")
+            with open(js_path, "r", encoding="utf-8") as f:
+                js = f.read()
+            skills = re.search(r"var ABOUT_SKILLS\s*=\s*'([^']*?)'", js)
+            if skills: self.about_skills.setText(skills.group(1).strip())
+        except Exception as e:
+            print("Fehler beim Laden von About:", e)
+
+    def save_about(self):
+        try:
+            html_path = os.path.join(self.website_dir, "about.html")
+            with open(html_path, "r", encoding="utf-8") as f:
+                html = f.read()
+                
+            mapping = {
+                'ABOUT_NAME': self.about_name.text(),
+                'ABOUT_ROLE': self.about_role.text(),
+                'ABOUT_BIO':  self.about_bio.toPlainText(),
+            }
+            
+            for key, value in mapping.items():
+                html = re.sub(
+                    r'<!-- TXT:' + key + r' -->.*?<!-- /TXT:' + key + r' -->',
+                    f'<!-- TXT:{key} -->{value}<!-- /TXT:{key} -->',
+                    html, flags=re.DOTALL)
+                    
+            with open(html_path, "w", encoding="utf-8") as f:
+                f.write(html)
+                
+            js_path = os.path.join(self.website_dir, "about_data.js")
+            with open(js_path, "r", encoding="utf-8") as f:
+                js = f.read()
+            js = re.sub(r"var ABOUT_SKILLS\s*=.*?;", f"var ABOUT_SKILLS = '{self.about_skills.text()}';", js)
+            with open(js_path, "w", encoding="utf-8") as f:
+                f.write(js)
+                
+            QMessageBox.information(self, "Erfolg", "About-Seite erfolgreich gespeichert!")
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+
+    # ================= SETTINGS PAGE =================
+    def setup_settings_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        self.add_back_button(layout, "Webseiten Einstellungen")
+        
+        info = QLabel("Hier können künftig globale Webseiten-Einstellungen wie SEO Metadaten, Favicon oder Farbthemen konfiguriert werden.")
+        info.setWordWrap(True)
+        info.setStyleSheet("color: rgba(255, 255, 255, 0.7); font-size: 16px;")
+        info.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        layout.addStretch(1)
+        layout.addWidget(info)
+        layout.addStretch(1)
+        
+        self.stack.addWidget(page)
+
+    # ================= LEGAL PAGE =================
+    def setup_legal_page(self):
+        page = QWidget()
+        layout = QVBoxLayout(page)
+        self.add_back_button(layout, "Impressum & Kontakt")
+        
+        layout.addWidget(QLabel("Name:"))
+        self.leg_name = QLineEdit()
+        layout.addWidget(self.leg_name)
+        
+        layout.addWidget(QLabel("Adresse:"))
+        self.leg_addr = QLineEdit()
+        layout.addWidget(self.leg_addr)
+        
+        layout.addWidget(QLabel("Stadt / PLZ:"))
+        self.leg_city = QLineEdit()
+        layout.addWidget(self.leg_city)
+        
+        layout.addWidget(QLabel("E-Mail:"))
+        self.leg_email = QLineEdit()
+        layout.addWidget(self.leg_email)
+        
+        layout.addWidget(QLabel("Telefon:"))
+        self.leg_phone = QLineEdit()
+        layout.addWidget(self.leg_phone)
+        
+        btn_save = QPushButton("Impressum / Footer Speichern")
+        btn_save.clicked.connect(self.save_legal)
+        layout.addWidget(btn_save)
+        
+        self.stack.addWidget(page)
+        self.load_legal()
+
+    def load_legal(self):
+        try:
+            idx_path = os.path.join(self.website_dir, "index.html")
+            with open(idx_path, "r", encoding="utf-8") as f:
+                html = f.read()
+            name = re.search(r'<!-- LGL:NAME -->(.*?)<!-- /LGL:NAME -->', html)
+            addr = re.search(r'<!-- LGL:ADDRESS -->(.*?)<!-- /LGL:ADDRESS -->', html)
+            city = re.search(r'<!-- LGL:CITY -->(.*?)<!-- /LGL:CITY -->', html)
+            email = re.search(r'<!-- LGL:EMAIL -->(.*?)<!-- /LGL:EMAIL -->', html)
+            phone = re.search(r'<!-- LGL:PHONE -->(.*?)<!-- /LGL:PHONE -->', html)
+            
+            if name: self.leg_name.setText(name.group(1).strip())
+            if addr: self.leg_addr.setText(addr.group(1).strip())
+            if city: self.leg_city.setText(city.group(1).strip())
+            if email: self.leg_email.setText(email.group(1).strip())
+            if phone: self.leg_phone.setText(phone.group(1).strip())
+        except Exception as e:
+            print("Fehler beim Laden von Legal:", e)
+
+    def save_legal(self):
+        try:
+            files_to_patch = ["index.html", "single_project.html", "about.html", "contact.html"]
+            for fname in files_to_patch:
+                fpath = os.path.join(self.website_dir, fname)
+                if not os.path.exists(fpath): continue
+                with open(fpath, "r", encoding="utf-8") as f:
+                    html = f.read()
+                    
+                html = re.sub(r'<!-- LGL:NAME -->.*?<!-- /LGL:NAME -->', f'<!-- LGL:NAME -->{self.leg_name.text()}<!-- /LGL:NAME -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:ADDRESS -->.*?<!-- /LGL:ADDRESS -->', f'<!-- LGL:ADDRESS -->{self.leg_addr.text()}<!-- /LGL:ADDRESS -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:CITY -->.*?<!-- /LGL:CITY -->', f'<!-- LGL:CITY -->{self.leg_city.text()}<!-- /LGL:CITY -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:EMAIL -->.*?<!-- /LGL:EMAIL -->', f'<!-- LGL:EMAIL -->{self.leg_email.text()}<!-- /LGL:EMAIL -->', html, flags=re.DOTALL)
+                html = re.sub(r'<!-- LGL:PHONE -->.*?<!-- /LGL:PHONE -->', f'<!-- LGL:PHONE -->{self.leg_phone.text()}<!-- /LGL:PHONE -->', html, flags=re.DOTALL)
+                
+                with open(fpath, "w", encoding="utf-8") as f:
+                    f.write(html)
+            QMessageBox.information(self, "Erfolg", "Rechtliche Daten gespeichert!")
+        except Exception as e:
+            QMessageBox.critical(self, "Fehler", str(e))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
