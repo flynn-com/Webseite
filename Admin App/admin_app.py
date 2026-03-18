@@ -503,8 +503,30 @@ class AdminApp(QMainWindow):
         layout.addStretch(1)
 
         # Speichern und Beenden Button at the very bottom
+        # Bottom Buttons
         bottom_layout = QHBoxLayout()
         bottom_layout.addStretch(1)
+        
+        # Publish Button
+        btn_publish = QPushButton("Veröffentlichen")
+        btn_publish.setFixedWidth(250)
+        btn_publish.setStyleSheet("""
+            QPushButton {
+                background-color: #2ecc71;
+                color: white;
+                padding: 12px;
+                font-size: 14px;
+                border-radius: 20px;
+                margin-bottom: 10px;
+            }
+            QPushButton:hover { background-color: #27ae60; }
+        """)
+        btn_publish.clicked.connect(self.publish_updates)
+        bottom_layout.addWidget(btn_publish)
+        
+        bottom_layout.addSpacing(20)
+        
+        # Speichern und Beenden Button
         btn_exit = QPushButton("Speichern und Beenden")
         btn_exit.setFixedWidth(250)
         btn_exit.setStyleSheet("""
@@ -525,6 +547,43 @@ class AdminApp(QMainWindow):
         layout.addLayout(bottom_layout)
         
         self.stack.addWidget(page)
+
+    def publish_updates(self):
+        reply = QMessageBox.question(self, 'Bestätigen', 
+                                   "Sollen die Änderungen am Website-Ordner jetzt auf GitHub veröffentlicht werden?",
+                                   QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No, 
+                                   QMessageBox.StandardButton.Yes)
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            try:
+                # Find project root (one level up from Website usually)
+                root_dir = os.path.dirname(self.website_dir)
+                
+                # Command sequence:
+                # 1. git add ONLY Website folder and CNAME
+                # 2. git commit
+                # 3. git push
+                
+                import subprocess
+                
+                # Check if git is available
+                subprocess.run(["git", "--version"], check=True, capture_output=True)
+                
+                # Step 1: Add
+                subprocess.run(["git", "add", "Website/", "CNAME"], cwd=root_dir, check=True)
+                
+                # Step 2: Commit (might fail if nothing changed, so we ignore errors here)
+                subprocess.run(["git", "commit", "-m", "Website update via Admin App"], cwd=root_dir)
+                
+                # Step 3: Push
+                proc = subprocess.run(["git", "push", "origin", "main"], cwd=root_dir, capture_output=True, text=True)
+                if proc.returncode != 0:
+                    raise Exception(proc.stderr)
+                
+                QMessageBox.information(self, "Erfolg", "Website wurde erfolgreich veröffentlicht!")
+                
+            except Exception as e:
+                QMessageBox.critical(self, "Fehler", f"Veröffentlichung fehlgeschlagen:\n{str(e)}")
 
     # ================= PROJECTS PAGE (NEW) =================
     def setup_projects_page(self):
