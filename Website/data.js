@@ -24,6 +24,20 @@ const initialProjects = [
         "video": "",
         "icons": [],
         "companyLogo": ""
+    },
+    {
+        "id": 2,
+        "number": "02",
+        "bigNumber": "02",
+        "title": "Neues Projekt",
+        "category": "",
+        "shortDescription": "",
+        "description": "",
+        "image": "",
+        "gallery": [],
+        "video": "",
+        "icons": [],
+        "companyLogo": ""
     }
 ];
 
