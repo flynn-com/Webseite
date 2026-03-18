@@ -75,25 +75,6 @@ const initialProjects = [
         ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"
-    },
-    {
-        "id": 4,
-        "number": "04",
-        "bigNumber": "04",
-        "title": "Test Projekt",
-        "category": "04",
-        "shortDescription": "Oliven\u00f6l",
-        "description": "",
-        "image": "assets/projects/img_41433bda.png",
-        "gallery": [
-            "assets/projects/img_5f944926.jpg",
-            "assets/projects/img_a334ac9e.jpg"
-        ],
-        "video": "",
-        "icons": [
-            "ph:camera-thin"
-        ],
-        "companyLogo": ""
     }
 ];
 
