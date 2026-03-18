@@ -361,9 +361,9 @@ class AdminApp(QMainWindow):
         
         layout.addStretch(1)
         
-        # Logo / Title - MASSIVELY INCREASED
+        # Logo / Title - EVEN LARGER
         logo_label = QLabel(".FLYNN")
-        logo_font = QFont("Inter", 110, QFont.Weight.Bold)
+        logo_font = QFont("Inter", 160, QFont.Weight.Bold)
         logo_label.setFont(logo_font)
         logo_label.setStyleSheet("color: white; letter-spacing: 4px;")
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -410,9 +410,31 @@ class AdminApp(QMainWindow):
         btn_legal.setStyleSheet(main_btn_style)
         btn_legal.clicked.connect(lambda: self.stack.setCurrentIndex(4))
         btn_layout.addWidget(btn_legal)
-        
+
         layout.addWidget(btn_container)
         layout.addStretch(1)
+
+        # Speichern und Beenden Button at the very bottom
+        bottom_layout = QHBoxLayout()
+        bottom_layout.addStretch(1)
+        btn_exit = QPushButton("Speichern und Beenden")
+        btn_exit.setFixedWidth(250)
+        btn_exit.setStyleSheet("""
+            QPushButton {
+                background-color: #cc0000;
+                color: white;
+                padding: 12px;
+                font-size: 14px;
+                border-radius: 20px;
+                margin-bottom: 10px;
+            }
+            QPushButton:hover { background-color: #ff3333; }
+        """)
+        btn_exit.clicked.connect(self.close)
+        bottom_layout.addWidget(btn_exit)
+        bottom_layout.addStretch(1)
+        
+        layout.addLayout(bottom_layout)
         
         self.stack.addWidget(page)
 
