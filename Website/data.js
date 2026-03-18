@@ -23,29 +23,10 @@ const initialProjects = [
         "mainImageText": "IMG"
     },
     {
-        "id": 4,
-        "number": "02",
-        "bigNumber": "02",
-        "title": "Test Projekt",
-        "category": "04",
-        "shortDescription": "Oliven\u00f6l",
-        "description": "",
-        "image": "assets/projects/img_41433bda.png",
-        "gallery": [
-            "assets/projects/img_5f944926.jpg",
-            "assets/projects/img_a334ac9e.jpg"
-        ],
-        "video": "",
-        "icons": [
-            "ph:camera-thin"
-        ],
-        "companyLogo": "assets/projects/img_41433bda.png"
-    },
-    {
         "id": 1773250768865,
-        "number": "03",
+        "number": "02",
         "title": "Ar\u00e9e",
-        "bigNumber": "03",
+        "bigNumber": "02",
         "headerDetails": "M\u00fcnchen",
         "shortDescription": "R\u00e4ume aus ungesehenen Blickwinkeln",
         "description": "Die neu gestaltete Immobilie, welche von dem Architekturb\u00fcros Ar\u00e9e eingerichtet wurde, wurde in einer Fotoreihe abgebildet. Dabei lag der Fokus darauf, das Raumkonzept und die Einrichtung durch gezielte Perspektiven in Szene zu setzen.",
@@ -72,9 +53,9 @@ const initialProjects = [
     },
     {
         "id": 1772658855936,
-        "number": "04",
+        "number": "03",
         "title": "W123 230E",
-        "bigNumber": "04",
+        "bigNumber": "03",
         "headerDetails": "Mercedes",
         "shortDescription": "Mercedes in seinen 80er Jahren.",
         "description": "",
@@ -94,6 +75,25 @@ const initialProjects = [
         ],
         "previewText": "PREVIEW",
         "mainImageText": "IMG"
+    },
+    {
+        "id": 4,
+        "number": "04",
+        "bigNumber": "04",
+        "title": "Test Projekt",
+        "category": "04",
+        "shortDescription": "Oliven\u00f6l",
+        "description": "",
+        "image": "assets/projects/img_41433bda.png",
+        "gallery": [
+            "assets/projects/img_5f944926.jpg",
+            "assets/projects/img_a334ac9e.jpg"
+        ],
+        "video": "",
+        "icons": [
+            "ph:camera-thin"
+        ],
+        "companyLogo": ""
     }
 ];
 
