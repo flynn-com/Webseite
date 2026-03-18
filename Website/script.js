@@ -233,7 +233,8 @@ window.moveCarousel = function (button, direction, e) {
 // Helper to generic HTML
 const createProjectHTML = (p) => {
     // Resolve images
-    let mainImg = null;
+    let mainImg = p.companyLogo || null; // Left column is now company logo
+    let startImg = p.image || null;      // Right column "Startbild"
     let galleryHtml = '';
 
     // Build Project Capability Icons
@@ -262,34 +263,27 @@ const createProjectHTML = (p) => {
         iconsHtml = `<div class="project-capabilities">${iconList}</div>`;
     }
 
+    // Build Gallery/Carousel
     if (p.gallery && p.gallery.length > 0) {
-        mainImg = p.gallery[0];
+        let slides = '';
+        p.gallery.forEach((img, i) => {
+            const imgLoading = (i === 0) ? 'eager' : 'lazy';
+            slides += `<div class="carousel-item"><img src="${img}" alt="${p.title} - Galeriebild ${i+1}" loading="${imgLoading}" decoding="async"></div>`;
+        });
 
-        if (p.gallery.length > 1) {
-            let slides = '';
-            for (let i = 1; i < p.gallery.length; i++) {
-                // First slide loads eagerly so it's ready when the card opens
-                const imgLoading = (i === 1) ? 'eager' : 'lazy';
-                slides += `<div class="carousel-item"><img src="${p.gallery[i]}" alt="${p.title} – Galeriebild ${i}" loading="${imgLoading}" decoding="async"></div>`;
-            }
-
-            galleryHtml = `
-            <div class="v2-half-img v2-carousel">
-                <div class="v2-carousel-track" data-current-index="0">
-                    ${slides}
-                </div>
-                <button class="carousel-btn carousel-prev" onclick="moveCarousel(this, -1, event)">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-                </button>
-                <button class="carousel-btn carousel-next" onclick="moveCarousel(this, 1, event)">
-                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </button>
+        galleryHtml = `
+        <div class="v2-half-img v2-carousel">
+            <div class="v2-carousel-track" data-current-index="0">
+                ${slides}
             </div>
-            `;
-
-        }
-    } else if (p.image) {
-        mainImg = p.image;
+            <button class="carousel-btn carousel-prev" onclick="moveCarousel(this, -1, event)">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <button class="carousel-btn carousel-next" onclick="moveCarousel(this, 1, event)">
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+        </div>
+        `;
     }
 
     return `
@@ -306,10 +300,9 @@ const createProjectHTML = (p) => {
             <div class="full-content">
                 <div class="card-grid-v2">
                     
-                    <!-- LEFT COLUMN: Main Feature Image (Rounded) -->
+                    <!-- LEFT COLUMN: Company Logo (Large) -->
                     <div class="col-left">
-                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="${p.title} – Hauptbild" loading="eager" decoding="async">` : `<div class="placeholder-box">${p.mainImageText || 'IMG'}</div>`}
-                         ${p.companyLogo ? `<img src="${p.companyLogo}" class="project-company-logo" alt="${p.title} Firmenlogo" loading="lazy" decoding="async">` : ''}
+                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="${p.title} Firmenlogo" loading="eager" decoding="async">` : `<div class="placeholder-box">${p.mainImageText || 'LOGO'}</div>`}
                     </div>
                     
                     <!-- RIGHT COLUMN: Content -->
@@ -337,7 +330,11 @@ const createProjectHTML = (p) => {
                         ${iconsHtml}
                         
                         <div class="v2-secondary-area">
+                             <!-- Startbild on the right -->
+                             ${startImg ? `<div class="v2-half-img"><img src="${startImg}" alt="${p.title} Startbild" loading="lazy"></div>` : ''}
+                             
                              ${galleryHtml}
+                             
                              <a href="single_project.html?id=${p.id}" class="btn-view-project btn-view-mobile">
                                  VIEW 
                                  <svg class="view-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">

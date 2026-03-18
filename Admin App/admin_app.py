@@ -127,23 +127,35 @@ class ProjectDialog(QDialog):
         grp_img = QGroupBox("Bilder")
         l_img = QVBoxLayout(grp_img)
         
-        # Main Image Preview
-        self.lbl_preview = QLabel("Kein Bild ausgewählt")
+        # FIRMENLOGO (Large Left)
+        l_img.addWidget(QLabel("Firmenlogo (Das große Bild links):"))
+        self.lbl_logo_preview = QLabel("Kein Firmenlogo ausgewählt")
+        self.lbl_logo_preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_logo_preview.setMinimumHeight(150)
+        self.lbl_logo_preview.setStyleSheet("border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; background-color: rgba(0,0,0,0.3);")
+        l_img.addWidget(self.lbl_logo_preview)
+
+        l_logo = QHBoxLayout()
+        self.inp_company_logo = QLineEdit(self.project_data.get("companyLogo", ""))
+        self.inp_company_logo.setReadOnly(True)
+        l_logo.addWidget(self.inp_company_logo)
+        btn_logo = QPushButton("Wählen...")
+        btn_logo.clicked.connect(self.select_company_logo)
+        l_logo.addWidget(btn_logo)
+        l_img.addLayout(l_logo)
+        
+        l_img.addSpacing(15)
+
+        # STARTBILD (Right Top)
+        l_img.addWidget(QLabel("Startbild (Rechts über Details):"))
+        self.lbl_preview = QLabel("Kein Startbild ausgewählt")
         self.lbl_preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.lbl_preview.setMinimumHeight(150)
         self.lbl_preview.setStyleSheet("border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; background-color: rgba(0,0,0,0.3);")
         l_img.addWidget(self.lbl_preview)
 
-        # Main Image (Startbild)
         l_main = QHBoxLayout()
-        l_main.addWidget(QLabel("Startbild (groß links):"))
-        
-        # Look for existing image in either "image" or "companyLogo"
-        existing_main = self.project_data.get("image", "")
-        if not existing_main:
-            existing_main = self.project_data.get("companyLogo", "")
-            
-        self.inp_main_img = QLineEdit(existing_main)
+        self.inp_main_img = QLineEdit(self.project_data.get("image", ""))
         self.inp_main_img.setReadOnly(True)
         l_main.addWidget(self.inp_main_img)
         btn_main = QPushButton("Wählen...")
@@ -151,7 +163,8 @@ class ProjectDialog(QDialog):
         l_main.addWidget(btn_main)
         l_img.addLayout(l_main)
         
-        self.update_image_preview(existing_main)
+        self.update_image_preview(self.project_data.get("image", ""))
+        self.update_logo_preview(self.project_data.get("companyLogo", ""))
         
         l_img.addWidget(QLabel("Galeriebilder:"))
         self.list_gallery = QListWidget()
@@ -197,8 +210,28 @@ class ProjectDialog(QDialog):
         self.gallery_items.append(path)
         self.list_gallery.addItem(os.path.basename(path))
 
+    def select_company_logo(self):
+        fname, _ = QFileDialog.getOpenFileName(self, "Firmenlogo auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
+        if fname:
+            rel_path = self.copy_image_to_assets(fname)
+            self.inp_company_logo.setText(rel_path)
+            self.update_logo_preview(rel_path)
+
+    def update_logo_preview(self, rel_path):
+        if rel_path and rel_path.strip():
+            abs_path = os.path.join(self.website_dir, rel_path)
+            if os.path.exists(abs_path):
+                pixmap = QPixmap(abs_path)
+                scaled_pixmap = pixmap.scaled(300, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                self.lbl_logo_preview.setPixmap(scaled_pixmap)
+                self.lbl_logo_preview.setText("")
+            else:
+                self.lbl_logo_preview.setText("Logo-Datei nicht gefunden")
+        else:
+            self.lbl_logo_preview.setText("Kein Firmenlogo ausgewählt")
+
     def select_main_image(self):
-        fname, _ = QFileDialog.getOpenFileName(self, "Bild auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
+        fname, _ = QFileDialog.getOpenFileName(self, "Startbild auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
         if fname:
             rel_path = self.copy_image_to_assets(fname)
             self.inp_main_img.setText(rel_path)
@@ -216,7 +249,7 @@ class ProjectDialog(QDialog):
             else:
                 self.lbl_preview.setText("Bilddatei nicht gefunden")
         else:
-            self.lbl_preview.setText("Kein Bild ausgewählt")
+            self.lbl_preview.setText("Kein Startbild ausgewählt")
 
     def add_gallery_image(self):
         fnames, _ = QFileDialog.getOpenFileNames(self, "Bilder auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
@@ -268,10 +301,8 @@ class ProjectDialog(QDialog):
         self.project_data["description"] = self.inp_desc.toPlainText()
         self.project_data["icons"] = icons
         
-        main_img = self.inp_main_img.text()
-        self.project_data["image"] = main_img
-        # Also assign to companyLogo so single_project.html definitely shows it 
-        self.project_data["companyLogo"] = main_img
+        self.project_data["image"] = self.inp_main_img.text()
+        self.project_data["companyLogo"] = self.inp_company_logo.text()
         
         self.project_data["gallery"] = self.gallery_items
         return self.project_data
@@ -396,9 +427,9 @@ class AdminApp(QMainWindow):
         
         layout.addStretch(1)
         
-        # Logo / Title - EVEN LARGER
+        # Logo / Title - MASSIVE
         logo_label = QLabel(".FLYNN")
-        logo_font = QFont("Inter", 160, QFont.Weight.Bold)
+        logo_font = QFont("Inter", 240, QFont.Weight.Bold)
         logo_label.setFont(logo_font)
         logo_label.setStyleSheet("color: white; letter-spacing: 4px;")
         logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
