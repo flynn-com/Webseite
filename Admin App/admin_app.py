@@ -139,9 +139,15 @@ class ProjectDialog(QDialog):
         self.inp_company_logo = QLineEdit(self.project_data.get("companyLogo", ""))
         self.inp_company_logo.setReadOnly(True)
         l_logo.addWidget(self.inp_company_logo)
+        
         btn_logo = QPushButton("Wählen...")
         btn_logo.clicked.connect(self.select_company_logo)
         l_logo.addWidget(btn_logo)
+        
+        btn_del_logo = QPushButton("Löschen")
+        btn_del_logo.setStyleSheet("background-color: rgba(200, 50, 50, 0.6);")
+        btn_del_logo.clicked.connect(self.clear_company_logo)
+        l_logo.addWidget(btn_del_logo)
         l_img.addLayout(l_logo)
         
         l_img.addSpacing(15)
@@ -158,9 +164,15 @@ class ProjectDialog(QDialog):
         self.inp_main_img = QLineEdit(self.project_data.get("image", ""))
         self.inp_main_img.setReadOnly(True)
         l_main.addWidget(self.inp_main_img)
+        
         btn_main = QPushButton("Wählen...")
         btn_main.clicked.connect(self.select_main_image)
         l_main.addWidget(btn_main)
+        
+        btn_del_main = QPushButton("Löschen")
+        btn_del_main.setStyleSheet("background-color: rgba(200, 50, 50, 0.6);")
+        btn_del_main.clicked.connect(self.clear_main_image)
+        l_main.addWidget(btn_del_main)
         l_img.addLayout(l_main)
         
         self.update_image_preview(self.project_data.get("image", ""))
@@ -217,6 +229,10 @@ class ProjectDialog(QDialog):
             self.inp_company_logo.setText(rel_path)
             self.update_logo_preview(rel_path)
 
+    def clear_company_logo(self):
+        self.inp_company_logo.setText("")
+        self.update_logo_preview("")
+
     def update_logo_preview(self, rel_path):
         if rel_path and rel_path.strip():
             abs_path = os.path.join(self.website_dir, rel_path)
@@ -228,6 +244,7 @@ class ProjectDialog(QDialog):
             else:
                 self.lbl_logo_preview.setText("Logo-Datei nicht gefunden")
         else:
+            self.lbl_logo_preview.setPixmap(QPixmap())
             self.lbl_logo_preview.setText("Kein Firmenlogo ausgewählt")
 
     def select_main_image(self):
@@ -236,6 +253,10 @@ class ProjectDialog(QDialog):
             rel_path = self.copy_image_to_assets(fname)
             self.inp_main_img.setText(rel_path)
             self.update_image_preview(rel_path)
+
+    def clear_main_image(self):
+        self.inp_main_img.setText("")
+        self.update_image_preview("")
 
     def update_image_preview(self, rel_path):
         if rel_path and rel_path.strip():
@@ -249,6 +270,7 @@ class ProjectDialog(QDialog):
             else:
                 self.lbl_preview.setText("Bilddatei nicht gefunden")
         else:
+            self.lbl_preview.setPixmap(QPixmap())
             self.lbl_preview.setText("Kein Startbild ausgewählt")
 
     def add_gallery_image(self):
