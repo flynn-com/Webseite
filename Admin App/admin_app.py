@@ -575,8 +575,8 @@ class AdminApp(QMainWindow):
                 # Step 2: Commit (might fail if nothing changed, so we ignore errors here)
                 subprocess.run(["git", "commit", "-m", "Website update via Admin App"], cwd=root_dir)
                 
-                # Step 3: Push
-                proc = subprocess.run(["git", "push", "origin", "main"], cwd=root_dir, capture_output=True, text=True)
+                # Step 3: Push (Using --force to ensure local edits always overwrite the remote site)
+                proc = subprocess.run(["git", "push", "origin", "main", "--force"], cwd=root_dir, capture_output=True, text=True)
                 if proc.returncode != 0:
                     raise Exception(proc.stderr)
                 
