@@ -127,16 +127,31 @@ class ProjectDialog(QDialog):
         grp_img = QGroupBox("Bilder")
         l_img = QVBoxLayout(grp_img)
         
-        # Main Image
+        # Main Image Preview
+        self.lbl_preview = QLabel("Kein Bild ausgewählt")
+        self.lbl_preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_preview.setMinimumHeight(150)
+        self.lbl_preview.setStyleSheet("border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; background-color: rgba(0,0,0,0.3);")
+        l_img.addWidget(self.lbl_preview)
+
+        # Main Image (Startbild)
         l_main = QHBoxLayout()
-        l_main.addWidget(QLabel("Startbild:"))
-        self.inp_main_img = QLineEdit(self.project_data.get("image", ""))
+        l_main.addWidget(QLabel("Startbild (groß links):"))
+        
+        # Look for existing image in either "image" or "companyLogo"
+        existing_main = self.project_data.get("image", "")
+        if not existing_main:
+            existing_main = self.project_data.get("companyLogo", "")
+            
+        self.inp_main_img = QLineEdit(existing_main)
         self.inp_main_img.setReadOnly(True)
         l_main.addWidget(self.inp_main_img)
         btn_main = QPushButton("Wählen...")
         btn_main.clicked.connect(self.select_main_image)
         l_main.addWidget(btn_main)
         l_img.addLayout(l_main)
+        
+        self.update_image_preview(existing_main)
         
         l_img.addWidget(QLabel("Galeriebilder:"))
         self.list_gallery = QListWidget()
@@ -187,6 +202,21 @@ class ProjectDialog(QDialog):
         if fname:
             rel_path = self.copy_image_to_assets(fname)
             self.inp_main_img.setText(rel_path)
+            self.update_image_preview(rel_path)
+
+    def update_image_preview(self, rel_path):
+        if rel_path and rel_path.strip():
+            abs_path = os.path.join(self.website_dir, rel_path)
+            if os.path.exists(abs_path):
+                pixmap = QPixmap(abs_path)
+                # Scale to fit while maintaining aspect ratio
+                scaled_pixmap = pixmap.scaled(300, 150, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+                self.lbl_preview.setPixmap(scaled_pixmap)
+                self.lbl_preview.setText("")
+            else:
+                self.lbl_preview.setText("Bilddatei nicht gefunden")
+        else:
+            self.lbl_preview.setText("Kein Bild ausgewählt")
 
     def add_gallery_image(self):
         fnames, _ = QFileDialog.getOpenFileNames(self, "Bilder auswählen", "", "Bilder (*.png *.jpg *.jpeg *.webp)")
@@ -237,7 +267,12 @@ class ProjectDialog(QDialog):
         self.project_data["shortDescription"] = self.inp_short.toPlainText()
         self.project_data["description"] = self.inp_desc.toPlainText()
         self.project_data["icons"] = icons
-        self.project_data["image"] = self.inp_main_img.text()
+        
+        main_img = self.inp_main_img.text()
+        self.project_data["image"] = main_img
+        # Also assign to companyLogo so single_project.html definitely shows it 
+        self.project_data["companyLogo"] = main_img
+        
         self.project_data["gallery"] = self.gallery_items
         return self.project_data
 
