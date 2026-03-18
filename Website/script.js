@@ -300,9 +300,10 @@ const createProjectHTML = (p) => {
             <div class="full-content">
                 <div class="card-grid-v2">
                     
-                    <!-- LEFT COLUMN: Company Logo (Large) -->
+                    <!-- LEFT COLUMN: Startbild (Large) with Logo Overlay -->
                     <div class="col-left">
-                         ${mainImg ? `<img src="${mainImg}" class="main-feature-img" alt="${p.title} Firmenlogo" loading="eager" decoding="async">` : `<div class="placeholder-box">${p.mainImageText || 'LOGO'}</div>`}
+                         ${p.image ? `<img src="${p.image}" class="main-feature-img" alt="${p.title}" loading="eager" decoding="async">` : `<div class="placeholder-box">IMG</div>`}
+                         ${p.companyLogo ? `<img src="${p.companyLogo}" class="project-company-logo" alt="${p.title} Logo" loading="lazy" decoding="async">` : ''}
                     </div>
                     
                     <!-- RIGHT COLUMN: Content -->
@@ -330,9 +331,6 @@ const createProjectHTML = (p) => {
                         ${iconsHtml}
                         
                         <div class="v2-secondary-area">
-                             <!-- Startbild on the right -->
-                             ${startImg ? `<div class="v2-half-img"><img src="${startImg}" alt="${p.title} Startbild" loading="lazy"></div>` : ''}
-                             
                              ${galleryHtml}
                              
                              <a href="single_project.html?id=${p.id}" class="btn-view-project btn-view-mobile">

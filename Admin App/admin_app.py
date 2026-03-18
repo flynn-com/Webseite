@@ -127,33 +127,8 @@ class ProjectDialog(QDialog):
         grp_img = QGroupBox("Bilder")
         l_img = QVBoxLayout(grp_img)
         
-        # FIRMENLOGO (Large Left)
-        l_img.addWidget(QLabel("Firmenlogo (Das große Bild links):"))
-        self.lbl_logo_preview = QLabel("Kein Firmenlogo ausgewählt")
-        self.lbl_logo_preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.lbl_logo_preview.setMinimumHeight(150)
-        self.lbl_logo_preview.setStyleSheet("border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; background-color: rgba(0,0,0,0.3);")
-        l_img.addWidget(self.lbl_logo_preview)
-
-        l_logo = QHBoxLayout()
-        self.inp_company_logo = QLineEdit(self.project_data.get("companyLogo", ""))
-        self.inp_company_logo.setReadOnly(True)
-        l_logo.addWidget(self.inp_company_logo)
-        
-        btn_logo = QPushButton("Wählen...")
-        btn_logo.clicked.connect(self.select_company_logo)
-        l_logo.addWidget(btn_logo)
-        
-        btn_del_logo = QPushButton("Löschen")
-        btn_del_logo.setStyleSheet("background-color: rgba(200, 50, 50, 0.6);")
-        btn_del_logo.clicked.connect(self.clear_company_logo)
-        l_logo.addWidget(btn_del_logo)
-        l_img.addLayout(l_logo)
-        
-        l_img.addSpacing(15)
-
-        # STARTBILD (Right Top)
-        l_img.addWidget(QLabel("Startbild (Rechts über Details):"))
+        # STARTBILD (Large Left)
+        l_img.addWidget(QLabel("Startbild (Großes Hauptbild links):"))
         self.lbl_preview = QLabel("Kein Startbild ausgewählt")
         self.lbl_preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.lbl_preview.setMinimumHeight(150)
@@ -174,6 +149,31 @@ class ProjectDialog(QDialog):
         btn_del_main.clicked.connect(self.clear_main_image)
         l_main.addWidget(btn_del_main)
         l_img.addLayout(l_main)
+        
+        l_img.addSpacing(15)
+
+        # FIRMENLOGO (Overlay)
+        l_img.addWidget(QLabel("Firmenlogo (Kleines Logo über dem Bild links):"))
+        self.lbl_logo_preview = QLabel("Kein Firmenlogo ausgewählt")
+        self.lbl_logo_preview.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.lbl_logo_preview.setMinimumHeight(150)
+        self.lbl_logo_preview.setStyleSheet("border: 1px dashed rgba(255,255,255,0.2); border-radius: 8px; background-color: rgba(0,0,0,0.3);")
+        l_img.addWidget(self.lbl_logo_preview)
+
+        l_logo = QHBoxLayout()
+        self.inp_company_logo = QLineEdit(self.project_data.get("companyLogo", ""))
+        self.inp_company_logo.setReadOnly(True)
+        l_logo.addWidget(self.inp_company_logo)
+        
+        btn_logo = QPushButton("Wählen...")
+        btn_logo.clicked.connect(self.select_company_logo)
+        l_logo.addWidget(btn_logo)
+        
+        btn_del_logo = QPushButton("Löschen")
+        btn_del_logo.setStyleSheet("background-color: rgba(200, 50, 50, 0.6);")
+        btn_del_logo.clicked.connect(self.clear_company_logo)
+        l_logo.addWidget(btn_del_logo)
+        l_img.addLayout(l_logo)
         
         self.update_image_preview(self.project_data.get("image", ""))
         self.update_logo_preview(self.project_data.get("companyLogo", ""))
