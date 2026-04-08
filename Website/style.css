@@ -1126,15 +1126,7 @@ body::before {
     }
 
     .v2-half-img.v2-carousel {
-        display: block;
-        position: relative;
-        top: auto;
-        bottom: auto;
-        right: auto;
-        width: 100%;
-        height: min(38vh, 280px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        margin-top: 0.5rem;
+        display: none;
     }
 
     .project-capabilities {
