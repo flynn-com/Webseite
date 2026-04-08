@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const projectContainer = document.querySelector('.spacer-bottom');
     if (projectContainer) {
-        // Load projects from static data.js file
-        const projects = window.initialProjects || [];
+        // Load projects from static data.js file, skip archived ones
+        const projects = (window.initialProjects || []).filter(p => !p.hidden);
 
         // Sort by number just in case
         // Sort Descending because we use 'afterend' (prepend behavior)
@@ -76,11 +76,10 @@ function preloadProjectImages(projects) {
 }
 
 // SCROLL-DRIVEN ANIMATION ENGINE
-// Replaces IntersectionObserver with direct scroll calculation
 function attachObservers() {
     const cards = document.querySelectorAll('.project-card');
 
-    // Pre-cache all DOM references once — avoids repeated querySelector on every frame
+    // Pre-cache all DOM references once
     const cardElements = Array.from(cards).map(card => ({
         card,
         barContent: card.querySelector('.bar-content'),
@@ -88,14 +87,12 @@ function attachObservers() {
         wrapper: card.closest('.sticky-wrapper')
     }));
 
-    // Set constant styles once during setup — never touch them again in the scroll loop
+    // Constant styles set once — never written in the scroll loop
     cardElements.forEach(({ card }) => {
         card.style.width = '90vw';
         card.style.borderRadius = '32px';
     });
 
-    // Cache viewport dimensions and breakpoint flags
-    // Recalculated only on resize/orientationchange, not on every scroll frame
     let viewportHeight = window.innerHeight;
     let isMobile = window.innerWidth <= 768;
     let isTablet = window.innerWidth > 768 && window.innerWidth <= 1200;
@@ -107,20 +104,19 @@ function attachObservers() {
         onScroll();
     }
 
-    // Debounced resize listener
     let resizeTimer;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(updateViewport, 200);
     });
 
-    // iOS Safari: orientationchange fires before innerHeight updates — add a small delay
+    // iOS Safari: orientationchange fires before innerHeight settles
     window.addEventListener('orientationchange', () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(updateViewport, 300);
     });
 
-    // rAF deduplication flag — prevents queuing multiple frames per scroll burst
+    // rAF deduplication — one frame per scroll burst
     let rafScheduled = false;
 
     function onScroll() {
@@ -135,8 +131,7 @@ function attachObservers() {
                 ? Math.max(viewportHeight * 0.85, 620)
                 : viewportHeight * 0.8;
 
-        // PHASE 1 — Batch all layout reads (getBoundingClientRect)
-        // Reading everything before any write prevents forced reflows between cards
+        // PHASE 1 — Batch all layout reads
         const rects = cardElements.map(({ card }) => card.getBoundingClientRect());
 
         // PHASE 2 — Batch all style writes
@@ -166,7 +161,6 @@ function attachObservers() {
         });
     }
 
-    // Scroll listener with passive flag + rAF deduplication
     window.addEventListener('scroll', () => {
         if (!rafScheduled) {
             rafScheduled = true;
@@ -174,7 +168,6 @@ function attachObservers() {
         }
     }, { passive: true });
 
-    // Initial call
     onScroll();
 }
 
@@ -257,9 +250,14 @@ const createProjectHTML = (p) => {
     // Build Gallery/Carousel
     if (p.gallery && p.gallery.length > 0) {
         let slides = '';
-        p.gallery.forEach((img, i) => {
-            const imgLoading = (i === 0) ? 'eager' : 'lazy';
-            slides += `<div class="carousel-item"><img src="${img}" alt="${p.title} - Galeriebild ${i+1}" loading="${imgLoading}" decoding="async"></div>`;
+        p.gallery.forEach((item, i) => {
+            const isVideo = /\.(mp4|webm|mov)$/i.test(item);
+            if (isVideo) {
+                slides += `<div class="carousel-item"><video src="${item}" autoplay loop muted playsinline></video></div>`;
+            } else {
+                const imgLoading = (i === 0) ? 'eager' : 'lazy';
+                slides += `<div class="carousel-item"><img src="${item}" alt="${p.title} - Galeriebild ${i+1}" loading="${imgLoading}" decoding="async"></div>`;
+            }
         });
 
         galleryHtml = `

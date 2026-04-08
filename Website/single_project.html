@@ -185,6 +185,11 @@
             transform: translateZ(0);
         }
 
+        .gallery-video {
+            object-fit: cover;
+            cursor: default;
+        }
+
         /* iPad and larger: force landscape-like aspect ratio */
         @media (min-width: 768px) {
             .gallery-img {
@@ -428,9 +433,13 @@
                     galleryItems.push(p.image);
                 }
 
-                let galleryHtml = galleryItems.map(img =>
-                    `<div class="gallery-img-wrap"><img src="${img}" class="gallery-img" alt="Gallery Image" loading="lazy"></div>`
-                ).join('');
+                let galleryHtml = galleryItems.map(item => {
+                    const isVideo = /\.(mp4|webm|mov)$/i.test(item);
+                    if (isVideo) {
+                        return `<div class="gallery-img-wrap"><video src="${item}" class="gallery-img gallery-video" autoplay loop muted playsinline></video></div>`;
+                    }
+                    return `<div class="gallery-img-wrap"><img src="${item}" class="gallery-img" alt="Gallery Image" loading="lazy"></div>`;
+                }).join('');
 
                 // Video
                 let videoHtml = '';
@@ -583,8 +592,10 @@
             window.attachLightbox = function () {
                 document.querySelectorAll('.gallery-img:not([data-lb])').forEach(img => {
                     img.setAttribute('data-lb', '1');
+                    // Videos play inline — skip lightbox
+                    if (img.tagName === 'VIDEO') return;
                     img.addEventListener('click', function () {
-                        const all = Array.from(document.querySelectorAll('.gallery-img[data-lb]')).map(i => i.src);
+                        const all = Array.from(document.querySelectorAll('.gallery-img[data-lb]:not(video)')).map(i => i.src);
                         const idx = all.indexOf(this.src);
                         openLightbox(all, idx >= 0 ? idx : 0);
                     });

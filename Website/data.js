@@ -26,9 +26,37 @@ const initialProjects = [
         "companyLogo": ""
     },
     {
-        "id": 2,
+        "id": 9,
         "number": "02",
         "bigNumber": "02",
+        "title": "Nyhro",
+        "category": "Fashion",
+        "shortDescription": "Editorial- und Kampagnen-Shooting - 2025 MIND Kollektion der Marke Nyhro.",
+        "description": "",
+        "image": "assets/projects/img_9942d098.AVIF",
+        "gallery": [
+            "assets/projects/img_3f07faf6.AVIF",
+            "assets/projects/img_95064d2a.AVIF",
+            "assets/projects/img_56b5c27d.AVIF",
+            "assets/projects/img_1ddaca74.AVIF",
+            "assets/projects/img_6d5bb262.AVIF",
+            "assets/projects/img_62c0b6fa.AVIF",
+            "assets/projects/img_70d1f08a.AVIF",
+            "assets/projects/img_e420a6ef.AVIF",
+            "assets/projects/img_d6997e30.AVIF",
+            "assets/projects/img_a24970f2.AVIF"
+        ],
+        "video": "",
+        "icons": [
+            "ph:camera-thin",
+            "ph:video-camera-thin"
+        ],
+        "companyLogo": ""
+    },
+    {
+        "id": 2,
+        "number": "03",
+        "bigNumber": "03",
         "title": "Oliven\u00f6l",
         "category": "",
         "shortDescription": "",
@@ -37,12 +65,13 @@ const initialProjects = [
         "gallery": [],
         "video": "",
         "icons": [],
-        "companyLogo": ""
+        "companyLogo": "",
+        "hidden": true
     },
     {
         "id": 3,
-        "number": "03",
-        "bigNumber": "03",
+        "number": "04",
+        "bigNumber": "04",
         "title": "Nussknacker",
         "category": "",
         "shortDescription": "",
@@ -51,12 +80,13 @@ const initialProjects = [
         "gallery": [],
         "video": "",
         "icons": [],
-        "companyLogo": ""
+        "companyLogo": "",
+        "hidden": true
     },
     {
         "id": 4,
-        "number": "04",
-        "bigNumber": "04",
+        "number": "05",
+        "bigNumber": "05",
         "title": "Mercedes W123",
         "category": "",
         "shortDescription": "",
@@ -65,12 +95,13 @@ const initialProjects = [
         "gallery": [],
         "video": "",
         "icons": [],
-        "companyLogo": ""
+        "companyLogo": "",
+        "hidden": true
     },
     {
         "id": 5,
-        "number": "05",
-        "bigNumber": "05",
+        "number": "06",
+        "bigNumber": "06",
         "title": "Julia",
         "category": "",
         "shortDescription": "",
@@ -79,12 +110,13 @@ const initialProjects = [
         "gallery": [],
         "video": "",
         "icons": [],
-        "companyLogo": ""
+        "companyLogo": "",
+        "hidden": true
     },
     {
         "id": 6,
-        "number": "06",
-        "bigNumber": "06",
+        "number": "07",
+        "bigNumber": "07",
         "title": "Lange Theke",
         "category": "",
         "shortDescription": "",
@@ -93,21 +125,8 @@ const initialProjects = [
         "gallery": [],
         "video": "",
         "icons": [],
-        "companyLogo": ""
-    },
-    {
-        "id": 7,
-        "number": "07",
-        "bigNumber": "07",
-        "title": "24 Stunden Wandern",
-        "category": "",
-        "shortDescription": "",
-        "description": "",
-        "image": "",
-        "gallery": [],
-        "video": "",
-        "icons": [],
-        "companyLogo": ""
+        "companyLogo": "",
+        "hidden": true
     },
     {
         "id": 8,
@@ -121,21 +140,8 @@ const initialProjects = [
         "gallery": [],
         "video": "",
         "icons": [],
-        "companyLogo": ""
-    },
-    {
-        "id": 9,
-        "number": "09",
-        "bigNumber": "09",
-        "title": "Nyhro",
-        "category": "",
-        "shortDescription": "",
-        "description": "",
-        "image": "",
-        "gallery": [],
-        "video": "",
-        "icons": [],
-        "companyLogo": ""
+        "companyLogo": "",
+        "hidden": true
     }
 ];
 
