@@ -1,0 +1,1904 @@
+/* Editorial Frosted Glass Theme */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --text-color: #ffffff;
+    --glass-blur: 15px;
+    /* Heavy blur like the reference */
+    --noise-opacity: 0.15;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    position: relative;
+    scroll-behavior: smooth;
+    /* Fix for iOS Safari background-attachment: fixed bug */
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Smoother font rendering on macOS/iOS */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Safari fallback */
+    height: 100dvh;
+    background-image: url('Bilder/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: -1;
+    transform: translateZ(0);
+    /* Hardware acceleration */
+}
+
+.landing-section {
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    position: relative;
+}
+
+.nav-pill-group {
+    position: absolute;
+    top: 1.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.6rem;
+    z-index: 10;
+}
+
+.about-pill-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 1.1rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 100px;
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: background 0.25s, color 0.25s, border-color 0.25s, transform 0.25s;
+    white-space: nowrap;
+}
+
+.about-pill-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.contact-pill-btn {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-pill-btn:hover {
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.7);
+    color: #fff;
+}
+
+/* PROJECT SCROLL SECTION */
+.project-scroll-container {
+    height: 300vh;
+    /* Long scroll distance for the animation */
+    position: relative;
+    background: transparent;
+    /* See background through */
+}
+
+/* The Sticky Wrapper - NOW RELATIVE for tight list flow */
+.sticky-wrapper {
+    position: relative;
+    /* Changed from sticky to normal flow */
+    height: auto;
+    /* Allow it to wrap the content exactly */
+    /* REMOVED MIN-HEIGHT causing the gap issue */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: visible;
+    /* clearer interactions */
+    margin-bottom: 15px;
+    /* Exact spacing requested */
+
+    /* Safari Hardware Acceleration */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: margin-bottom;
+}
+
+/* The Card Itself */
+.project-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+
+    /* Initial State (Bar) - Overridden by JS but good defaults */
+    height: 80px;
+    width: 90vw;
+    /* Full width as requested */
+    border-radius: 32px;
+
+    position: relative;
+    /* Scroll-Driven: No CSS transition, JS handles it directly */
+    transition: none;
+    overflow: hidden;
+
+    /* OPTIMIZATION: Hardware Acceleration hints */
+    will-change: height, width, border-radius;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* Safari Hardware acceleration */
+    /* Force GPU layer */
+}
+
+/* ... skipped ... */
+
+.v2-secondary-area {
+    margin-top: auto;
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding-bottom: 20px;
+    padding-right: 20px;
+}
+
+
+/* EXPANDED CARD CONTENT STYLES */
+
+.col-right {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-left: 2rem;
+    position: relative;
+}
+
+.v2-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+
+.v2-number {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #ffffff;
+    opacity: 1;
+}
+
+.v2-details {
+    text-align: right;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    opacity: 0.8;
+    color: #ffffff;
+}
+
+.v2-title {
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 0.9;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: #ffffff;
+}
+
+.v2-desc {
+    font-size: 1rem;
+    line-height: 1.5;
+    opacity: 0.9;
+    flex-grow: 0;
+    margin-bottom: 1rem;
+    max-height: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #ffffff;
+}
+
+/* TITLE ROW */
+.title-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    gap: 1rem;
+}
+
+/* NEW VIEW BUTTON (Next to Title) */
+.btn-view-title {
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: transform 0.2s, background 0.2s;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    display: inline-block;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-view-title:hover {
+    transform: scale(1.05);
+    background: #f0f0f0;
+}
+
+
+/* Removed duplicated v2-secondary-area */
+
+/* Stretches handled by base class below */
+
+/* Placeholder box */
+.placeholder-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    opacity: 0.5;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* Content inside the Bar (Visible when closed) */
+.bar-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+    white-space: nowrap;
+    /* GPU layer for opacity animation */
+    will-change: opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+.bar-number {
+    font-size: 3rem;
+    /* Much larger */
+    font-weight: 900;
+    /* Extra bold */
+}
+
+.bar-title {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Content inside the Expanded Card (Visible when open) */
+.full-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    /* Hidden by default */
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    /* GPU layer for opacity animation */
+    will-change: opacity;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* 
+   NEW CARD LAYOUT (V2) 
+   - Left: Main Image (Rounded)
+   - Right: Text + Sec Image + Button
+*/
+.card-grid-v2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    height: 100%;
+    width: 100%;
+}
+
+.col-left {
+    height: 100%;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.main-feature-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.project-company-logo {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    max-width: 120px;
+    max-height: 80px;
+    object-fit: contain;
+    z-index: 10;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.3));
+    /* Adds a slight shadow to make light logos visible on light images */
+}
+
+.col-right {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.v2-header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 10;
+}
+
+.v2-number {
+    font-size: 8rem;
+    font-weight: 900;
+    line-height: 1;
+    color: #ffffff;
+    opacity: 1;
+    -webkit-text-stroke: 2px #ffffff;
+}
+
+.v2-details {
+    text-align: right;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+.title-row-v2 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 10;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.v2-title {
+    font-size: 4rem;
+    font-weight: 900;
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+
+.v2-desc {
+    font-size: 1rem;
+    line-height: 1.5;
+    opacity: 0.9;
+    flex-grow: 0;
+    /* Don't stretch */
+    margin-bottom: 2rem;
+    max-height: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: relative;
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.v2-secondary-area {
+    margin-top: auto;
+    /* Push to bottom */
+    display: flex;
+    flex-direction: column;
+    /* Allows vertical constraints */
+    align-items: stretch;
+    /* Fills width */
+    justify-content: flex-start;
+    gap: 1rem;
+    width: 100%;
+    flex: 1 1 0;
+    min-height: 0;
+    /* Critical: allows flex children (carousel) to fill remaining space */
+}
+
+.v2-half-img {
+    position: absolute;
+    top: 14rem;
+    /* Start higher up, just below the big number and title baseline */
+    bottom: 0;
+    right: 0;
+    width: calc(100% + 0rem);
+    /* Extend into the gap on the left */
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+    /* Behind text */
+
+    /* Fix Safari border-radius clipping bug with transform children */
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+    mask-image: radial-gradient(white, black);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}
+
+/* Carousel (Slider) — immer als Flex-Flow-Element, auf ALLEN Bildschirmgroessen */
+.v2-half-img.v2-carousel {
+    position: relative;
+    top: auto;
+    bottom: auto;
+    right: auto;
+    width: 100%;
+    flex: 1 1 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    margin-top: 0.5rem;
+    /* Safari mask nicht noetig fuer Flow-Elemente */
+    -webkit-mask-image: none;
+    mask-image: none;
+    transform: none;
+    -webkit-transform: none;
+    z-index: auto;
+}
+
+/* Track streckt sich im Flex-Carousel */
+.v2-half-img.v2-carousel .v2-carousel-track {
+    flex: 1;
+    min-height: 0;
+    height: auto;
+}
+
+/* Items strecken sich innerhalb des Tracks */
+.v2-half-img.v2-carousel .carousel-item {
+    align-self: stretch;
+}
+.v2-half-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.v2-carousel-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.carousel-item {
+    min-width: 100%;
+    width: 100%;
+    /* Force exact width */
+    flex: 0 0 100%;
+    /* Stop Safari from shrinking items */
+    height: 100%;
+    display: flex;
+    flex-shrink: 0;
+    /* Fix items collapsing in Safari flex container */
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Minimalist Navigation Buttons */
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s ease;
+    opacity: 0.8;
+}
+
+.carousel-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.carousel-prev {
+    left: 8px;
+}
+
+.carousel-next {
+    right: 8px;
+}
+
+/* Project Capability Icons */
+.project-capabilities {
+    position: relative;
+    /* Not absolute anymore, sits naturally above the image */
+    display: flex;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    /* More spacing between icons */
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 1rem;
+    /* Space before the carousel below it */
+    z-index: 20;
+}
+
+.p-cap-icon {
+    display: flex;
+    flex-direction: column;
+    /* Stack icon and text */
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    /* Space between circle and text */
+    color: #ffffff;
+}
+
+.icon-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    /* Slightly larger */
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: background 0.2s ease;
+}
+
+.icon-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+/* View Project Button */
+.btn-view-project {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    /* Space between text and arrow */
+    background: #ffffff;
+    color: #000000;
+    text-decoration: none;
+    padding: 0 40px;
+    /* Only horizontal padding */
+    border-radius: 100px;
+    font-weight: 900;
+    font-size: 2.2rem;
+    /* Increased text size for better readability */
+    letter-spacing: 1px;
+    height: 4rem;
+    /* Exactly the same total height as the .v2-title font-size */
+    margin-top: 0;
+    width: fit-content;
+    align-self: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.view-arrow {
+    width: 24px;
+    height: 24px;
+    margin-top: -3px;
+    /* Optical optical alignment adjustment to match baseline */
+    transition: transform 0.2s ease;
+}
+
+.btn-view-project:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background: #e0e0e0;
+}
+
+.btn-view-project:hover .view-arrow {
+    transform: translateX(4px);
+}
+
+/* Mobile-only VIEW button — hidden by default on desktop */
+.btn-view-mobile {
+    display: none;
+}
+
+/* Placeholder box */
+.placeholder-box {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    opacity: 0.5;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+
+/* 
+   NOISE FILTER LAYOUT 
+   Uses an SVG filter or noise image. 
+   Here we use a base64 noise pattern for the "milchglas" grain.
+*/
+.noise-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    opacity: var(--noise-opacity);
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* 
+   THE FROSTED GLASS LAYER 
+   This element blurs the woman behind it.
+   The referenced image has a very strong distortion/blur.
+*/
+.glass-surface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(var(--glass-blur)) brightness(1.1);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) brightness(1.1);
+    background: rgba(255, 255, 255, 0.05);
+    /* Very subtle white tint */
+    z-index: 1;
+}
+
+/* LAYOUT CONTAINER */
+.editorial-grid {
+    position: relative;
+    z-index: 20;
+    /* Above glass */
+    height: 100vh;
+    height: 100dvh;
+    /* Safari iOS Fix */
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    padding: 2rem;
+}
+
+/* LOGO CENTER */
+.center-stage {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.main-logo {
+    max-width: 80vw;
+    width: 600px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+    mix-blend-mode: overlay;
+    /* Blends nicely with the glass */
+}
+
+/* If the logo is black in the file, invert it or use filter to make it white if needed. 
+   Assuming the uploaded logo is the black text one, we might need to invert it 
+   if the design is dark, or keep it black if the design is light. 
+   The reference is B&W/High Contrast. Let's try high contrast white.
+*/
+.main-logo.invert {
+    filter: invert(1) drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+}
+
+/* CORNER TEXTS (Editorial Style) */
+.corner-tl {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: start;
+}
+
+.corner-tr {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    text-align: right;
+}
+
+.corner-bl {
+    grid-column: 1;
+    grid-row: 3;
+    align-self: end;
+}
+
+.corner-br {
+    grid-column: 3;
+    grid-row: 3;
+    justify-self: end;
+    align-self: end;
+    text-align: right;
+}
+
+.meta-text {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    line-height: 1.6;
+    opacity: 0.9;
+    mix-blend-mode: difference;
+    /* Ensures visibility on any background */
+    color: white;
+}
+
+/* VERTICAL TEXT DECORATION */
+.scrolling-text {
+    position: absolute;
+    left: 50%;
+    bottom: 2rem;
+    transform: translateX(-50%);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+}
+
+/* SECTION HEADER */
+.project-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15vw;
+    /* Massive responsive size */
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-weight: 900;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+    /* Symmetric: Same distance below as above */
+    letter-spacing: -0.05em;
+    pointer-events: none;
+    /* mix-blend-mode: overlay; <-- REMOVED per user request for white */
+    position: relative;
+    z-index: 5;
+}
+
+/* =========================================
+   TABLET RESPONSIVENESS (iPad, Small laptops)
+   ========================================= */
+@media (max-width: 1024px) {
+    .project-section-title {
+        font-size: 12vw;
+    }
+
+    .v2-number {
+        font-size: 5rem;
+    }
+
+    .v2-title {
+        font-size: 3rem;
+    }
+
+    .btn-view-project {
+        font-size: 1.5rem;
+        height: 3.5rem;
+        padding: 0 30px;
+    }
+
+    .title-row-v2 {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    /* Carousel im Tablet-Modus: als Flex-Element den Restoraum fuellen */
+    .v2-half-img {
+        display: none;
+        /* absolute version hidden */
+    }
+
+    /* v2-secondary-area muss min-height:0 haben, damit flex:1 des Carousels funktioniert */
+    .v2-secondary-area {
+        flex: 1 1 0;
+        min-height: 0;
+        justify-content: flex-start;
+    }
+
+    /* Carousel fuellt den gesamten Restoraum bis zum unteren Kartenrand */
+    .v2-half-img.v2-carousel {
+        position: relative;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
+        border-radius: 20px;
+    }
+
+    /* Track und Items muessen ebenfalls flex-basiert strecken */
+    .v2-half-img.v2-carousel .v2-carousel-track {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+    }
+
+    .v2-half-img.v2-carousel .carousel-item {
+        align-self: stretch;
+    }
+}
+
+/* =========================================
+   LARGE TABLET / SMALL LAPTOP (768px – 1200px)
+   Slider als Flow-Element anzeigen
+   ========================================= */
+@media (max-width: 1200px) {
+    .v2-half-img {
+        display: none;
+        /* absolute version hidden */
+    }
+
+    .v2-secondary-area {
+        flex: 1 1 0;
+        min-height: 0;
+        justify-content: flex-start;
+    }
+
+    .v2-half-img.v2-carousel {
+        position: relative;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        flex: 1 1 0;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
+        border-radius: 20px;
+    }
+
+    .v2-half-img.v2-carousel .v2-carousel-track {
+        flex: 1;
+        min-height: 0;
+        height: auto;
+    }
+
+    .v2-half-img.v2-carousel .carousel-item {
+        align-self: stretch;
+    }
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. LANDING PAGE ADAPTATIONS */
+    /* 1. LANDING PAGE ADAPTATIONS */
+    .editorial-grid {
+        display: flex;
+        /* Switch to flex for easier vertical stacking */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 2rem 1rem;
+    }
+
+    /* Re-position corners safely or hide/adjust */
+    .corner-tl,
+    .corner-tr,
+    .corner-bl,
+    .corner-br {
+        position: absolute;
+        /* Float them to corners regardless of flex flow */
+    }
+
+    .corner-tl {
+        top: 1rem;
+        left: 1rem;
+    }
+
+    .corner-tr {
+        top: 1rem;
+        right: 1rem;
+    }
+
+    .corner-bl {
+        bottom: 6rem;
+        left: 1rem;
+    }
+
+    /* Above scrolling text */
+    .corner-br {
+        bottom: 6rem;
+        right: 1rem;
+    }
+
+    .center-stage {
+        /* No longer grid-constrained */
+        width: 100%;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+
+    .meta-text {
+        font-size: 0.65rem;
+        /* Smaller corner text */
+        letter-spacing: 0.1em;
+    }
+
+    .main-logo {
+        width: 60vw;
+        /* Fill 60% of screen to not overpower */
+        max-width: none;
+        /* Remove desktop limit */
+    }
+
+    /* 2. TYPOGRAPHY SCALING */
+    .project-section-title {
+        font-size: 10vw;
+        /* Smaller to fit in 80% width */
+        max-width: 80vw;
+        margin-left: auto;
+        margin-right: auto;
+
+        margin-top: 5vh;
+        margin-bottom: 5vh;
+    }
+
+    /* 3. PROJECT CARD ADAPTATIONS */
+    .card-grid-v2 {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    /* Dissolve col-right so its children participate in the flex column */
+    .col-right {
+        display: contents;
+    }
+
+    /* 1. Nummer → ganz oben */
+    .v2-header {
+        order: 1;
+    }
+
+    /* 2. Bild → nach der Nummer */
+    .col-left {
+        order: 2;
+        height: 220px;
+        border-radius: 20px;
+    }
+
+    /* 3. Titel → nach dem Bild */
+    .title-row-v2 {
+        order: 3;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
+        flex-shrink: 0;
+    }
+
+    /* 4. Beschreibung */
+    .v2-desc {
+        order: 4;
+    }
+
+    /* 5. VIEW-Button */
+    .v2-secondary-area {
+        order: 5;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    /* Hide the desktop VIEW button in title row */
+    .title-row-v2 .btn-view-project {
+        display: none;
+    }
+
+    /* Show the mobile VIEW button inside secondary area */
+    .btn-view-mobile {
+        display: inline-flex !important;
+        height: 2.8rem;
+        font-size: 1.1rem;
+        padding: 0 20px;
+        align-self: flex-start;
+        margin-top: 0.25rem;
+    }
+
+    .project-company-logo {
+        max-width: 80px;
+        max-height: 50px;
+        bottom: 1.5rem;
+        left: 1.5rem;
+    }
+
+    .v2-title {
+        font-size: 3rem;
+        margin-bottom: 0;
+        flex-shrink: 0;
+    }
+
+    .v2-number {
+        font-size: 5rem;
+        -webkit-text-stroke: 1px #ffffff;
+    }
+
+    .v2-desc {
+        font-size: 0.9rem;
+        max-height: 100px;
+        /* Limit text height */
+        margin-top: 1rem;
+    }
+
+    /* Adjust secondary image area */
+    .v2-secondary-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    /* Slider auf Mobile sichtbar als Flow-Element */
+    .v2-half-img {
+        display: none;
+        /* absolute version hidden */
+    }
+
+    .v2-half-img.v2-carousel {
+        display: block;
+        position: relative;
+        top: auto;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        height: min(38vh, 280px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        margin-top: 0.5rem;
+    }
+
+    .project-capabilities {
+        display: none;
+        /* Hide on mobile to save space */
+    }
+}
+
+/* =========================================
+   SITE FOOTER
+   ========================================= */
+.site-footer {
+    position: relative;
+    z-index: 20;
+    width: 100%;
+    padding: 3rem 2rem 2rem;
+    margin-top: 4rem;
+}
+
+.footer-glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15), 0 20px 50px rgba(0, 0, 0, 0.2);
+    border-radius: 32px;
+    padding: 3rem;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Subtle inner glow at top edge */
+.footer-glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 5%;
+    width: 90%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.footer-top {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 3rem;
+    align-items: start;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    margin-bottom: 2rem;
+}
+
+/* Left: Brand Column */
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.footer-logo-text {
+    font-size: 2.5rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    color: #ffffff;
+    text-transform: uppercase;
+}
+
+.footer-tagline {
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    line-height: 1.6;
+}
+
+/* Center: Divider line */
+.footer-divider {
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+    align-self: stretch;
+    min-height: 80px;
+}
+
+/* Right: Links Grid */
+.footer-links {
+    display: flex;
+    gap: 3rem;
+    justify-content: flex-end;
+}
+
+.footer-link-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.footer-link-heading {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 0.25rem;
+}
+
+.footer-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    opacity: 0.85;
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.footer-link:hover {
+    opacity: 1;
+    transform: translateX(4px);
+}
+
+/* Bottom Bar */
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.footer-copy {
+    font-size: 0.75rem;
+    opacity: 0.5;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.footer-legal-inline {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.footer-legal-inline a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.footer-legal-inline a:hover {
+    opacity: 0.9;
+}
+
+/* =====================
+   MODAL OVERLAY (Impressum / Datenschutz)
+   ===================== */
+.legal-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: flex-start;
+    /* Start from top so modal can grow downward */
+    justify-content: center;
+    padding: 2rem;
+    overflow-y: auto;
+    /* Overlay itself scrolls on mobile */
+    -webkit-overflow-scrolling: touch;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.legal-modal-overlay.is-open {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    cursor: pointer;
+}
+
+.modal-box {
+    position: relative;
+    z-index: 10;
+    background: rgba(20, 20, 30, 0.92);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 28px;
+    padding: 3rem;
+    max-width: 720px;
+    width: 100%;
+    max-height: 90dvh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+    transform: translateY(20px) scale(0.98);
+    transition: transform 0.3s ease;
+    margin: auto 0;
+    /* Center vertically when enough space */
+    flex-shrink: 0;
+}
+
+.legal-modal-overlay.is-open .modal-box {
+    transform: translateY(0) scale(1);
+}
+
+.modal-box::-webkit-scrollbar {
+    width: 4px;
+}
+
+.modal-box::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.modal-box::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: background 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.modal-title {
+    font-size: 2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+}
+
+.modal-subtitle {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.modal-section {
+    margin-bottom: 1.75rem;
+}
+
+.modal-section h3 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 0.5rem;
+}
+
+.modal-section p,
+.modal-section a {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    opacity: 0.85;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.modal-section a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* ---- Footer Mobile ---- */
+@media (max-width: 768px) {
+    .site-footer {
+        padding: 2rem 1rem 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .footer-glass {
+        padding: 2rem 1.5rem;
+        border-radius: 20px;
+    }
+
+    .footer-top {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .footer-divider {
+        display: none;
+    }
+
+    .footer-links {
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+
+    .footer-logo-text {
+        font-size: 1.8rem;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    /* Modal on mobile: compact padding, full scrollability */
+    .legal-modal-overlay {
+        padding: 1rem;
+        align-items: flex-start;
+    }
+
+    .modal-box {
+        padding: 1.5rem 1.25rem;
+        border-radius: 20px;
+        max-height: none;
+        /* Let overlay handle scroll */
+        overflow-y: visible;
+        margin: 0;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* =========================================
+   GLOBAL NAVIGATION
+   ========================================= */
+.site-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2.5rem;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    transition: background 0.3s;
+}
+
+.site-nav:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: opacity 0.2s;
+}
+
+.nav-logo:hover {
+    opacity: 0.7;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+}
+
+.nav-links a {
+    color: rgba(255, 255, 255, 0.75);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: #fff;
+    transition: width 0.25s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #fff;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .site-nav {
+        padding: 0.85rem 1.25rem;
+    }
+
+    .nav-logo {
+        font-size: 1.1rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .nav-links a {
+        font-size: 0.7rem;
+    }
+}
+
+/* =========================================
+   ABOUT & CONTACT — SHARED PAGE BASE
+   ========================================= */
+.page-wrapper {
+    min-height: 100dvh;
+    padding-top: 5rem;
+    padding-bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: 800;
+    font-size: 1rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    transition: background 0.2s ease, transform 0.2s ease;
+    width: fit-content;
+    align-self: flex-start;
+}
+
+.back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-5px);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 28px;
+    padding: 2.5rem 3rem;
+    width: 100%;
+    margin: 0 auto 2rem auto;
+}
+
+.page-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin-bottom: 2rem;
+}
+
+/* =========================================
+   ABOUT PAGE
+   ========================================= */
+.about-hero {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+    align-items: start;
+}
+
+.about-photo-wrap {
+    position: relative;
+}
+
+.about-photo {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    border-radius: 20px;
+    display: block;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.about-photo-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+    opacity: 0.5;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.about-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 0.3rem;
+}
+
+.about-role {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.45;
+    margin-bottom: 2rem;
+}
+
+.about-bio {
+    font-size: 1rem;
+    line-height: 1.8;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+    white-space: pre-line;
+}
+
+.about-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.skill-tag {
+    padding: 0.35rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+}
+
+.btn-contact {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: #fff;
+    color: #000;
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-contact:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .about-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .about-photo-wrap {
+        max-width: 260px;
+        margin: 0 auto;
+    }
+
+    .glass-card {
+        padding: 1.75rem 1.5rem;
+    }
+}
+
+/* =========================================
+   CONTACT PAGE
+   ========================================= */
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+.contact-info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.contact-info-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.contact-info-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-bottom: 0.2rem;
+}
+
+.contact-info-value {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+
+.contact-info-value a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.contact-info-value a:hover {
+    opacity: 0.7;
+}
+
+.contact-form .form-group {
+    margin-bottom: 1.2rem;
+}
+
+.contact-form label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 0.5rem;
+}
+
+.contact-form input,
+.contact-form textarea {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 0.85rem 1rem;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.contact-form textarea {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.btn-send {
+    width: 100%;
+    padding: 1rem;
+    background: #fff;
+    color: #000;
+    border: none;
+    border-radius: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    margin-top: 0.5rem;
+}
+
+.btn-send:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+}
+
+.form-success {
+    text-align: center;
+    padding: 2rem;
+    display: none;
+}
+
+.form-success .check {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
