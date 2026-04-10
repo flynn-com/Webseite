@@ -8,21 +8,22 @@ const initialProjects = [
         "category": "01",
         "shortDescription": "R\u00e4ume aus ungesehenen Blickwinkeln ",
         "description": "Die neu gestaltete Immobilie, welche von dem Architekturb\u00fcros Ar\u00e9e eingerichtet wurde, wurde in einer Fotoreihe abgebildet. Dabei lag der Fokus darauf, das Raumkonzept und die Einrichtung durch gezielte Perspektiven in Szene zu setzen. ",
-        "image": "assets/projects/img_a0ad29d0.jpg",
+        "image": "assets/projects/img_341d3d5f.AVIF",
         "gallery": [
-            "assets/projects/img_65dc9081.jpg",
-            "assets/projects/img_e7b532f7.jpg",
-            "assets/projects/img_41b5afaf.jpg",
-            "assets/projects/img_c31411f3.jpg",
-            "assets/projects/img_6da432dd.jpg",
-            "assets/projects/img_f9b1be2a.jpg",
-            "assets/projects/img_414db4af.jpg",
-            "assets/projects/img_ba252d2f.jpg",
-            "assets/projects/img_0c2264d0.jpg",
-            "assets/projects/img_d8aca1bf.jpg"
+            "assets/projects/img_e6a9dace.AVIF",
+            "assets/projects/img_0f06a46b.AVIF",
+            "assets/projects/img_dbca8c20.AVIF",
+            "assets/projects/img_09c95e39.AVIF",
+            "assets/projects/img_d981f5b1.AVIF",
+            "assets/projects/img_649e56f6.AVIF",
+            "assets/projects/img_b5bac787.AVIF",
+            "assets/projects/img_da0ab718.AVIF",
+            "assets/projects/img_8d394321.AVIF"
         ],
         "video": "",
-        "icons": [],
+        "icons": [
+            "ph:camera-thin"
+        ],
         "companyLogo": ""
     },
     {
@@ -58,15 +59,26 @@ const initialProjects = [
         "number": "03",
         "bigNumber": "03",
         "title": "Oliven\u00f6l",
-        "category": "",
+        "category": "03",
         "shortDescription": "",
         "description": "",
-        "image": "",
-        "gallery": [],
+        "image": "assets/projects/img_c05e5ab3.AVIF",
+        "gallery": [
+            "assets/projects/img_d9307d9e.AVIF",
+            "assets/projects/img_74daf37a.AVIF",
+            "assets/projects/img_097e7064.AVIF",
+            "assets/projects/img_8d898c56.AVIF",
+            "assets/projects/img_be40d3db.AVIF",
+            "assets/projects/img_bda34340.AVIF",
+            "assets/projects/img_e5991646.AVIF"
+        ],
         "video": "",
-        "icons": [],
+        "icons": [
+            "ph:camera-thin",
+            "ph:video-camera-thin"
+        ],
         "companyLogo": "",
-        "hidden": true
+        "hidden": false
     },
     {
         "id": 3,
